@@ -1,2 +1,2 @@
 # Space-project
-This repository is for final project
+Проект игры на Python 
