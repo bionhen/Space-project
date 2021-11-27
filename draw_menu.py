@@ -10,9 +10,6 @@ pygame.display.set_icon(pygame.image.load("emblem.ico"))
 clock = pygame.time.Clock()
 FPS = 60
 
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-
 bg_surf = pygame.image.load(("images/menu/space_bg_4.jpg")).convert()
 bg_surf = pygame.transform.scale(bg_surf, (WIDTH, HEIGHT))
 
@@ -22,6 +19,9 @@ missions_button_off_surf_width = pygame.Surface.get_width(missions_button_off_su
 missions_button_off_surf_height = pygame.Surface.get_height(missions_button_off_surf)
 
 missions_button_on_surf = pygame.image.load(("images/menu/Кнопка Missions нажатая 1.png")).convert_alpha()
+
+def draw_surface():
+
 
 
 def check_button(cur_event):
