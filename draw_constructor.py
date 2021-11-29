@@ -20,7 +20,7 @@ class Button:
     def __init__(self, filename, x, y):
         self.x = x
         self.y = y
-        self.button_surf = pygame.image.load(("images/missions/"+filename+".png")).convert_alpha()
+        self.button_surf = pygame.image.load(("images/constructor/"+filename+".png")).convert_alpha()
 
 
 class ButtonOff(Button):
@@ -51,21 +51,32 @@ def render_bg():
 def draw_bg(grid, bg_constructor_surf, panel):
     sc.blit(bg_constructor_surf, (0, 0))
     bg_constructor_surf.blit(grid, (200, 50))
-    bg_constructor_surf.blit(panel, (0, 0))
-    bg_constructor_surf.blit(panel, (650, 0))
+    #bg_constructor_surf.blit(panel, (0, 0))
+    #bg_constructor_surf.blit(panel, (650, 0))
 
 
 def render_buttons():
-    orbit = Button('entering orbit on', 100, 150)
-    orbit_off = ButtonOff('entering orbit', 100, 150)
-    moon = Button('flight to the moon on', 100, 250)
-    moon_off = ButtonOff('flight to the moon', 100, 250)
+    fuel_on = Button('fuel_on', 625, 75)
+    fuel_off = ButtonOff('fuel_off', 625, 75)
+    autopilot_on = Button('autopilot_on', 625, 150)
+    autopilot_off = ButtonOff('autopilot_off', 625, 150)
+    engines_on = Button('engines_on', 625, 225)
+    engines_off = ButtonOff('engines_off', 625, 225)
+    fairings_on = Button('fairings_on', 625, 300)
+    fairings_off = ButtonOff('fairings_off', 625, 300)
+    modules_on = Button('modules_on', 625, 375)
+    modules_off = ButtonOff('modules_off', 625, 375)
 
-    buttons_off = [orbit_off, moon_off]
-    buttons_on = [orbit, moon]
+
+    buttons_off = [fuel_off, autopilot_off,engines_off, fairings_off, modules_off]
+    buttons_on = [fuel_on, autopilot_on, engines_on, fairings_on, modules_on]
 
     return buttons_off, buttons_on
 
+"""engine1x1 = pygame.image.load("images/constructor/engine 1x1.png")
+module1x1 = pygame.image.load("images/constructor/module 1x1.png")
+engine1x1 = pygame.transform.scale(engine1x1, (50, 50))
+module1x1 = pygame.transform.scale(module1x1, (50, 50))"""
 
 def draw_buttons(bg_surf, buttons_off, buttons_on):
     for i in range(len(buttons_off)):
@@ -77,7 +88,7 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
 def draw_points():
     """Метод отрисовывает количество поражённых целей на экране."""
     text = FONT.render('Score: ' + str(cash), True, (0, 0, 0))
-    sc.blit(text, (660, 20))
+    sc.blit(text, (630, 20))
 
 
 grid, bg_constructor_surf, panel = render_bg()
@@ -91,7 +102,9 @@ while True:
     draw_bg(grid, bg_constructor_surf, panel)
     draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
     draw_points()
-
+    """sc.blit(engine1x1, (200, 200))
+    sc.blit(engine1x1, (250, 200))
+    sc.blit(module1x1, (200, 150))"""
 
     pygame.display.update()
 
