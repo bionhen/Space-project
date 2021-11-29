@@ -31,7 +31,7 @@ class Module:
     b = 0
     "ширина модуля"
 
-    surface = pygame.image.load("images/modules/"+image+".png").convert_alpha()
+    surface = pygame.image.load("images/constructor/modules/"+image+".png").convert_alpha()
 
 
 def read_modules_data_from_file(input_filename):
