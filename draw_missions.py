@@ -1,8 +1,9 @@
 import pygame
 pygame.init()
 
-global WIDTH, HEIGHT
-global sc
+WIDTH = 800
+HEIGHT = 600
+sc = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 class Button:
