@@ -1,53 +1,33 @@
 import pygame
+from pygame.draw import *
 pygame.init()
-
-WIDTH, HEIGHT = 800, 600
-
-sc = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Space Dolgoprudniy Program")
-pygame.display.set_icon(pygame.image.load("emblem.ico"))
-
-clock = pygame.time.Clock()
-FPS = 60
-
-menu_bg_surf = pygame.image.load(("images/menu/space_bg_4.jpg")).convert()
-menu_bg_surf = pygame.transform.scale(menu_bg_surf, (WIDTH, HEIGHT))
+screen = pygame.display.set_mode((800, 600))
 
 
-missions_button_off_surf = pygame.image.load(("images/menu/Кнопка Missions 2.png")).convert_alpha()
-missions_button_off_surf_width = pygame.Surface.get_width(missions_button_off_surf)
-missions_button_off_surf_height = pygame.Surface.get_height(missions_button_off_surf)
+def load_image(i, x, y):
+    """
+    Эта гребанная функция нужна для всасывания(загрузки) картинки
+    (мне просто уже плохо, я не могу адекватно мысли формулировать)
+    :param i: полный путь к изображению
+    :param x: масштаб по вертикальной оси
+    :param y: масштаб по горизонтальной оси
+    :return: изображение в требуемом масштабе
+    """
+    menu_bg_surf = pygame.image.load(i).convert()
+    menu_bg_surf = pygame.transform.scale(menu_bg_surf, (x, y))
+    return menu_bg_surf
 
-missions_button_on_surf = pygame.image.load(("images/menu/Кнопка Missions нажатая 1.png")).convert_alpha()
 
-
-def draw_surface(main_surface, surface, x, y):
-    main_surface.blit(surface, (x, y))
-
-
-def check_button(cur_event):
-    if ((cur_event[0] >= 300)
-            and (cur_event[0] <= 300 + missions_button_off_surf_width)
-            and (cur_event[1] >= 350)
-            and (cur_event[1] <= 350 + missions_button_off_surf_height)):
-        button_checked = True
+def draw_menu(mouse_x, mouse_y):
+    a = load_image("images/menu/space_bg_4.jpg", 800, 600)
+    b = load_image("images/menu/Кнопка Missions 2.png", 150, 50)
+    c = load_image("images/menu/Кнопка Missions нажатая 1.png", 150, 50)
+    screen.blit(a, (0, 0))
+    if (mouse_x >= 325) and (mouse_x <= 475) and (mouse_y <= 450) and mouse_y >= 400:
+        screen.blit(c, (325, 400))
     else:
-        button_checked = False
-    return button_checked
+        screen.blit(b, (325, 400))
 
 
-while True:
 
-    draw_surface(sc, menu_bg_surf, 0, 0)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
-    draw_surface(menu_bg_surf, missions_button_off_surf, 300, 350)
-    if check_button(pygame.mouse.get_pos()):
-        draw_surface(menu_bg_surf, missions_button_on_surf, 300, 350)
-
-    pygame.display.update()
-
-    clock.tick(FPS)
 
