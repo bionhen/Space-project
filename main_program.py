@@ -1,9 +1,8 @@
 import pygame
 from draw_menu import *
-from change_screen import*
-# надо добавить импорты реальных функций
+from change_screen import *
+from draw_missions import *
 pygame.init()
-
 WIDTH, HEIGHT = 800, 600
 draw_screen = "menu"
 mouse_position_x = 0
@@ -17,7 +16,6 @@ FPS = 60
 finished = False
 
 while not finished:
-    # FIXME вставить отображение фона
     clock.tick(FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -30,9 +28,9 @@ while not finished:
     if draw_screen == "menu":
         draw_menu(mouse_position_x, mouse_position_y)
     elif draw_screen == "list_of_missions":
-        circle(sc, (0, 0, 0), (400, 400), 50)
-    elif draw_screen == 3:
-        draw_constructor()
+        draw_missions()
+    elif draw_screen == "constructor":
+        circle(sc, (0, 0, 0), (400, 400), 200)
     # FIXME вставить кнопку ненаведённую
     # FIXME вставить кнупку наведённую
     pygame.display.update()
