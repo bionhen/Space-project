@@ -58,7 +58,7 @@ def read_modules_data_from_file(input_filename):
                     engines.append(module)
                 if module.type == 'tank':
                     engines.append(module)
-    return blocks and engines and tanks
+    return blocks, engines, tanks
 
 
 def parse_modules_parameters(line, module):
