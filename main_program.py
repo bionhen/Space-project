@@ -1,5 +1,6 @@
 import pygame
-from Test import *
+from draw_menu import *
+from change_screen import*
 # надо добавить импорты реальных функций
 pygame.init()
 
@@ -24,10 +25,12 @@ while not finished:
         if event.type == pygame.MOUSEMOTION:
             mouse_position_x = event.pos[0]
             mouse_position_y = event.pos[1]
-    if draw_screen == 1:
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            draw_screen = show_screen(draw_screen, mouse_position_x, mouse_position_y)
+    if draw_screen == "menu":
         draw_menu(mouse_position_x, mouse_position_y)
-    elif draw_screen == 2:
-        draw_list_of_missions()
+    elif draw_screen == "list_of_missions":
+        circle(sc, (0, 0, 0), (400, 400), 50)
     elif draw_screen == 3:
         draw_constructor()
     # FIXME вставить кнопку ненаведённую
