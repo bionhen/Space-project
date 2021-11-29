@@ -63,7 +63,7 @@ def module_moving(module, main_surface, rocket_surface):
     sc = main_surface
     flag1 = False
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTOMDOWN:
+        if event.type == pygame.MOUSEBUTTOWN:
             if check_module():
                 flag1 = True
         if event.type == pygame.MOUSEBUTTOMUP:
