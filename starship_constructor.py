@@ -50,19 +50,23 @@ def net():
             net_list[i][j] = 1 + 10 * i + j
 
 
-def module_moving(module, main_surface):
+def check_module():
+    pass
+
+
+def module_moving(module, main_surface, rocket_surface):
     """
     Функция перемещения модуля после его выбора в левом меню
 
     """
-    x, y = pygame.mouse_get_pos
+    x, y = pygame.mouse.get_pos
     sc = main_surface
     flag1 = False
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTOMDOWN:
-            # FIXME if x, y - условие на попадание в область модуля, где мы их выбираем (левая панель)
-                 flag1 = True
-        if event.type == pygame.MOUSEBUTTOMDOWN:
+            if check_module():
+                flag1 = True
+        if event.type == pygame.MOUSEBUTTOMUP:
             flag1 = False
         while flag1:
             sc.blit(module.image, (x - module.b / 2, y - module.a / 2))
