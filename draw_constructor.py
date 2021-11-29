@@ -78,6 +78,7 @@ module1x1 = pygame.image.load("images/constructor/module 1x1.png")
 engine1x1 = pygame.transform.scale(engine1x1, (50, 50))
 module1x1 = pygame.transform.scale(module1x1, (50, 50))"""
 
+
 def draw_buttons(bg_surf, buttons_off, buttons_on):
     for i in range(len(buttons_off)):
         bg_surf.blit(buttons_off[i].button_surf, (buttons_off[i].x, buttons_on[i].y))
