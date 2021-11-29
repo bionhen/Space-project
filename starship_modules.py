@@ -7,6 +7,8 @@ class Module:
     """
     Класс, описывающий модули ракеты, например элементы корпуса или топливные баки
     """
+    type = ''
+    """тип модуля"""
 
     m = 0
     """собственная масса модуля """
@@ -23,7 +25,7 @@ class Module:
     force = 0
     """собственная тяга модуля"""
 
-    image = '0'
+    image = ''
     "название изображения"
 
     a = 0
@@ -40,7 +42,9 @@ def read_modules_data_from_file(input_filename):
     **input_filename** — имя входного файла
     """
 
-    modules = []
+    blocks = []
+    engines = []
+    tanks = []
     with open(input_filename) as input_file:
         for line in input_file:
             if len(line.strip()) == 0 or line[0] == '#':
@@ -48,8 +52,13 @@ def read_modules_data_from_file(input_filename):
             else:
                 module = Module()
                 parse_modules_parameters(line, module)
-                modules.append(module)
-    return modules
+                if module.type == 'block':
+                    blocks.append(module)
+                if module.type == 'engine':
+                    engines.append(module)
+                if module.type == 'tank':
+                    engines.append(module)
+    return blocks and engines and tanks
 
 
 def parse_modules_parameters(line, module):
@@ -64,6 +73,7 @@ def parse_modules_parameters(line, module):
     for i in range(len(line)):
         if line[i] == ' ':
             module_list.append(i)
+    module.type = (line[:module_list[0]])
     module.m = int(float(line[module_list[0]+1:module_list[1]]))
     module.fuel = int(float(line[module_list[1] + 1:module_list[2]]))
     module.price = int(float(line[module_list[2] + 1:module_list[3]]))
@@ -71,4 +81,4 @@ def parse_modules_parameters(line, module):
     module.force = int(float(line[module_list[4] + 1:module_list[5]]))
     module.a = int(float(line[module_list[5] + 1:module_list[6]]))
     module.b = int(float(line[module_list[6] + 1:module_list[7]]))
-    module.image = (line[module_list[1] + 1:])
+    module.image = (line[module_list[7] + 1:])
