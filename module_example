@@ -1,2 +1,4 @@
 #(формат) module m fuel price resistance force a b image
-engine 10 10 100 1 0 25 25 tank
+block 10 10 100 1 0 25 25 block_1x1
+block 10 10 100 1 0 25 25 block_2x1
+
