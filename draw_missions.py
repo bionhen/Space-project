@@ -1,14 +1,8 @@
 import pygame
 pygame.init()
 
-WIDTH, HEIGHT = 800, 600
-
-sc = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Space Dolgoprudniy Program")
-pygame.display.set_icon(pygame.image.load("emblem.ico"))
-
-clock = pygame.time.Clock()
-FPS = 60
+global WIDTH, HEIGHT
+global sc
 
 
 class Button:
@@ -34,6 +28,7 @@ class ButtonOff(Button):
             button_checked = False
         return button_checked
 
+
 """def set_missinons_buttons():
     orbit = Button('entering orbit on', 100, 150)
     orbit_off = ButtonOff('entering orbit', 100, 150)
@@ -43,28 +38,40 @@ class ButtonOff(Button):
     buttons_off = [orbit_off, moon_off]
     buttons_on = [orbit, moon]"""
 
-bg_missions_surf = pygame.image.load(("images/missions/missions_bg.png")).convert_alpha()
-bg_missions_surf = pygame.transform.scale(bg_missions_surf, (WIDTH, HEIGHT))
 
-orbit = Button('entering orbit on', 100, 150)
-orbit_off = ButtonOff('entering orbit', 100, 150)
-moon = Button('flight to the moon on', 100, 250)
-moon_off = ButtonOff('flight to the moon', 100, 250)
-
-buttons_off = [orbit_off, moon_off]
-buttons_on = [orbit, moon]
-
-
-while True:
-    sc.blit(bg_missions_surf, (0, 0))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
+def draw_buttons(bg_missions_surf, buttons_off, buttons_on):
     for i in range(len(buttons_off)):
         bg_missions_surf.blit(buttons_off[i].button_surf, (buttons_off[i].x, buttons_on[i].y))
         if buttons_off[i].check_button(pygame.mouse.get_pos()):
             bg_missions_surf.blit(buttons_on[i].button_surf, (buttons_on[i].x, buttons_on[i].y))
 
-    pygame.display.update()
 
-    clock.tick(FPS)
+def render_buttons():
+
+    orbit = Button('entering orbit on', 100, 150)
+    orbit_off = ButtonOff('entering orbit', 100, 150)
+    moon = Button('flight to the moon on', 100, 250)
+    moon_off = ButtonOff('flight to the moon', 100, 250)
+
+    buttons_off = [orbit_off, moon_off]
+    buttons_on = [orbit, moon]
+
+    return buttons_off, buttons_on
+
+
+def render_bg():
+    bg_missions_surf = pygame.image.load("images/missions/missions_bg.png").convert_alpha()
+    bg_missions_surf = pygame.transform.scale(bg_missions_surf, (WIDTH, HEIGHT))
+
+    return bg_missions_surf
+
+
+def draw_bg(bg_missions_surf):
+    sc.blit(bg_missions_surf, (0, 0))
+
+
+def draw_missions():
+    bg_missions_surf = render_bg()
+    buttons_off, buttons_on = render_buttons()
+    draw_buttons(bg_missions_surf, buttons_off, buttons_on)
+    draw_bg(bg_missions_surf)
