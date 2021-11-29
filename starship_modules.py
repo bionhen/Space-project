@@ -32,8 +32,6 @@ class Module:
     b = 0
     "ширина модуля"
 
-    surface = pygame.image.load("images/constructor/modules/"+image+".png").convert_alpha()
-
 
 def read_modules_data_from_file(input_filename):
     """Cчитывает данные о модулях из файла, создаёт сами модули
@@ -46,7 +44,7 @@ def read_modules_data_from_file(input_filename):
     with open(input_filename) as input_file:
         for line in input_file:
             if len(line.strip()) == 0 or line[0] == '#':
-                continue  # пустые строки и строки-комментарии пропускаем
+                continue  # пустые строки и строки-комментарии
             else:
                 module = Module()
                 parse_modules_parameters(line, module)
