@@ -1,5 +1,6 @@
 # переменная cash - глобальная, отвечает за модуль
 import pygame
+pygame.init()
 
 
 class Module:
