@@ -1,4 +1,6 @@
 import pygame
+from starship_modules import *
+
 pygame.init()
 
 WIDTH, HEIGHT = 800, 600
@@ -49,8 +51,8 @@ def render_bg():
 
 
 def draw_bg(grid, bg_constructor_surf, panel):
-    sc.blit(bg_constructor_surf, (0, 0))
     bg_constructor_surf.blit(grid, (200, 50))
+    sc.blit(bg_constructor_surf, (0, 0))
     #bg_constructor_surf.blit(panel, (0, 0))
     #bg_constructor_surf.blit(panel, (650, 0))
 
@@ -73,8 +75,8 @@ def render_buttons():
 
     return buttons_off, buttons_on
 
-"""engine1x1 = pygame.image.load("images/constructor/engine 1x1.png")
-module1x1 = pygame.image.load("images/constructor/module 1x1.png")
+"""engine1x1 = pygame.image.load("images/constructor/modules/engine 1x1.png")
+module1x1 = pygame.image.load("images/constructor/modules/module 1x1.png")
 engine1x1 = pygame.transform.scale(engine1x1, (50, 50))
 module1x1 = pygame.transform.scale(module1x1, (50, 50))"""
 
@@ -88,21 +90,44 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
 
 def draw_points():
     """Метод отрисовывает количество поражённых целей на экране."""
-    text = FONT.render('Score: ' + str(cash), True, (0, 0, 0))
+    text = FONT.render('Cash: ' + str(cash), True, (0, 0, 0))
     sc.blit(text, (630, 20))
 
 
-grid, bg_constructor_surf, panel = render_bg()
-buttons_off, buttons_on = render_buttons()
+def draw_modules_surface():
+    surface = pygame.Surface((150, 500), pygame.SRCALPHA)
+    sc.blit(surface, (0, 0))
+
+blocks, engines, reww = read_modules_data_from_file('module_example')
+
+def draw_modules(dif_modules):
+    x = 50
+    y = 100
+    dif_modules_surface = pygame.Surface((150, 600))
+    sc.blit(dif_modules_surface, (25, 0))
+    for dif_module in dif_modules:
+        dif_module = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png")).convert.alpha()
+        dif_module.blit(dif_modules_surface, (x, y))
+        y += 50
+
+
+def draw_constructor():
+    grid, bg_constructor_surf, panel = render_bg()
+    buttons_off, buttons_on = render_buttons()
+
+    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
+
+    draw_bg(grid, bg_constructor_surf, panel)
+
+    draw_points()
+    draw_modules(blocks)
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
 
-    draw_bg(grid, bg_constructor_surf, panel)
-    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
-    draw_points()
+    draw_constructor()
     """sc.blit(engine1x1, (200, 200))
     sc.blit(engine1x1, (250, 200))
     sc.blit(module1x1, (200, 150))"""
