@@ -70,11 +70,11 @@ def render_buttons():
     modules_on = Button('modules_on', 625, 375)
     modules_off = ButtonOff('modules_off', 625, 375)
 
-
     buttons_off = [fuel_off, autopilot_off,engines_off, fairings_off, modules_off]
     buttons_on = [fuel_on, autopilot_on, engines_on, fairings_on, modules_on]
 
     return buttons_off, buttons_on
+
 
 """engine1x1 = pygame.image.load("images/constructor/modules/engine 1x1.png")
 module1x1 = pygame.image.load("images/constructor/modules/module 1x1.png")
@@ -92,7 +92,6 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
 def draw_points():
     text = FONT.render('Cash: ' + str(cash), True, (0, 0, 0))
     sc.blit(text, (630, 20))
-
 
 
 def draw_rocket_surface():
@@ -127,11 +126,14 @@ def draw_modules(dif_module_surf_list, bg_constructor_surf):
 
     bg_constructor_surf.blit(dif_modules_surface, (25, 0))
 
+
 def move_modules(dif_module_surf_list, bg_constructor_surf):
     x, y = pygame.mouse.get_pos()
-    flag, k = module_moving(False, dif_module_surf_list)
-    if flag:
+    k = check_module(dif_module_surf_list)
+    print(k)
+    if k >= 0:
         bg_constructor_surf.blit(dif_module_surf_list[k][0], (x-0.5*dif_module_surf_list[k][1], y-0.5*dif_module_surf_list[k][2]))
+
 
 def draw_constructor():
     grid, bg_constructor_surf, panel = render_bg()
@@ -148,16 +150,16 @@ def draw_constructor():
 
     draw_rocket_surface()
 
-    move_modules(dif_module_surf_list, bg_constructor_surf)
-
-
 
 while True:
-    print('AAA')
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
             print("sagfsg")
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            flag1 = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            flag1 = False
 
         draw_constructor()
 
