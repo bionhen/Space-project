@@ -1,5 +1,6 @@
 import pygame
 from starship_modules import *
+from starship_constructor import *
 
 pygame.init()
 
@@ -89,54 +90,74 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
 
 
 def draw_points():
-    """Метод отрисовывает количество поражённых целей на экране."""
     text = FONT.render('Cash: ' + str(cash), True, (0, 0, 0))
     sc.blit(text, (630, 20))
 
 
-def draw_modules_surface():
-    surface = pygame.Surface((150, 500), pygame.SRCALPHA)
-    sc.blit(surface, (0, 0))
+
+def draw_rocket_surface():
+    surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+    sc.blit(surface, (200, 50))
 
 
 blocks, engines, reww = read_modules_data_from_file('module_example')
 
 
-def draw_modules(dif_modules):
+def render_module_surf_list(dif_modules):
+    dif_module_surf_list = []
     x = 50
     y = 100
-    dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
     for dif_module in dif_modules:
-        dif_module = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
-        dif_module_width = pygame.Surface.get_width(dif_module)
-        dif_module_height = pygame.Surface.get_height(dif_module)
-        dif_module = pygame.transform.scale(dif_module, (int(dif_module_width/8), int(dif_module_height/8)))
-        dif_modules_surface.blit(dif_module, (x, y))
-        y += 150
+        dif_module_surf = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
+        dif_module_surf_width = pygame.Surface.get_width(dif_module_surf)
+        dif_module_surf_height = pygame.Surface.get_height(dif_module_surf)
+        dif_module_surf = pygame.transform.scale(dif_module_surf, (int(dif_module_surf_width/8), int(dif_module_surf_height/8)))
+        dif_module_surf_list.append([dif_module_surf, dif_module_surf_width, dif_module_surf_height, x, y])
+        y += 100
 
-    sc.blit(dif_modules_surface, (25, 0))
+    return dif_module_surf_list
 
+
+def draw_modules(dif_module_surf_list, bg_constructor_surf):
+    dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
+    for dif_module_surf in dif_module_surf_list:
+        dif_modules_surface.blit(dif_module_surf[0], (dif_module_surf[3], dif_module_surf[4]))
+
+    bg_constructor_surf.blit(dif_modules_surface, (25, 0))
+
+def move_modules(dif_module_surf_list, bg_constructor_surf):
+    x, y = pygame.mouse.get_pos()
+    flag, k = module_moving(False, dif_module_surf_list)
+    if flag:
+        bg_constructor_surf.blit(dif_module_surf_list[k][0], (x-0.5*dif_module_surf_list[k][1], y-0.5*dif_module_surf_list[k][2]))
 
 def draw_constructor():
     grid, bg_constructor_surf, panel = render_bg()
     buttons_off, buttons_on = render_buttons()
+    dif_module_surf_list = render_module_surf_list(blocks)
 
     draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
+
+    draw_modules(dif_module_surf_list, bg_constructor_surf)
 
     draw_bg(grid, bg_constructor_surf, panel)
 
     draw_points()
-    draw_modules(blocks)
+
+    draw_rocket_surface()
+
+    move_modules(dif_module_surf_list, bg_constructor_surf)
+
+
 
 while True:
+    print('AAA')
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
+            print("sagfsg")
 
-    draw_constructor()
-    """sc.blit(engine1x1, (200, 200))
-    sc.blit(engine1x1, (250, 200))
-    sc.blit(module1x1, (200, 150))"""
+        draw_constructor()
 
     pygame.display.update()
 

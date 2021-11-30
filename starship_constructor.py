@@ -50,40 +50,42 @@ def net():
             net_list[i][j] = 1 + 10 * i + j
 
 
-def check_module():
-    pass
+def check_module(surf_list, x, y):
+    k = -1
+    for i in range(len(surf_list)):
+        if surf_list[i][3] <= x <= surf_list[i][3] + surf_list[i][1] and surf_list[i][4] <= y <= surf_list[i][4] + surf_list[i][2]:
+            k = i
+    return k
 
 
-def module_moving(module, main_surface, rocket_surface):
+def module_moving(flag1, dif_list_surf):
     """
     Функция перемещения модуля после его выбора в левом меню
 
     """
-    x, y = pygame.mouse.get_pos
-    sc = main_surface
-    flag1 = False
+    k = -1
+    x, y = pygame.mouse.get_pos()
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTOWN:
-            if check_module():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if check_module(dif_list_surf, x, y) >= 0:
                 flag1 = True
-        if event.type == pygame.MOUSEBUTTOMUP:
+                k = check_module(dif_list_surf, x, y)
+        if event.type == pygame.MOUSEBUTTONUP:
             flag1 = False
-        while flag1:
-            sc.blit(module.image, (x - module.b / 2, y - module.a / 2))
+    return flag1, k
 
 
-def set_module(module, main_surface, cash):
+def set_module(module, cash, rocket_surface):
     """
     Функция ставит изображение модуля в левый верхний угол сетки
     Args:
     module: экземпляр класса модуль
     main_surface: главная поверхность
     """
-    x, y = pygame.mouse_get_pos
-    sc = main_surface
+    x, y = pygame.mouse_get_pos()
+    sc = rocket_surface
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTOUP:
             if 100 < x < 700 and 50 < y < 650:
                 cash -= module.price
-                sc.blit(module.image, (x - x % 50 - 100, y - 50 - y % 25))
-
+                sc.blit(module.image, (x - x % 50, y - y % 25))
