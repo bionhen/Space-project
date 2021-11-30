@@ -58,7 +58,7 @@ def check_module(surf_list, x, y):
     return k
 
 
-def module_moving(dif_list_surf):
+def module_moving(flag1, dif_list_surf):
     """
     Функция перемещения модуля после его выбора в левом меню
 
