@@ -109,6 +109,8 @@ def render_module_surf_list(dif_modules):
     y = 100
     for dif_module in dif_modules:
         dif_module_surf = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
+        dif_module_surf_width = pygame.Surface.get_width(dif_module_surf)
+        dif_module_surf_height = pygame.Surface.get_height(dif_module_surf)
         dif_module_surf = pygame.transform.scale(dif_module_surf, (int(dif_module_surf_width/8), int(dif_module_surf_height/8)))
         dif_module_surf_width = pygame.Surface.get_width(dif_module_surf)
         dif_module_surf_height = pygame.Surface.get_height(dif_module_surf)
