@@ -52,21 +52,19 @@ def net():
 
 def check_module(surf_list, x, y):
     k = -1
-    flag_checked = False
     for i in range(len(surf_list)):
         if surf_list[i][3] <= x <= surf_list[i][3] + surf_list[i][1] and surf_list[i][5] <= y <= surf_list[i][5] + surf_list[i][2]:
             k = i
     return k
 
 
-def module_moving(dif_list_surf, main_surface):
+def module_moving(dif_list_surf):
     """
     Функция перемещения модуля после его выбора в левом меню
 
     """
     k = -1
     x, y = pygame.mouse.get_pos
-    sc = main_surface
     flag1 = False
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -92,4 +90,3 @@ def set_module(module, cash, rocket_surface):
             if 100 < x < 700 and 50 < y < 650:
                 cash -= module.price
                 sc.blit(module.image, (x - x % 50, y - y % 25))
-
