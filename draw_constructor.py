@@ -98,17 +98,23 @@ def draw_modules_surface():
     surface = pygame.Surface((150, 500), pygame.SRCALPHA)
     sc.blit(surface, (0, 0))
 
+
 blocks, engines, reww = read_modules_data_from_file('module_example')
+
 
 def draw_modules(dif_modules):
     x = 50
     y = 100
-    dif_modules_surface = pygame.Surface((150, 600))
-    sc.blit(dif_modules_surface, (25, 0))
+    dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
     for dif_module in dif_modules:
-        dif_module = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png")).convert.alpha()
-        dif_module.blit(dif_modules_surface, (x, y))
-        y += 50
+        dif_module = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
+        dif_module_width = pygame.Surface.get_width(dif_module)
+        dif_module_height = pygame.Surface.get_height(dif_module)
+        dif_module = pygame.transform.scale(dif_module, (int(dif_module_width/8), int(dif_module_height/8)))
+        dif_modules_surface.blit(dif_module, (x, y))
+        y += 150
+
+    sc.blit(dif_modules_surface, (25, 0))
 
 
 def draw_constructor():
