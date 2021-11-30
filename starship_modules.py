@@ -81,4 +81,4 @@ def parse_modules_parameters(line, module):
     module.force = int(float(line[module_list[4] + 1:module_list[5]]))
     module.a = int(float(line[module_list[5] + 1:module_list[6]]))
     module.b = int(float(line[module_list[6] + 1:module_list[7]]))
-    module.image = (line[module_list[7] + 1:])
+    module.image = (line[module_list[7] + 1:module_list[8]])
