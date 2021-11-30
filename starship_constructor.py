@@ -64,7 +64,7 @@ def module_moving(dif_list_surf):
 
     """
     k = -1
-    x, y = pygame.mouse.get_pos
+    x, y = pygame.mouse.get_pos()
     flag1 = False
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -83,7 +83,7 @@ def set_module(module, cash, rocket_surface):
     module: экземпляр класса модуль
     main_surface: главная поверхность
     """
-    x, y = pygame.mouse_get_pos
+    x, y = pygame.mouse_get_pos()
     sc = rocket_surface
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTOUP:
