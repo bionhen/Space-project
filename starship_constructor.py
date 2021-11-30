@@ -53,7 +53,7 @@ def net():
 def check_module(surf_list, x, y):
     k = -1
     for i in range(len(surf_list)):
-        if surf_list[i][3] <= x <= surf_list[i][3] + surf_list[i][1] and surf_list[i][5] <= y <= surf_list[i][5] + surf_list[i][2]:
+        if surf_list[i][3] <= x <= surf_list[i][3] + surf_list[i][1] and surf_list[i][4] <= y <= surf_list[i][4] + surf_list[i][2]:
             k = i
     return k
 
