@@ -65,7 +65,6 @@ def module_moving(dif_list_surf):
     """
     k = -1
     x, y = pygame.mouse.get_pos()
-    flag1 = False
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             if check_module(dif_list_surf, x, y) >= 0:
