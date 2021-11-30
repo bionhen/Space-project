@@ -50,33 +50,32 @@ def net():
             net_list[i][j] = 1 + 10 * i + j
 
 
-def check_module(self, cur_event):
-    if ((cur_event[0] >= self.x)
-            and (cur_event[0] <= self.x + self.button_off_surf_width)
-            and (cur_event[1] >= self.y)
-            and (cur_event[1] <= self.y + self.button_off_surf_height)):
-        button_checked = True
-    else:
-        button_checked = False
-    return button_checked
+def check_module(surf_list, x, y):
+    k = -1
+    flag_checked = False
+    for i in range(len(surf_list)):
+        if surf_list[i][3] <= x <= surf_list[i][3] + surf_list[i][1] and surf_list[i][5] <= y <= surf_list[i][5] + surf_list[i][2]:
+            k = i
+    return k
 
 
-def module_moving(module, main_surface):
+def module_moving(dif_list_surf, main_surface):
     """
     Функция перемещения модуля после его выбора в левом меню
 
     """
+    k = -1
     x, y = pygame.mouse.get_pos
     sc = main_surface
     flag1 = False
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if check_module(module, [x, y]):
+            if check_module(dif_list_surf, x, y) >= 0:
                 flag1 = True
+                k = check_module(dif_list_surf, x, y)
         if event.type == pygame.MOUSEBUTTONUP:
             flag1 = False
-        while flag1:
-            sc.blit(module.image, (x - module.b / 2, y - module.a / 2))
+    return flag1, k
 
 
 def set_module(module, cash, rocket_surface):
