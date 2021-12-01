@@ -127,9 +127,11 @@ def draw_modules(dif_module_surf_list, bg_constructor_surf):
     bg_constructor_surf.blit(dif_modules_surface, (0, 0))
 
 
-def move_modules(dif_module_surf_list, bg_constructor_surf, flag, k):
+def move_modules(dif_module_surf_list, bg_constructor_surf):
     x, y = pygame.mouse.get_pos()
-    if flag:
+    k = check_module(dif_module_surf_list)
+    print(k)
+    if k >= 0:
         bg_constructor_surf.blit(dif_module_surf_list[k][0], (x-0.5*dif_module_surf_list[k][1], y-0.5*dif_module_surf_list[k][2]))
 
 
@@ -151,8 +153,7 @@ def draw_constructor():
     draw_rocket_surface()
 
 
-flag1 = False
-k = -1
+
 
 while True:
     for event in pygame.event.get():
@@ -161,29 +162,11 @@ while True:
             print("sagfsg")
         if event.type == pygame.MOUSEBUTTONDOWN:
             flag1 = True
-            if check_module(dif_module_surf_list) > -1:
-                k = check_module(dif_module_surf_list)
         elif event.type == pygame.MOUSEBUTTONUP:
             flag1 = False
-            k = -1
 
-    grid, bg_constructor_surf, panel = render_bg()
-    buttons_off, buttons_on = render_buttons()
-    dif_module_surf_list = render_module_surf_list(blocks)
-
-    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
-
-    draw_modules(dif_module_surf_list, bg_constructor_surf)
-
-    draw_bg(grid, bg_constructor_surf, panel)
-
-    draw_points()
-
-    draw_rocket_surface()
+        draw_constructor()
 
     pygame.display.update()
-    print(flag1, k)
-    if flag1:
-        move_modules(dif_module_surf_list, bg_constructor_surf, flag1, k)
 
     clock.tick(FPS)
