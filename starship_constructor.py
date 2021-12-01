@@ -71,7 +71,7 @@ def module_moving(flag1):
     return flag1
 
 
-def set_module(module, cash, rocket_surface, rocket):
+def set_module(module, cash):
     """
     Функция ставит изображение модуля в левый верхний угол сетки
     Args:
@@ -79,7 +79,8 @@ def set_module(module, cash, rocket_surface, rocket):
     main_surface: главная поверхность
     """
     x, y = pygame.mouse_get_pos()
-    sc = rocket_surface
     if 100 < x < 700 and 50 < y < 650:
         cash -= module.price
-        sc.blit(module.image, (x - x % 50, y - y % 25))
+        return True
+    else:
+        return False

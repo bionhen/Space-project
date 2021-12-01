@@ -152,6 +152,7 @@ def draw_constructor():
 
 #function?
 flag1 = False
+k = -1
 
 while True:
     for event in pygame.event.get():
