@@ -138,6 +138,8 @@ def draw_constructor():
     buttons_off, buttons_on = render_buttons()
     dif_module_surf_list = render_module_surf_list(blocks)
 
+    move_modules(dif_module_surf_list, bg_constructor_surf)
+
     draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
 
     draw_modules(dif_module_surf_list, bg_constructor_surf)
