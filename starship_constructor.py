@@ -37,7 +37,6 @@ def add_module(rocket, module, cash):
 def net():
     """
     функция создает двумерную сетку для размещения элементов
-
     net_list - кортеж кортежей с значением клеток по правилу ij-ая клетка содержит число 10*i+j
     """
     # width = 800
@@ -50,29 +49,26 @@ def net():
             net_list[i][j] = 1 + 10 * i + j
 
 
-def check_module(surf_list, x, y):
+def check_module(surf_list):
     k = -1
+    x, y = pygame.mouse.get_pos()
     for i in range(len(surf_list)):
         if surf_list[i][3] <= x <= surf_list[i][3] + surf_list[i][1] and surf_list[i][4] <= y <= surf_list[i][4] + surf_list[i][2]:
             k = i
+    print(k)
     return k
 
 
-def module_moving(flag1, dif_list_surf):
+def module_moving(flag1):
     """
     Функция перемещения модуля после его выбора в левом меню
-
     """
-    k = -1
-    x, y = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if check_module(dif_list_surf, x, y) >= 0:
-                flag1 = True
-                k = check_module(dif_list_surf, x, y)
-        if event.type == pygame.MOUSEBUTTONUP:
+            flag1 = True
+        elif event.type == pygame.MOUSEBUTTONUP:
             flag1 = False
-    return flag1, k
+    return flag1
 
 
 def set_module(module, cash, rocket_surface):
