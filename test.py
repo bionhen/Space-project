@@ -150,7 +150,7 @@ def draw_constructor():
 
     draw_rocket_surface()
 
-
+#function?
 flag1 = False
 
 while True:
