@@ -81,6 +81,3 @@ def set_module(module, cash):
     x, y = pygame.mouse_get_pos()
     if 100 < x < 700 and 50 < y < 650:
         cash -= module.price
-        return True
-    else:
-        return False
