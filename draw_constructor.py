@@ -105,7 +105,7 @@ blocks, engines, reww = read_modules_data_from_file('module_example')
 
 def render_module_surf_list(dif_modules):
     dif_module_surf_list = []
-    x = 50
+    x = 75
     y = 100
     for dif_module in dif_modules:
         dif_module_surf = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
@@ -125,7 +125,7 @@ def draw_modules(dif_module_surf_list, bg_constructor_surf):
     for dif_module_surf in dif_module_surf_list:
         dif_modules_surface.blit(dif_module_surf[0], (dif_module_surf[3], dif_module_surf[4]))
 
-    bg_constructor_surf.blit(dif_modules_surface, (25, 0))
+    bg_constructor_surf.blit(dif_modules_surface, (0, 0))
 
 def move_modules(dif_module_surf_list, bg_constructor_surf):
     x, y = pygame.mouse.get_pos()
