@@ -133,7 +133,9 @@ def move_modules(dif_module_surf_list, bg_constructor_surf, flag, k):
         bg_constructor_surf.blit(dif_module_surf_list[k][0], (x-0.5*dif_module_surf_list[k][1], y-0.5*dif_module_surf_list[k][2]))
 
 
+
 def set_modules(dif_module_surf_list, bg_constructor_surf, flag, k):
+    print('check', k)
     x, y = pygame.mouse.get_pos()
     if flag:
         bg_constructor_surf.blit(dif_module_surf_list[k][0], (x - x % 50, y - y % 25))
@@ -161,7 +163,7 @@ def draw_constructor():
 flag1 = False
 flag2 = False
 k = -1
-
+j = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -172,6 +174,7 @@ while True:
             if check_module(dif_module_surf_list) > -1:
                 k = check_module(dif_module_surf_list)
         elif event.type == pygame.MOUSEBUTTONUP:
+            j = k
             flag1 = False
             flag2 = True
             k = -1
@@ -182,8 +185,9 @@ while True:
         if flag1 and k >= 0:
             move_modules(dif_module_surf_list, bg_constructor_surf, flag1, k)
 
-        if flag2 and k >= 0:
-            set_modules(dif_module_surf_list, bg_constructor_surf, flag2, k)
+        if flag2 and j >= 0:
+            set_modules(dif_module_surf_list, bg_constructor_surf, flag2, j)
+            j = k
 
         draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
 
