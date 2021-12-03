@@ -1,11 +1,13 @@
 import pygame
+from pygame.draw import *
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
 
 def load_image(i, x, y):
     """
-    Эта функция нужна для загрузки картинки
+    Эта гребанная функция нужна для всасывания(загрузки) картинки
+    (мне просто уже плохо, я не могу адекватно мысли формулировать)
     :param i: полный путь к изображению
     :param x: масштаб по вертикальной оси
     :param y: масштаб по горизонтальной оси
@@ -17,12 +19,6 @@ def load_image(i, x, y):
 
 
 def draw_menu(mouse_x, mouse_y):
-    """
-    Эта функция рисует главное меню в игре. Цвет кнопок зависит от того, указывает ли на нее курсор
-    :param mouse_x: горизонтальная координата курсора
-    :param mouse_y: вертикальная координата курсора
-    :return:
-    """
     a = load_image("images/menu/space_bg_4.jpg", 800, 600)
     b = load_image("images/menu/Кнопка Missions 2.png", 150, 50)
     c = load_image("images/menu/Кнопка Missions нажатая 1.png", 150, 50)
@@ -31,3 +27,7 @@ def draw_menu(mouse_x, mouse_y):
         screen.blit(c, (325, 400))
     else:
         screen.blit(b, (325, 400))
+
+
+
+
