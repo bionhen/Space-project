@@ -58,12 +58,12 @@ def recognise_modules(useless, mouse_x, mouse_y, click):
 
 def show_modules(click):
     if click[0] == 1:
-        draw_modules(blocks)
+        draw_modules(tanks, bg_constructor_surf)
     if click[1] == 1:
-        print("Илья, дай картинку")
+        draw_modules(autopilot, bg_constructor_surf)
     if click[2] == 1:
-        pass
+        draw_modules(engines, bg_constructor_surf)
     if click[3] == 1:
-        pass
+        draw_modules(fairings, bg_constructor_surf)
     if click[4] == 1:
-        pass
+        draw_modules(blocks, bg_constructor_surf)
