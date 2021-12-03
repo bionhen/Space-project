@@ -3,7 +3,6 @@ import pygame
 pygame.init()
 
 
-
 class Module:
     """
     Класс, описывающий модули ракеты, например элементы корпуса или топливные баки
@@ -34,6 +33,7 @@ class Module:
 
     b = 0
     "ширина модуля"
+
 
 def read_modules_data_from_file(input_filename):
     """Cчитывает данные о модулях из файла, создаёт сами модули
