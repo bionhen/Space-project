@@ -45,6 +45,8 @@ def read_modules_data_from_file(input_filename):
     blocks = []
     engines = []
     tanks = []
+    autopilot = []
+    fairings = []
     with open(input_filename) as input_file:
         for line in input_file:
             if len(line.strip()) == 0 or line[0] == '#':
@@ -58,7 +60,11 @@ def read_modules_data_from_file(input_filename):
                     engines.append(module)
                 if module.type == 'tank':
                     engines.append(module)
-    return blocks, engines, tanks
+                if module.type == 'autopilot':
+                    autopilot.append(module)
+                if module.type == 'fairing':
+                    fairings.append(module)
+    return blocks, engines, tanks, autopilot, fairings
 
 
 def parse_modules_parameters(line, module):

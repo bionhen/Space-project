@@ -76,7 +76,7 @@ def render_buttons():
     return buttons_off, buttons_on
 
 
-"""engine1x1 = pygame.image.load("images/constructor/modules/engine 1x1.png")
+"""engine1x1 = pygame.image.load("images/constructor/modules/engine_1x1.png")
 module1x1 = pygame.image.load("images/constructor/modules/module 1x1.png")
 engine1x1 = pygame.transform.scale(engine1x1, (50, 50))
 module1x1 = pygame.transform.scale(module1x1, (50, 50))"""
