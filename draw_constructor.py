@@ -94,13 +94,6 @@ def draw_points():
     sc.blit(text, (630, 20))
 
 
-def draw_rocket_surface():
-    surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-    sc.blit(surface, (200, 50))
-
-
-blocks, engines, reww = read_modules_data_from_file('module_example')
-
 
 def render_module_surf_list(dif_modules):
     dif_module_surf_list = []
@@ -131,20 +124,31 @@ def move_modules(dif_module_surf_list, bg_constructor_surf, flag, k):
     x, y = pygame.mouse.get_pos()
     if flag:
         bg_constructor_surf.blit(dif_module_surf_list[k][0], (x-0.5*dif_module_surf_list[k][1], y-0.5*dif_module_surf_list[k][2]))
+        print("HРИСУЮ", x,y)
+    #dif_module_surf_list[k][3] = x-0.5*dif_module_surf_list[k][1]
+    #dif_module_surf_list[k][4] = y-0.5*dif_module_surf_list[k][2]
 
 
-
-def set_modules(dif_module_surf_list, bg_constructor_surf, flag, k):
-    print('check', k)
+def set_modules(dif_module_surf_list, flag, k, rocket_list):
     x, y = pygame.mouse.get_pos()
     if flag:
-        bg_constructor_surf.blit(dif_module_surf_list[k][0], (x - x % 50, y - y % 25))
+        rocket_list.append((dif_module_surf_list[k][0], x, y))
+
+
+
+def draw_rocket(rocket_list, rocket_surface):
+    for i in range(len(rocket_list)):
+        x = rocket_list[i][1]
+        y = rocket_list[i][2]
+        rocket_surface.blit(rocket_list[i][0], (x - x % 50 - 200, y - y % 25 - 75))
+        #print(x, y)
 
 
 def draw_constructor():
     grid, bg_constructor_surf, panel = render_bg()
     buttons_off, buttons_on = render_buttons()
     dif_module_surf_list = render_module_surf_list(blocks)
+
 
     move_modules(dif_module_surf_list, bg_constructor_surf)
 
@@ -156,7 +160,7 @@ def draw_constructor():
 
     draw_points()
 
-    draw_rocket_surface()
+    draw_rocket()
 
 
 #function? x - x % 50, y - y % 25
@@ -164,7 +168,17 @@ flag1 = False
 flag2 = False
 k = -1
 j = 0
+
+blocks, engines, reww = read_modules_data_from_file('module_example')
+rocket_surface = pygame.Surface((400, 500))  # , pygame.SRCALPHA)
+rocket_list = []
+
 while True:
+    grid, bg_constructor_surf, panel = render_bg()
+    buttons_off, buttons_on = render_buttons()
+    dif_module_surf_list = render_module_surf_list(blocks)
+    bg_constructor_surf.blit(rocket_surface, (200, 50))
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
@@ -178,26 +192,24 @@ while True:
             flag1 = False
             flag2 = True
             k = -1
-        grid, bg_constructor_surf, panel = render_bg()
-        buttons_off, buttons_on = render_buttons()
-        dif_module_surf_list = render_module_surf_list(blocks)
+    if flag1 and k >= 0:
+        move_modules(dif_module_surf_list, bg_constructor_surf, flag1, k)
 
-        if flag1 and k >= 0:
-            move_modules(dif_module_surf_list, bg_constructor_surf, flag1, k)
+    if flag2 and j >= 0:
+        set_modules(dif_module_surf_list, flag2, j, rocket_list)
+        j = k
 
-        if flag2 and j >= 0:
-            set_modules(dif_module_surf_list, bg_constructor_surf, flag2, j)
-            j = k
+    draw_rocket(rocket_list, rocket_surface)
+    print(rocket_list)
+    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
 
-        draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
+    draw_modules(dif_module_surf_list, bg_constructor_surf)
 
-        draw_modules(dif_module_surf_list, bg_constructor_surf)
+    draw_bg(grid, bg_constructor_surf, panel)
 
-        draw_bg(grid, bg_constructor_surf, panel)
 
-        draw_points()
+    draw_points()
 
-        draw_rocket_surface()
 
     pygame.display.update()
 
