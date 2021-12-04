@@ -169,7 +169,7 @@ flag2 = False
 k = -1
 j = 0
 
-blocks, engines, reww = read_modules_data_from_file('module_example')
+blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
 rocket_surface = pygame.Surface((400, 500))  # , pygame.SRCALPHA)
 rocket_list = []
 
