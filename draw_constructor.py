@@ -118,15 +118,19 @@ def draw_modules(dif_modules, bg_constructor_surf):
     :param bg_constructor_surf - поверность заднего фона."""
     dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
     x = 75
-    y = 100
+    y = 75
 
     for dif_module in dif_modules:
-        dif_module.x = x
+        if dif_module.b == 100:
+            dif_module.x = x - 25
+        else:
+            dif_module.x = x
         dif_module.y = y
         dif_module.surface = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
         dif_module.surface = pygame.transform.scale(dif_module.surface, (dif_module.b, dif_module.a))
         dif_modules_surface.blit(dif_module.surface, (dif_module.x, dif_module.y))
-        y += 100
+        y += dif_module.a + 25
+
 
     bg_constructor_surf.blit(dif_modules_surface, (0, 0))
 
