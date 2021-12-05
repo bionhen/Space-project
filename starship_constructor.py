@@ -55,7 +55,6 @@ def check_module(surf_list):
     for i in range(len(surf_list)):
         if surf_list[i].x <= x <= surf_list[i].x + surf_list[i].b and surf_list[i].y <= y <= surf_list[i].y + surf_list[i].a:
             k = i
-    print(k, surf_list, x, y)
     return k
 
 
