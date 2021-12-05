@@ -58,12 +58,18 @@ def recognise_modules(useless, mouse_x, mouse_y, click):
 
 def show_modules(click):
     if click[0] == 1:
-        draw_modules(tanks, bg_constructor_surf)
+        dif_modules = tanks
+        # draw_modules(tanks, bg_constructor_surf)
     if click[1] == 1:
-        draw_modules(autopilot, bg_constructor_surf)
+        dif_modules = autopilot
+        # draw_modules(autopilot, bg_constructor_surf)
     if click[2] == 1:
-        draw_modules(engines, bg_constructor_surf)
+        dif_modules = engines
+        # draw_modules(engines, bg_constructor_surf)
     if click[3] == 1:
-        draw_modules(fairings, bg_constructor_surf)
+        dif_modules = fairings
+        # draw_modules(fairings, bg_constructor_surf)
     if click[4] == 1:
-        draw_modules(blocks, bg_constructor_surf)
+        dif_modules = blocks
+        # draw_modules(blocks, bg_constructor_surf)
+    return dif_modules
