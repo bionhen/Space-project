@@ -34,6 +34,14 @@ class Module:
     b = 0
     "ширина модуля"
 
+    x = 0
+    "координата модуля по x"
+
+    y = 0
+    "координата модуля по y"
+
+    surface = pygame.Surface((0, 0))
+
 
 def read_modules_data_from_file(input_filename):
     """Cчитывает данные о модулях из файла, создаёт сами модули
@@ -88,3 +96,5 @@ def parse_modules_parameters(line, module):
     module.a = int(float(line[module_list[5] + 1:module_list[6]]))
     module.b = int(float(line[module_list[6] + 1:module_list[7]]))
     module.image = (line[module_list[7] + 1:module_list[8]])
+    module.x = int(float(line[module_list[8] + 1:module_list[9]]))
+    module.y = int(float(line[module_list[9] + 1:module_list[10]]))
