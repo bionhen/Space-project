@@ -57,6 +57,7 @@ def recognise_modules(useless, mouse_x, mouse_y, click):
 
 
 def show_modules(click):
+    dif_modules = []
     if click[0] == 1:
         dif_modules = tanks
         # draw_modules(tanks, bg_constructor_surf)
