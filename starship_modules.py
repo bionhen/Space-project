@@ -67,7 +67,7 @@ def read_modules_data_from_file(input_filename):
                 if module.type == 'engine':
                     engines.append(module)
                 if module.type == 'tank':
-                    engines.append(module)
+                    tanks.append(module)
                 if module.type == 'autopilot':
                     autopilot.append(module)
                 if module.type == 'fairing':
