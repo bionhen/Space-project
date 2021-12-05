@@ -112,7 +112,6 @@ def draw_points():
     sc.blit(text, (630, 20))
 
 
-
 def draw_modules(dif_modules, bg_constructor_surf):
     """Функция отрисовывает список модулей на заднем ыоне слайда.
     :param dif_module_surf_list - список поверхностей модулей.
@@ -154,7 +153,6 @@ def set_modules(dif_modules, flag, k, rocket_list):
         rocket_list.append(dif_modules[k])
 
 
-
 def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
@@ -163,6 +161,7 @@ def draw_rocket(rocket_list, rocket_surface):
         x = rocket_module.x - rocket_module.x % 50 - 200
         y = rocket_module.y - rocket_module.y % 25 - 75
         rocket_surface.blit(rocket_module.surface, (x, y))
+
 
 def find_y_max(rocket_list):
     """Функция находит наиболее близкий элемент к земле."""
@@ -176,12 +175,12 @@ def find_y_max(rocket_list):
 
     return y_max
 
+
 def delete_rocket(rocket_list):
     if buttons_off[6].check_button(pygame.mouse.get_pos()):
         rocket_list = []
-        print("sagfahghdsg")
-
     return rocket_list
+
 
 """def draw_constructor():
     flag1 = False
@@ -250,8 +249,6 @@ if __name__ == '__main__':
 
         dif_modules = show_modules(click)
 
-
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
@@ -283,6 +280,8 @@ if __name__ == '__main__':
 
         draw_bg(grid, bg_constructor_surf, rocket_surface)
         draw_points()
+        if not rocket_list:
+            rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 
         pygame.display.update()
 
