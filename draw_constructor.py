@@ -228,8 +228,8 @@ def delete_rocket(rocket_list):
     #print(find_y_max(rocket_list))
 
 
-    draw_points()"""
-
+    draw_points()
+    """
 
 flag1 = False
 flag2 = False
