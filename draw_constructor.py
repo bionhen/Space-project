@@ -1,8 +1,12 @@
 import pygame
 from starship_modules import *
 from starship_constructor import *
+from change_screen import *
 
 pygame.init()
+
+#pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
+#pygame.mixer.music.play(-1)
 
 WIDTH, HEIGHT = 800, 600
 
@@ -80,11 +84,13 @@ def render_buttons():
     fairings_off = ButtonOff('fairings_off', 625, 300)
     modules_on = Button('modules_on', 625, 375)
     modules_off = ButtonOff('modules_off', 625, 375)
-    done_on = Button('done_on', 625, 500)
-    done_off = ButtonOff('done_off', 625, 500)
+    done_on = Button('done_on', 625, 525)
+    done_off = ButtonOff('done_off', 625, 525)
+    delete_on = Button('delete_on', 625, 450)
+    delete_off = ButtonOff('delete_off', 625, 450)
 
-    buttons_off = [fuel_off, autopilot_off, engines_off, fairings_off, modules_off, done_off]
-    buttons_on = [fuel_on, autopilot_on, engines_on, fairings_on, modules_on, done_on]
+    buttons_off = [fuel_off, autopilot_off, engines_off, fairings_off, modules_off, done_off, delete_off]
+    buttons_on = [fuel_on, autopilot_on, engines_on, fairings_on, modules_on, done_on, delete_on]
 
     return buttons_off, buttons_on
 
@@ -153,7 +159,6 @@ def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
     :param rocket_surface - поверность рактеты."""
-
     for rocket_module in rocket_list:
         x = rocket_module.x - rocket_module.x % 50 - 200
         y = rocket_module.y - rocket_module.y % 25 - 75
@@ -171,35 +176,22 @@ def find_y_max(rocket_list):
 
     return y_max
 
+def delete_rocket(rocket_list):
+    if buttons_off[6].check_button(pygame.mouse.get_pos()):
+        rocket_list = []
+        print("sagfahghdsg")
+
+    return rocket_list
+
 """def draw_constructor():
-    grid, bg_constructor_surf, panel = render_bg()
-    buttons_off, buttons_on = render_buttons()
-    dif_module_surf_list = render_module_surf_list(blocks)
+    flag1 = False
+    flag2 = False
+    k = -1
+    j = 0
 
-
-    move_modules(dif_module_surf_list, bg_constructor_surf)
-
-    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
-
-    draw_modules(dif_module_surf_list, bg_constructor_surf)
-
-    draw_bg(grid, bg_constructor_surf, panel)
-
-    draw_points()
-
-    draw_rocket()
-"""
-
-flag1 = False
-flag2 = False
-k = -1
-j = 0
-
-blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
-rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-rocket_list = []
-
-while True:
+    blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
+    rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+    rocket_list = []
     grid, bg_constructor_surf = render_bg()
     buttons_off, buttons_on = render_buttons()
     dif_modules = blocks
@@ -212,6 +204,7 @@ while True:
             flag2 = False
             if check_module(dif_modules) > -1:
                 k = check_module(dif_modules)
+                print(flag1)
         elif event.type == pygame.MOUSEBUTTONUP:
             j = k
             flag1 = False
@@ -235,9 +228,62 @@ while True:
     #print(find_y_max(rocket_list))
 
 
-    draw_points()
+    draw_points()"""
 
 
-    pygame.display.update()
+flag1 = False
+flag2 = False
+k = -1
+j = 0
 
-    clock.tick(FPS)
+blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
+rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+rocket_list = []
+click = [-1, -1, -1, -1, -1]
+
+mouse_x, mouse_y = 0, 0
+
+if __name__ == '__main__':
+    while True:
+        grid, bg_constructor_surf = render_bg()
+        buttons_off, buttons_on = render_buttons()
+
+        dif_modules = show_modules(click)
+
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                rocket_list = delete_rocket(rocket_list)
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                click = recognise_modules("constructor", mouse_x, mouse_y, click)
+                flag1 = True
+                flag2 = False
+                if check_module(dif_modules) > -1:
+                    k = check_module(dif_modules)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                j = k
+                flag1 = False
+                flag2 = True
+                k = -1
+        if flag1 and k >= 0:
+            move_modules(dif_modules, bg_constructor_surf, flag1, k)
+
+        if flag2 and j >= 0:
+            set_modules(dif_modules, flag2, j, rocket_list)
+            j = k
+
+        draw_rocket(rocket_list, rocket_surface)
+
+        draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
+
+        draw_modules(dif_modules, bg_constructor_surf)
+
+        draw_bg(grid, bg_constructor_surf, rocket_surface)
+        draw_points()
+
+        pygame.display.update()
+
+        clock.tick(FPS)
