@@ -6,7 +6,7 @@ from draw_constructor import *
 pygame.init()
 WIDTH, HEIGHT = 800, 600
 draw_screen = "menu"
-spare_part = "nothing"
+mouse_click = [-1, -1, -1, -1, -1]
 mouse_position_x = 0
 mouse_position_y = 0
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -27,7 +27,7 @@ while not finished:
             mouse_position_y = event.pos[1]
         if event.type == pygame.MOUSEBUTTONUP:
             draw_screen = show_screen(draw_screen, mouse_position_x, mouse_position_y)
-            spare_part = recognise_modules(draw_screen, mouse_position_x, mouse_position_y)
+            mouse_click = recognise_modules(draw_screen, mouse_position_x, mouse_position_y, mouse_click)
 
     if draw_screen == "menu":
         draw_menu(mouse_position_x, mouse_position_y)
@@ -35,5 +35,5 @@ while not finished:
         draw_missions()
     elif draw_screen == "constructor":
         draw_constructor()
-    show_modules(spare_part)
+    show_modules(mouse_click)
     pygame.display.update()

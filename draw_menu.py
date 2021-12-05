@@ -1,13 +1,11 @@
 import pygame
-from pygame.draw import *
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
 
 def load_image(i, x, y):
     """
-    Эта гребанная функция нужна для всасывания(загрузки) картинки
-    (мне просто уже плохо, я не могу адекватно мысли формулировать)
+    эта функция загружает в переменную картинку в нужном масштабе
     :param i: полный путь к изображению
     :param x: масштаб по вертикальной оси
     :param y: масштаб по горизонтальной оси
@@ -19,6 +17,11 @@ def load_image(i, x, y):
 
 
 def draw_menu(mouse_x, mouse_y):
+    """
+    Эта функция отрисовывает экран главного меню в зависимости от того, наведен ли курсор мыши нв кнопку
+    :param mouse_x: горизонтальная координата курсора
+    :param mouse_y: вертикальная координата курсора
+    """
     a = load_image("images/menu/space_bg_4.jpg", 800, 600)
     b = load_image("images/menu/Кнопка Missions 2.png", 150, 50)
     c = load_image("images/menu/Кнопка Missions нажатая 1.png", 150, 50)
@@ -27,7 +30,3 @@ def draw_menu(mouse_x, mouse_y):
         screen.blit(c, (325, 400))
     else:
         screen.blit(b, (325, 400))
-
-
-
-
