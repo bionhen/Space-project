@@ -1,7 +1,7 @@
 import pygame
 from starship_modules import *
 from starship_constructor import *
-from change_screen import *
+# from change_screen import *
 
 pygame.init()
 
@@ -186,54 +186,6 @@ def delete_rocket(rocket_list):
     return rocket_list
 
 
-"""def draw_constructor():
-    flag1 = False
-    flag2 = False
-    k = -1
-    j = 0
-
-    blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
-    rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-    rocket_list = []
-    grid, bg_constructor_surf = render_bg()
-    buttons_off, buttons_on = render_buttons()
-    dif_modules = blocks
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            flag1 = True
-            flag2 = False
-            if check_module(dif_modules) > -1:
-                k = check_module(dif_modules)
-                print(flag1)
-        elif event.type == pygame.MOUSEBUTTONUP:
-            j = k
-            flag1 = False
-            flag2 = True
-            k = -1
-    if flag1 and k >= 0:
-        move_modules(dif_modules, bg_constructor_surf, flag1, k)
-
-    if flag2 and j >= 0:
-        set_modules(dif_modules, flag2, j, rocket_list)
-        j = k
-
-    draw_rocket(rocket_list, rocket_surface)
-
-    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
-
-    draw_modules(dif_modules, bg_constructor_surf)
-
-    draw_bg(grid, bg_constructor_surf, rocket_surface)
-
-    #print(find_y_max(rocket_list))
-
-
-    draw_points()
-    """
-
 flag1 = False
 flag2 = False
 k = -1
@@ -245,6 +197,107 @@ rocket_list = []
 click = [-1, -1, -1, -1, -1]
 
 mouse_x, mouse_y = 0, 0
+
+
+def recognise_modules(useless, mouse_x, mouse_y, click):
+    """
+    эта функция должна определять, запчасти какого рода надо показывать
+    :param useless: значение переменной draw_screen
+    :param mouse_x: горизонтальная координата точки, в которой произошел щелчок мыши
+    :param mouse_y: вертикальная координата точки, в которой произошел щелчок мыши
+    :param click: набор параметров, определяющих четность нажатия кнопки модуля
+    :return: click
+    """
+    if (625 <= mouse_x <= 775) and (75 <= mouse_y <= 125) and useless == "constructor":
+        click[0] = -1 * click[0]
+        for i in 1, 2, 3, 4:
+            click[i] = -1
+    elif (625 <= mouse_x <= 775) and (150 <= mouse_y <= 200) and useless == "constructor":
+        click[1] = -1 * click[1]
+        for i in 0, 2, 3, 4:
+            click[i] = -1
+    elif (625 <= mouse_x <= 775) and (225 <= mouse_y <= 275) and useless == "constructor":
+        click[2] = -1 * click[2]
+        for i in 0, 1, 3, 4:
+            click[i] = -1
+    elif (625 <= mouse_x <= 775) and (300 <= mouse_y <= 350) and useless == "constructor":
+        click[3] = -1 * click[3]
+        for i in 0, 1, 2, 4:
+            click[i] = -1
+    elif (625 <= mouse_x <= 775) and (375 <= mouse_y <= 425) and useless == "constructor":
+        click[4] = -1 * click[4]
+        for i in 0, 1, 2, 3:
+            click[i] = -1
+    else:
+        pass
+    return click
+
+
+def show_modules(click):
+    dif_modules = []
+    if click[0] == 1:
+        dif_modules = tanks
+        # draw_modules(tanks, bg_constructor_surf)
+    if click[1] == 1:
+        dif_modules = autopilot
+        # draw_modules(autopilot, bg_constructor_surf)
+    if click[2] == 1:
+        dif_modules = engines
+        # draw_modules(engines, bg_constructor_surf)
+    if click[3] == 1:
+        dif_modules = fairings
+        # draw_modules(fairings, bg_constructor_surf)
+    if click[4] == 1:
+        dif_modules = blocks
+        # draw_modules(blocks, bg_constructor_surf)
+    return dif_modules
+
+
+def draw_constructor_foo(eventus, click, rocket_list, rocket_surface, flag1, flag2, k, j):
+    """
+    Функция отрисовывает экран конструктора и все изменения, которые с ним происходят
+    :param eventus: тип события мыши (функция должна понимать, когда надо брать координаты курсора мыши, а когда нет)
+    :param click: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param rocket_list: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param rocket_surface: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param flag1: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param flag2: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param k: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param j: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :return: полностью отрисованный экран и все вводимые параметры
+    """
+    grid, bg_constructor_surf = render_bg()
+    buttons_off, buttons_on = render_buttons()
+    dif_modules = show_modules(click)
+
+    if eventus == "mouse_button_down":
+        x, y = pygame.mouse.get_pos()
+        click = recognise_modules("constructor", x, y, click)
+        if 625 <= x <= 775 and 450 <= y <= 500:
+            rocket_list = []
+        flag1 = True
+        flag2 = False
+        if check_module(dif_modules) > -1:
+            k = check_module(dif_modules)
+    if eventus == "mouse_button_up":
+        j = k
+        k = -1
+        flag1 = False
+        flag2 = True
+    if flag1 and k >= 0:
+        move_modules(dif_modules, bg_constructor_surf, flag1, k)
+    if flag2 and j >= 0:
+        set_modules(dif_modules, flag2, j, rocket_list)
+        j = k
+    draw_rocket(rocket_list, rocket_surface)
+    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
+    draw_modules(dif_modules, bg_constructor_surf)
+    draw_bg(grid, bg_constructor_surf, rocket_surface)
+    draw_points()
+    if not rocket_list:
+        rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+    return click, rocket_list, rocket_surface, flag1, flag2, k, j
+
 
 if __name__ == '__main__':
     while True:
