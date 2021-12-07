@@ -153,17 +153,23 @@ def set_modules(dif_modules, flag, k, rocket_list):
     :param k - номер элемента массива поверхостей модулей, который берёт пользователь.
     :param rocket_list - список элементов ракеты"""
     if flag:
-        dif_modules[k].x, dif_modules[k].y = pygame.mouse.get_pos()
+        x, y = pygame.mouse.get_pos()
+        dif_modules[k].x = x - 0.5*dif_modules[k].b
+        dif_modules[k].y = y - 0.5 * dif_modules[k].a
         rocket_list.append(dif_modules[k])
 
+def del_modules(rocket_list, flag, k):
+    if flag:
+        rocket_list[k].x, rocket_list[k].y = pygame.mouse.get_pos()
+        rocket_list.pop(k)
 
 def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
     :param rocket_surface - поверность рактеты."""
     for rocket_module in rocket_list:
-        x = rocket_module.x - rocket_module.x % 50 - 200
-        y = rocket_module.y - rocket_module.y % 25 - 75
+        x = rocket_module.x - rocket_module.b/2
+        y = rocket_module.y - rocket_module.a/2
         rocket_surface.blit(rocket_module.surface, (x, y))
 
 
@@ -264,6 +270,8 @@ if __name__ == '__main__':
                 flag2 = False
                 if check_module(dif_modules) > -1:
                     k = check_module(dif_modules)
+                if check_module(rocket_list) > -1:
+                    k = check_module(rocket_list)
             elif event.type == pygame.MOUSEBUTTONUP:
                 j = k
                 flag1 = False
@@ -271,9 +279,12 @@ if __name__ == '__main__':
                 k = -1
         if flag1 and k >= 0:
             move_modules(dif_modules, bg_constructor_surf, flag1, k)
+            #del_modules(rocket_list, flag1, k)
+            #move_modules(rocket_list, bg_constructor_surf, flag1, k)
 
         if flag2 and j >= 0:
             set_modules(dif_modules, flag2, j, rocket_list)
+            #set_modules(rocket_list, flag2, j, rocket_list)
             j = k
 
         draw_rocket(rocket_list, rocket_surface)
