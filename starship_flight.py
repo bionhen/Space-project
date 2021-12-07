@@ -25,17 +25,28 @@ def force_calc(rocket):
     return f_x, f_y
 
 
-def momentum_calc(rocket, flag_left, flag_right):
+def momentum_calc(rocket, left_flag, right_flag):
     m = 0
+    my = 0
+    mx = 0
     for module in rocket.list:
         m += module.m
+        my = module.m * module.y
+        mx = module.m * module.x
+    y_c = my / m
+    x_c = mx / m
     mf = 0
-    if flag_left:
-        mf = rocket.manevour_force
-    if flag_right:
-        mf = rocket.manevour_force
-    e = mf/m
-    return e
+    for module in rocket.list:
+        if left_flag:
+            if module.type == 'left_manevour_engine':
+                module.force = 10
+        for module in rocket.list:
+            if right_flag:
+                if module.type == 'right_manevour_engine':
+                    module.force = 10
+        mf += module.force * (module.x-x_c)
+    epsilon = mf/m
+    return epsilon
 
 
 def rocket_move(rocket, flag_left, flag_right):
@@ -50,6 +61,6 @@ def rocket_move(rocket, flag_left, flag_right):
     rocket.vy += a_y * dt
     rocket.x += rocket.vx * dt
     rocket.y += rocket.vy * dt
-    e = momentum_calc(rocket, flag_left, flag_right)
-    rocket.o += e * dt
+    epsilon = momentum_calc(rocket, flag_left, flag_right)
+    rocket.omega += epsilon * dt
     rocket.angle += rocket.angle * dt

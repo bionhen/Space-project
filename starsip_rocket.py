@@ -5,4 +5,4 @@ class Rocket:
     angle = 0
     vx = 0
     vy = 0
-    o = 0
+    omega = 0
