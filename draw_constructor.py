@@ -157,20 +157,22 @@ def set_modules(dif_modules, flag, k, rocket_list):
         dif_modules[k].x = x - 0.5*dif_modules[k].b
         dif_modules[k].y = y - 0.5 * dif_modules[k].a
         rocket_list.append(dif_modules[k])
+        print(rocket_list)
 
-def del_modules(rocket_list, flag, k):
+"""def del_modules(rocket_list, flag, k):
     if flag:
         rocket_list[k].x, rocket_list[k].y = pygame.mouse.get_pos()
-        rocket_list.pop(k)
+        rocket_list.pop(k)"""
 
 def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
     :param rocket_surface - поверность рактеты."""
     for rocket_module in rocket_list:
-        x = rocket_module.x - rocket_module.b/2
-        y = rocket_module.y - rocket_module.a/2
-        rocket_surface.blit(rocket_module.surface, (x, y))
+        rocket_module.x = rocket_module.x - 200
+        rocket_module.y = rocket_module.y - 75
+        rocket_surface.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
+        print(rocket_module.y)
 
 
 def find_y_max(rocket_list):
