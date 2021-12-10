@@ -17,10 +17,14 @@ pygame.display.set_icon(pygame.image.load("emblem.ico"))
 clock = pygame.time.Clock()
 FPS = 60
 
-FONT = pygame.font.SysFont('century gothic', 24)
+FONT = pygame.font.SysFont('century gothic', 30, bold=True)
+FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
 pygame.font.init()
 
 cash = 1000
+BLUE = (39, 40, 91)
+LIGHT_BLUE = (106, 139, 197)
+
 
 
 class Button:
@@ -108,8 +112,8 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
 
 def draw_points():
     """Функция отрисовывает количество денег на заднем фоне слайда."""
-    text = FONT.render('Cash: ' + str(cash), True, (0, 0, 0))
-    sc.blit(text, (630, 20))
+    text = FONT.render('cash: ' + str(cash), True, BLUE)
+    sc.blit(text, (620, 20))
 
 
 def draw_modules(dif_modules, bg_constructor_surf):
@@ -118,18 +122,19 @@ def draw_modules(dif_modules, bg_constructor_surf):
     :param bg_constructor_surf - поверность заднего фона."""
     dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
     x = 75
-    y = 75
+    y = 50
 
     for dif_module in dif_modules:
-        if dif_module.b == 100:
-            dif_module.x = x - 25
-        else:
-            dif_module.x = x
+        dif_module.x = x
         dif_module.y = y
         dif_module.surface = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
         dif_module.surface = pygame.transform.scale(dif_module.surface, (dif_module.b, dif_module.a))
         dif_modules_surface.blit(dif_module.surface, (dif_module.x, dif_module.y))
-        y += dif_module.a + 25
+        price = FONT_small.render(str(dif_module.price), True, BLUE)
+        #price_rect = pygame.draw.rect(dif_modules_surface, LIGHT_BLUE, (x-70, y+(dif_module.a / 3), 55, 30), width=1, border_radius=1)
+        dif_modules_surface.blit(price, (x-60, y+(dif_module.a / 3)))
+
+        y += dif_module.a + 10
 
 
     bg_constructor_surf.blit(dif_modules_surface, (0, 0))
@@ -165,11 +170,10 @@ def set_modules(dif_modules, flag, k, rocket_list):
         rocket_module.image = dif_modules[k].image
         rocket_module.a = dif_modules[k].a
         rocket_module.b = dif_modules[k].b
-        rocket_module.x = u - u % 50 - 200
-        rocket_module.y = w - w % 25 - 50
+        rocket_module.x = u - u % 50 - 200 + rocket_module.b/2
+        rocket_module.y = w - w % 25 - 50 + rocket_module.a/2
         rocket_module.surface = dif_modules[k].surface
         rocket_list.append(rocket_module)
-        print(rocket_list[0].x)
         cash -= dif_modules[k].price
 
 
@@ -177,21 +181,36 @@ def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
     :param rocket_surface - поверность рактеты."""
-    for mod in rocket_list:
-        rocket_surface.blit(mod.surface, (mod.x, mod.y))
-
-
-def find_y_max(rocket_list):
-    """Функция находит наиболее близкий элемент к земле."""
-    rocket_modules_y = []
-    y_max = 0
     for rocket_module in rocket_list:
-        rocket_modules_y.append(rocket_module.y)
+        x = rocket_module.x - rocket_module.b/2
+        y = rocket_module.y - rocket_module.a/2
+        rocket_surface.blit(rocket_module.surface, (x, y))
 
-    if rocket_modules_y != []:
-        y_max = max(rocket_modules_y)
 
-    return y_max
+def find_max_coord(rocket_list):
+    """Функция находит наиболее близкий элемент к земле."""
+    rocket_modules_y_bottom = []
+    rocket_modules_y_top = []
+    rocket_modules_x_left = []
+    rocket_modules_x_right = []
+    y_bottom = 0
+    y_top = 0
+    x_left = 0
+    x_right = 0
+    for rocket_module in rocket_list:
+        rocket_modules_y_bottom.append(rocket_module.y + rocket_module.a/2)
+        rocket_modules_y_top.append(rocket_module.y - rocket_module.a / 2)
+        rocket_modules_x_left.append(rocket_module.x)
+
+    if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
+        y_bottom = max(rocket_modules_y_bottom)
+        y_top = min(rocket_modules_y_top)
+
+    if rocket_modules_x_left != [] and rocket_modules_x_right != []:
+        x_left = min(rocket_modules_x_left)
+        x_right = max(rocket_modules_x_right)
+
+    return y_bottom, y_top, x_left, x_right
 
 
 def delete_rocket(rocket_list):
@@ -331,6 +350,7 @@ if __name__ == '__main__':
                 flag2 = False
                 if check_module(dif_modules) > -1:
                     k = check_module(dif_modules)
+
             elif event.type == pygame.MOUSEBUTTONUP:
                 j = k
                 flag1 = False
@@ -342,7 +362,8 @@ if __name__ == '__main__':
         if flag2 and j >= 0:
             set_modules(dif_modules, flag2, j, rocket_list)
             j = k
-            print(cash)
+
+        y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
 
         draw_rocket(rocket_list, rocket_surface)
 
