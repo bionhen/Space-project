@@ -146,13 +146,14 @@ def move_modules(dif_modules, bg_constructor_surf, flag, k):
         bg_constructor_surf.blit(dif_modules[k].surface, (x, y))
 
 
-def set_modules(dif_modules, flag, k, rocket_list, cash):
+def set_modules(dif_modules, flag, k, rocket_list):
     """Функция добавляет модули в список ракеты.
     :param dif_module_surf_list - список поверхностей модулей
     :param flag - указатель зажатия кнопки мыши
     :param k - номер элемента массива поверхостей модулей, который берёт пользователь.
     :param rocket_list - список элементов ракеты"""
-    if flag:
+    global cash
+    if flag and cash - dif_modules[k].price >= 0:
         dif_modules[k].x, dif_modules[k].y = pygame.mouse.get_pos()
         rocket_list.append(dif_modules[k])
         cash -= dif_modules[k].price
@@ -289,7 +290,7 @@ def draw_constructor_foo(eventus, click, rocket_list, rocket_surface, flag1, fla
     if flag1 and k >= 0:
         move_modules(dif_modules, bg_constructor_surf, flag1, k)
     if flag2 and j >= 0:
-        set_modules(dif_modules, flag2, j, rocket_list, cash)
+        set_modules(dif_modules, flag2, j, rocket_list)
         j = k
     draw_rocket(rocket_list, rocket_surface)
     draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
@@ -328,8 +329,9 @@ if __name__ == '__main__':
             move_modules(dif_modules, bg_constructor_surf, flag1, k)
 
         if flag2 and j >= 0:
-            set_modules(dif_modules, flag2, j, rocket_list, cash)
+            set_modules(dif_modules, flag2, j, rocket_list)
             j = k
+            print(cash)
 
         draw_rocket(rocket_list, rocket_surface)
 
