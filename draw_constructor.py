@@ -157,7 +157,6 @@ def set_modules(dif_modules, flag, k, rocket_list):
         dif_modules[k].x, dif_modules[k].y = pygame.mouse.get_pos()
         rocket_list.append(dif_modules[k])
         cash -= dif_modules[k].price
-        print(cash, dif_modules[k].price)
 
 
 def draw_rocket(rocket_list, rocket_surface):
