@@ -113,7 +113,7 @@ def draw_points():
 
 
 def draw_modules(dif_modules, bg_constructor_surf):
-    """Функция отрисовывает список модулей на заднем ыоне слайда.
+    """Функция отрисовывает список модулей на заднем фоне слайда.
     :param dif_module_surf_list - список поверхностей модулей.
     :param bg_constructor_surf - поверность заднего фона."""
     dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
@@ -143,7 +143,7 @@ def move_modules(dif_modules, bg_constructor_surf, flag, k):
     :param k - номер элемента массива поверхостей модулей, который берёт пользователь."""
     x, y = pygame.mouse.get_pos()
     if flag:
-        bg_constructor_surf.blit(dif_modules[k].surface, (x-0.5*dif_modules[k].b, y-0.5*dif_modules[k].a))
+        bg_constructor_surf.blit(dif_modules[k].surface, (x, y))
 
 
 def set_modules(dif_modules, flag, k, rocket_list):
@@ -152,9 +152,12 @@ def set_modules(dif_modules, flag, k, rocket_list):
     :param flag - указатель зажатия кнопки мыши
     :param k - номер элемента массива поверхостей модулей, который берёт пользователь.
     :param rocket_list - список элементов ракеты"""
-    if flag:
+    global cash
+    if flag and cash - dif_modules[k].price >= 0:
         dif_modules[k].x, dif_modules[k].y = pygame.mouse.get_pos()
         rocket_list.append(dif_modules[k])
+        cash -= dif_modules[k].price
+        print(cash, dif_modules[k].price)
 
 
 def draw_rocket(rocket_list, rocket_surface):
@@ -163,7 +166,7 @@ def draw_rocket(rocket_list, rocket_surface):
     :param rocket_surface - поверность рактеты."""
     for rocket_module in rocket_list:
         x = rocket_module.x - rocket_module.x % 50 - 200
-        y = rocket_module.y - rocket_module.y % 25 - 75
+        y = rocket_module.y - rocket_module.y % 25 - 50
         rocket_surface.blit(rocket_module.surface, (x, y))
 
 
@@ -328,6 +331,7 @@ if __name__ == '__main__':
         if flag2 and j >= 0:
             set_modules(dif_modules, flag2, j, rocket_list)
             j = k
+            print(cash)
 
         draw_rocket(rocket_list, rocket_surface)
 
