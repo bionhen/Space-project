@@ -1,4 +1,3 @@
-import pygame
 from pygame.draw import *
 from draw_menu import *
 from change_screen import *
@@ -26,7 +25,7 @@ finished = False
 
 while not finished:
     clock.tick(FPS)
-    eventus = "parasha"
+    happen = "nothing"
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
@@ -35,20 +34,20 @@ while not finished:
             mouse_position_y = event.pos[1]
 
         if event.type == pygame.MOUSEBUTTONUP:
-            eventus = "mouse_button_up"
+            happen = "mouse_button_up"
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             draw_screen = show_screen(draw_screen, mouse_position_x, mouse_position_y)
-            eventus = "mouse_button_down"
+            happen = "mouse_button_down"
 
     if draw_screen == "menu":
         draw_menu(mouse_position_x, mouse_position_y)
     elif draw_screen == "list_of_missions":
         draw_missions()
     elif draw_screen == "constructor":
-        click, rocket_list, rocket_surface, flag1, flag2, k, j = draw_constructor_foo(eventus, click, rocket_list, rocket_surface, flag1, flag2, k, j)
+        click, rocket_list, rocket_surface, flag1, flag2, k, j = draw_constructor_foo(
+            happen, click, rocket_list, rocket_surface, flag1, flag2, k, j)
     elif draw_screen == "flying":
         circle(sc, (0, 0, 0), (400, 300), 300)
     show_modules(mouse_click)
     pygame.display.update()
-
