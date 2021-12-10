@@ -154,8 +154,22 @@ def set_modules(dif_modules, flag, k, rocket_list):
     :param rocket_list - список элементов ракеты"""
     global cash
     if flag and cash - dif_modules[k].price >= 0:
-        dif_modules[k].x, dif_modules[k].y = pygame.mouse.get_pos()
-        rocket_list.append(dif_modules[k])
+        u, w = pygame.mouse.get_pos()
+        rocket_module = Module()
+        rocket_module.type = dif_modules[k].type
+        rocket_module.m = dif_modules[k].m
+        rocket_module.fuel = dif_modules[k].fuel
+        rocket_module.price = dif_modules[k].price
+        rocket_module.resistance = dif_modules[k].resistance
+        rocket_module.force = dif_modules[k].force
+        rocket_module.image = dif_modules[k].image
+        rocket_module.a = dif_modules[k].a
+        rocket_module.b = dif_modules[k].b
+        rocket_module.x = u - u % 50 - 200
+        rocket_module.y = w - w % 25 - 50
+        rocket_module.surface = dif_modules[k].surface
+        rocket_list.append(rocket_module)
+        print(rocket_list[0].x)
         cash -= dif_modules[k].price
 
 
@@ -163,10 +177,8 @@ def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
     :param rocket_surface - поверность рактеты."""
-    for rocket_module in rocket_list:
-        x = rocket_module.x - rocket_module.x % 50 - 200
-        y = rocket_module.y - rocket_module.y % 25 - 50
-        rocket_surface.blit(rocket_module.surface, (x, y))
+    for mod in rocket_list:
+        rocket_surface.blit(mod.surface, (mod.x, mod.y))
 
 
 def find_y_max(rocket_list):
@@ -344,5 +356,4 @@ if __name__ == '__main__':
             rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 
         pygame.display.update()
-
         clock.tick(FPS)
