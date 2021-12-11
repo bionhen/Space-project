@@ -17,6 +17,9 @@ rocket_list = []
 rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 flag1 = False
 flag2 = False
+flag_dif = False
+flag_rock = False
+moved_module = Module()
 k = -1
 j = -1
 clock = pygame.time.Clock()
@@ -45,8 +48,8 @@ while not finished:
     elif draw_screen == "list_of_missions":
         draw_missions()
     elif draw_screen == "constructor":
-        click, rocket_list, rocket_surface, flag1, flag2, k, j = draw_constructor_foo(
-            happen, click, rocket_list, rocket_surface, flag1, flag2, k, j)
+        click, rocket_list,moved_module, flag1, flag2, flag_dif, flag_rock, k, j = draw_constructor_foo(
+            happen, click, rocket_list, moved_module, flag1, flag2, flag_dif, flag_rock, k, j)
     elif draw_screen == "flying":
         circle(sc, (0, 0, 0), (400, 300), 300)
     show_modules(mouse_click)
