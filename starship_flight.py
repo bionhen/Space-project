@@ -60,12 +60,12 @@ def momentum_calc(rocket, left_flag, right_flag):
     return epsilon
 
 
-def rocket_move(rocket, flag_left, flag_right):
+def rocket_move(rocket, flag_left, flag_right, flag):
     m = 0
     dt = 0.01
     for module in rocket.list:
         m += module.m
-    f_x, f_y = force_calc(rocket)
+    f_x, f_y = force_calc(rocket, flag)
     a_x = f_x / m
     a_y = f_y / m
     rocket.vx += a_x * dt
