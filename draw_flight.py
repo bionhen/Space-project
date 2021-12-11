@@ -1,7 +1,12 @@
 import pygame
 from draw_constructor import *
+from starship_rocket import *
+from draw_constructor import rocket_list
+from draw_constructor import rocket_surface
 pygame.init()
-
+rocket = Rocket()
+rocket.list = rocket_list
+rocket.surface = rocket_surface
 WIDTH, HEIGHT = 800, 600
 
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -89,8 +94,6 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-
-
         h += 10
         pygame.display.update()
 
