@@ -1,12 +1,8 @@
 import pygame
-from draw_constructor import *
 from starship_rocket import *
-from draw_constructor import rocket_list
-from draw_constructor import rocket_surface
+
 pygame.init()
-rocket = Rocket()
-rocket.list = rocket_list
-rocket.surface = rocket_surface
+
 WIDTH, HEIGHT = 800, 600
 
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -19,6 +15,7 @@ FPS = 30
 FONT = pygame.font.SysFont('century gothic', 24)
 pygame.font.init()
 
+
 def render_bg():
     """Функция генерирует составляющие фона."""
     bg_flight_surf = pygame.Surface((800, 600))
@@ -29,12 +26,12 @@ def render_bg():
 
     return bg_flight_surf, cosmodrom, ground
 
-def draw_bg(bg_flight_surf, cosmodrom, ground, rocket_surface, h):
+def draw_bg(bg_flight_surf, cosmodrom, ground, rocket, h):
     """Функция отрисовывает составляющие заднего фона на экране."""
     bg_flight_surf.blit(cosmodrom, (250, 200+h))
     bg_flight_surf.blit(ground, (0, 525+h))
-    rocket_surface = pygame.transform.scale(rocket_surface, (200, 250))
-    bg_flight_surf.blit(rocket_surface, (300, 250))
+    #rocket.surface = pygame.transform.scale(rocket.surface, (rocket_surface_heigth, rocket_surface_widht))
+    bg_flight_surf.blit(rocket.surface, (200, 250))
     sc.blit(bg_flight_surf, (0, 0))
 
 
@@ -89,11 +86,13 @@ if __name__ == '__main__':
         bg_flight_surf, cosmodrom, ground = render_bg()
         fill_gradient(bg_flight_surf, (30 - 0.5 * h, 33 - 0.5 * h, 61 - 0.05 * h), (127 - h, 199 - h, 255 - 0.5 * h),
                       rect=None, vertical=True, forward=True)
-        draw_bg(bg_flight_surf, cosmodrom, ground, rocket_surface, h)
+        draw_bg(bg_flight_surf, cosmodrom, ground, rocket, h)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+
+
         h += 10
         pygame.display.update()
 
