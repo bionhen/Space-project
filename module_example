@@ -14,7 +14,7 @@ fairing 3 0 60 2 0 25 50 fairing_oval_0,5x1 0 0 /
 fairing 6 0 100 1 0 50 50 fairing_oval_1x1 0 0 /
 block 10 0 30 10 0 50 50 block_left_1x1 0 0 /
 block 10 0 30 10 0 50 50 block_right_1x1 0 0 /
-block 100 0 10 100 0 50 100 block_satellite_1x2 0 0 /
+block 100 0 10 100 0 50 50 block_satellite_1x1 0 0 /
 tank 40 50 50 50 0 50 50 fuel_1x1 0 0 /
 tank 80 100 100 50 0 100 50 fuel_2x1 0 0 /
 tank 40 50 50 50 0 50 50 fuel_b_1x1 0 0 /

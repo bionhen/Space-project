@@ -3,7 +3,7 @@ import pygame
 pygame.init()
 
 
-class Module:
+class Module():
     """
     Класс, описывающий модули ракеты, например элементы корпуса или топливные баки
     """
@@ -98,3 +98,5 @@ def parse_modules_parameters(line, module):
     module.image = (line[module_list[7] + 1:module_list[8]])
     module.x = int(float(line[module_list[8] + 1:module_list[9]]))
     module.y = int(float(line[module_list[9] + 1:module_list[10]]))
+    module.surface = pygame.image.load("images/constructor/modules/"+module.image+".png")
+    module.surface = pygame.transform.scale(module.surface, (module.b, module.a))

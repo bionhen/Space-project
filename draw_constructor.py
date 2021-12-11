@@ -17,10 +17,14 @@ pygame.display.set_icon(pygame.image.load("emblem.ico"))
 clock = pygame.time.Clock()
 FPS = 60
 
-FONT = pygame.font.SysFont('century gothic', 24)
+FONT = pygame.font.SysFont('century gothic', 30, bold=True)
+FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
 pygame.font.init()
 
 cash = 1000
+BLUE = (39, 40, 91)
+LIGHT_BLUE = (106, 139, 197)
+
 
 
 class Button:
@@ -61,8 +65,8 @@ def render_bg():
     """Функция генерирует составляющие фона."""
     grid = pygame.image.load(("images/constructor/grid.png")).convert_alpha()  # сетка конструктора
     bg_constructor_surf = pygame.image.load(("images/constructor/bg_constructor.png")).convert_alpha()  # задний фон
-
-    return grid, bg_constructor_surf
+    rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+    return grid, bg_constructor_surf, rocket_surface
 
 
 def draw_bg(grid, bg_constructor_surf, rocket_surface):
@@ -105,11 +109,26 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
         if buttons_off[i].check_button(pygame.mouse.get_pos()):
             bg_surf.blit(buttons_on[i].button_surf, (buttons_on[i].x, buttons_on[i].y))
 
+def calc_params(rocket_list):
+    mass = 0
+    fuel = 0
+    for rocket_module in rocket_list:
+        mass += rocket_module.m
+    for rocket_module in rocket_list:
+        fuel += rocket_module.fuel
+    return mass, fuel
 
-def draw_points():
+
+def draw_text(rocket_list, bg_constructor_surf):
     """Функция отрисовывает количество денег на заднем фоне слайда."""
-    text = FONT.render('Cash: ' + str(cash), True, (0, 0, 0))
-    sc.blit(text, (630, 20))
+    mass, fuel = calc_params(rocket_list)
+    cash_text = FONT.render('cash: ' + str(cash), True, BLUE)
+    fuel_text = FONT_small.render('fuel: ' + str(fuel), True, BLUE)
+    mass_text = FONT_small.render('mass: ' + str(mass), True, BLUE)
+    bg_constructor_surf.blit(cash_text, (610, 20))
+    bg_constructor_surf.blit(fuel_text, (200, 555))
+    bg_constructor_surf.blit(mass_text, (350, 555))
+
 
 
 def draw_modules(dif_modules, bg_constructor_surf):
@@ -118,24 +137,27 @@ def draw_modules(dif_modules, bg_constructor_surf):
     :param bg_constructor_surf - поверность заднего фона."""
     dif_modules_surface = pygame.Surface((150, 600), pygame.SRCALPHA)
     x = 75
-    y = 75
+    y = 50
 
     for dif_module in dif_modules:
-        if dif_module.b == 100:
-            dif_module.x = x - 25
-        else:
-            dif_module.x = x
+        dif_module.x = x
         dif_module.y = y
-        dif_module.surface = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
-        dif_module.surface = pygame.transform.scale(dif_module.surface, (dif_module.b, dif_module.a))
+        #dif_module.surface = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
+        #dif_module.surface = pygame.transform.scale(dif_module.surface, (dif_module.b, dif_module.a))
         dif_modules_surface.blit(dif_module.surface, (dif_module.x, dif_module.y))
-        y += dif_module.a + 25
+        price = FONT_small.render(str(dif_module.price), True, BLUE)
+        #quality = pygame.Surface(10, 30)
+
+        #price_rect = pygame.draw.rect(dif_modules_surface, LIGHT_BLUE, (x-70, y+(dif_module.a / 3), 55, 30), width=1, border_radius=1)
+        dif_modules_surface.blit(price, (x-60, y+(dif_module.a / 3)))
+
+        y += dif_module.a + 10
 
 
     bg_constructor_surf.blit(dif_modules_surface, (0, 0))
 
 
-def move_modules(dif_modules, bg_constructor_surf, flag, k):
+def move_modules(moved_module, bg_constructor_surf, flag):
     """Функция отрисовывает движение модулей при взятии их игроком.
     :param dif_module_surf_list - список поверхностей модулей.
     :param bg_constructor_surf - поверность заднего фона.
@@ -143,43 +165,100 @@ def move_modules(dif_modules, bg_constructor_surf, flag, k):
     :param k - номер элемента массива поверхостей модулей, который берёт пользователь."""
     x, y = pygame.mouse.get_pos()
     if flag:
-        bg_constructor_surf.blit(dif_modules[k].surface, (x, y))
+        bg_constructor_surf.blit(moved_module.surface, (x, y))
+    #print("move", moved_module.x)
 
 
-def set_modules(dif_modules, flag, k, rocket_list):
+"""def check_borders(moved_module, rocket_list):
+    collide = False
+    if rocket_list != []:
+        for rocket_module in rocket_list:
+            if pygame.Rect.colliderect(rocket_module.rect, moved_module.rect):
+                collide = True
+    print(collide)
+    return collide
+    #print("check", moved_module.x)"""
+
+def set_modules(moved_module, flag, rocket_list):
     """Функция добавляет модули в список ракеты.
     :param dif_module_surf_list - список поверхностей модулей
     :param flag - указатель зажатия кнопки мыши
     :param k - номер элемента массива поверхостей модулей, который берёт пользователь.
     :param rocket_list - список элементов ракеты"""
     global cash
-    if flag and cash - dif_modules[k].price >= 0:
-        dif_modules[k].x, dif_modules[k].y = pygame.mouse.get_pos()
-        rocket_list.append(dif_modules[k])
-        cash -= dif_modules[k].price
-
+    u, w = pygame.mouse.get_pos()
+    if flag and cash - moved_module.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550:
+    #if flag and cash - moved_module.price >= 0 and 200 <= moved_module.x <= 600 and 50 <= moved_module.y <= 550:
+        rocket_module = Module()
+        rocket_module.type = moved_module.type
+        rocket_module.m = moved_module.m
+        rocket_module.fuel = moved_module.fuel
+        rocket_module.price = moved_module.price
+        rocket_module.resistance = moved_module.resistance
+        rocket_module.force = moved_module.force
+        rocket_module.image = moved_module.image
+        rocket_module.a = moved_module.a
+        rocket_module.b = moved_module.b
+        rocket_module.x = u - u % 50
+        rocket_module.y = w - w % 25
+        #rocket_module.x = moved_module.x - moved_module.x % 50
+        #rocket_module.y = moved_module.y - moved_module.y % 25
+        rocket_module.surface = moved_module.surface
+        rocket_list.append(rocket_module)
+    #if 200 >= u >= 600 and 50 >= w >= 550:
+     #   cash += moved_module.price
+    #print("set", moved_module.x)
 
 def draw_rocket(rocket_list, rocket_surface):
     """Функция рисует модули ракеты на поверности ракеты.
     :param rocket_list - список модулей ракеты
     :param rocket_surface - поверность рактеты."""
     for rocket_module in rocket_list:
-        x = rocket_module.x - rocket_module.x % 50 - 200
-        y = rocket_module.y - rocket_module.y % 25 - 50
-        rocket_surface.blit(rocket_module.surface, (x, y))
+        rocket_surface.blit(rocket_module.surface, (rocket_module.x - 200, rocket_module.y - 50))
 
 
-def find_y_max(rocket_list):
+def draw_center_mass(rocket_list, rocket_surface):
+    m = 0
+    my = 0
+    mx = 0
+    if rocket_list != []:
+        for module in rocket_list:
+            m += module.m
+            my += module.m * (module.y - 50 + module.a/2)
+            mx += module.m * (module.x - 200 + module.b/2)
+        y_center_mass = my / m
+        x_center_mass = mx / m
+
+        center_mass = pygame.Surface((10, 10))
+        center_mass.fill("tomato")
+        rocket_surface.blit(center_mass, (x_center_mass-5, y_center_mass-5))
+
+
+def find_max_coord(rocket_list):
     """Функция находит наиболее близкий элемент к земле."""
-    rocket_modules_y = []
-    y_max = 0
+    rocket_modules_y_bottom = []
+    rocket_modules_y_top = []
+    rocket_modules_x_left = []
+    rocket_modules_x_right = []
+    y_bottom = 0
+    y_top = 0
+    x_left = 0
+    x_right = 0
     for rocket_module in rocket_list:
-        rocket_modules_y.append(rocket_module.y)
+        rocket_modules_y_bottom.append(rocket_module.y + rocket_module.a - 50)
+        rocket_modules_y_top.append(rocket_module.y - 50)
+        rocket_modules_x_left.append(rocket_module.x - 200)
+        rocket_modules_x_right.append(rocket_module.x + rocket_module.b - 200)
 
-    if rocket_modules_y != []:
-        y_max = max(rocket_modules_y)
+    if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
+        y_bottom = max(rocket_modules_y_bottom)
+        y_top = min(rocket_modules_y_top)
 
-    return y_max
+    if rocket_modules_x_left != [] and rocket_modules_x_right != []:
+        x_left = min(rocket_modules_x_left)
+        x_right = max(rocket_modules_x_right)
+
+    return y_bottom, y_top, x_left, x_right
 
 
 def delete_rocket(rocket_list):
@@ -194,7 +273,6 @@ k = -1
 j = 0
 
 blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
-rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 rocket_list = []
 click = [-1, -1, -1, -1, -1]
 
@@ -291,11 +369,13 @@ def draw_constructor_foo(eventus, click, rocket_list, rocket_surface, flag1, fla
     if flag2 and j >= 0:
         set_modules(dif_modules, flag2, j, rocket_list)
         j = k
+
     draw_rocket(rocket_list, rocket_surface)
+
     draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
     draw_modules(dif_modules, bg_constructor_surf)
     draw_bg(grid, bg_constructor_surf, rocket_surface)
-    draw_points()
+    draw_text(rocket_list, bg_constructor_surf)
     if not rocket_list:
         rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
     return click, rocket_list, rocket_surface, flag1, flag2, k, j
@@ -303,7 +383,7 @@ def draw_constructor_foo(eventus, click, rocket_list, rocket_surface, flag1, fla
 
 if __name__ == '__main__':
     while True:
-        grid, bg_constructor_surf = render_bg()
+        grid, bg_constructor_surf, rocket_surface = render_bg()
         buttons_off, buttons_on = render_buttons()
 
         dif_modules = show_modules(click)
@@ -317,32 +397,55 @@ if __name__ == '__main__':
                 click = recognise_modules("constructor", mouse_x, mouse_y, click)
                 flag1 = True
                 flag2 = False
+                flag_dif = False
+                flag_rock = False
                 if check_module(dif_modules) > -1:
                     k = check_module(dif_modules)
+                    moved_module = dif_modules[k]
+                    flag_dif = True
+                if check_module(rocket_list) > -1:
+                    flag_rock = True
+                    k = check_module(rocket_list)
+                    moved_module = rocket_list[k]
+                    rocket_list.pop(k)
             elif event.type == pygame.MOUSEBUTTONUP:
                 j = k
                 flag1 = False
                 flag2 = True
                 k = -1
-        if flag1 and k >= 0:
-            move_modules(dif_modules, bg_constructor_surf, flag1, k)
+        if flag1 and k >= 0 and flag_dif:
+            move_modules(moved_module, bg_constructor_surf, flag1)
 
-        if flag2 and j >= 0:
-            set_modules(dif_modules, flag2, j, rocket_list)
+        if flag1 and k >= 0 and flag_rock:
+            move_modules(moved_module, bg_constructor_surf, flag1)
+
+        if flag2 and j >= 0 and flag_dif:
+            set_modules(moved_module, flag2, rocket_list)
+            cash -= moved_module.price
             j = k
-            print(cash)
+            flag_dif = False
+
+        if flag2 and j >= 0 and flag_rock:
+            set_modules(moved_module, flag2, rocket_list)
+            j = k
+            flag_rock = False
+
+        y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
+
+        draw_text(rocket_list, bg_constructor_surf)
 
         draw_rocket(rocket_list, rocket_surface)
+
+        draw_center_mass(rocket_list, rocket_surface)
 
         draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
 
         draw_modules(dif_modules, bg_constructor_surf)
 
         draw_bg(grid, bg_constructor_surf, rocket_surface)
-        draw_points()
+
         if not rocket_list:
             rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 
         pygame.display.update()
-
         clock.tick(FPS)
