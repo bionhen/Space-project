@@ -1,6 +1,6 @@
 from starship_modules import *
 from starship_constructor import *
-from starsip_rocket import *
+from starship_rocket import *
 
 pygame.init()
 
@@ -156,7 +156,7 @@ def draw_modules(dif_modules_arg, bg_constructor_surf_arg):
         price = FONT_small.render(str(dif_module.price), True, BLUE)
         dif_modules_surface.blit(price, (x-60, y+(dif_module.a / 3)))
         y += dif_module.a + 10
-    bg_constructor_surf.blit(dif_modules_surface, (0, 0))
+    bg_constructor_surf_arg.blit(dif_modules_surface, (0, 0))
 
 
 def move_modules(moved_module_arg, bg_constructor_surf_arg, flag):

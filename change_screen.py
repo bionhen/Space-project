@@ -1,6 +1,3 @@
-from draw_constructor import *
-
-
 def show_screen(draw_screen, mouse_xx, mouse_yy):
     """
     Эта функция проверяет, надо ли переключить экран (например, перейти от главного меню к списку миссий),
@@ -53,23 +50,3 @@ def recognise_modules(useless, mouse_xx, mouse_yy, click_arg):
     else:
         pass
     return click_arg
-
-
-def show_modules(click_arg):
-    """
-    Эта функция определяет, с каким типом запчастей работает игрок
-    :param click_arg: массив из 5 чисел, каждое из которых связано с определенным видом запчастей
-    :return: массив, необходимый для дальнейшей работы с выбранным типом запчастей
-    """
-    dif_modules_arg = []
-    if click_arg[0] == 1:
-        dif_modules_arg = tanks
-    if click_arg[1] == 1:
-        dif_modules_arg = autopilot
-    if click_arg[2] == 1:
-        dif_modules_arg = engines
-    if click_arg[3] == 1:
-        dif_modules_arg = fairings
-    if click_arg[4] == 1:
-        dif_modules_arg = blocks
-    return dif_modules_arg
