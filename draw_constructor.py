@@ -197,125 +197,120 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_list_arg.append(rocket_module)
 
 
-def draw_rocket(rocket_list, rocket_surface):
-    """Функция рисует модули ракеты на поверности ракеты.
-    :param rocket_list - список модулей ракеты
-    :param rocket_surface - поверность рактеты."""
-    for rocket_module in rocket_list:
-        rocket_surface.blit(rocket_module.surface, (rocket_module.x - 200, rocket_module.y - 50))
+def draw_rocket(rocket_list_arg, rocket_surface_arg):
+    """
+    Функция рисует модули ракеты на поверности ракеты
+    :param rocket_list_arg - список модулей ракеты
+    :param rocket_surface_arg - поверность рактеты
+    """
+    for rocket_module in rocket_list_arg:
+        rocket_surface_arg.blit(rocket_module.surface, (rocket_module.x - 200, rocket_module.y - 50))
 
 
-def draw_center_mass(rocket_list, rocket_surface):
+def draw_center_mass(rocket_list_arg, rocket_surface_arg):
+    """Функция считает координаты центра масс ракеты, постороенной игроком, и рисует на его месте небольшой квадрат"""
     m = 0
     my = 0
     mx = 0
-    if rocket_list != []:
-        for module in rocket_list:
+    if rocket_list_arg:
+        for module in rocket_list_arg:
             m += module.m
             my += module.m * (module.y - 50 + module.a/2)
             mx += module.m * (module.x - 200 + module.b/2)
         y_center_mass = my / m
         x_center_mass = mx / m
-
         center_mass = pygame.Surface((10, 10))
         center_mass.fill("tomato")
-        rocket_surface.blit(center_mass, (x_center_mass-5, y_center_mass-5))
+        rocket_surface_arg.blit(center_mass, (x_center_mass - 5, y_center_mass - 5))
 
 
-def find_max_coord(rocket_list):
-    """Функция находит наиболее близкий элемент к земле."""
+def find_max_coord(rocket_list_arg):
+    """Функция находит наиболее близкий элемент к земле, а так же самый правый и самый левый элементы"""
     rocket_modules_y_bottom = []
     rocket_modules_y_top = []
     rocket_modules_x_left = []
     rocket_modules_x_right = []
-    y_bottom = 0
-    y_top = 0
-    x_left = 0
-    x_right = 0
-    for rocket_module in rocket_list:
+    y_bottom_arg = 0
+    y_top_arg = 0
+    x_left_arg = 0
+    x_right_arg = 0
+    for rocket_module in rocket_list_arg:
         rocket_modules_y_bottom.append(rocket_module.y + rocket_module.a - 50)
         rocket_modules_y_top.append(rocket_module.y - 50)
         rocket_modules_x_left.append(rocket_module.x - 200)
         rocket_modules_x_right.append(rocket_module.x + rocket_module.b - 200)
 
     if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
-        y_bottom = max(rocket_modules_y_bottom)
-        y_top = min(rocket_modules_y_top)
+        y_bottom_arg = max(rocket_modules_y_bottom)
+        y_top_arg = min(rocket_modules_y_top)
 
     if rocket_modules_x_left != [] and rocket_modules_x_right != []:
-        x_left = min(rocket_modules_x_left)
-        x_right = max(rocket_modules_x_right)
+        x_left_arg = min(rocket_modules_x_left)
+        x_right_arg = max(rocket_modules_x_right)
 
-    return y_bottom, y_top, x_left, x_right
+    return y_bottom_arg, y_top_arg, x_left_arg, x_right_arg
 
 
-def delete_rocket(rocket_list):
+def delete_rocket(rocket_list_arg):
+    """Эта функция удаляет все поставленные игроком запчасти (вызывается после нажатия кнопки delete в игре)"""
     if buttons_off[6].check_button(pygame.mouse.get_pos()):
-        rocket_list = []
-    return rocket_list
+        rocket_list_arg = []
+    return rocket_list_arg
 
 
-def recognise_modules(useless, mouse_x, mouse_y, click):
+def recognise_modules(useless, mouse_xx, mouse_yy, click_arg):
     """
-    эта функция должна определять, запчасти какого рода надо показывать
+    Эта функция должна определять, на какую кнопку нажал игрок
     :param useless: значение переменной draw_screen
-    :param mouse_x: горизонтальная координата точки, в которой произошел щелчок мыши
-    :param mouse_y: вертикальная координата точки, в которой произошел щелчок мыши
-    :param click: набор параметров, определяющих четность нажатия кнопки модуля
+    :param mouse_xx: горизонтальная координата точки, в которой произошел щелчок мыши
+    :param mouse_yy: вертикальная координата точки, в которой произошел щелчок мыши
+    :param click_arg: набор параметров, определяющих четность нажатия кнопки модуля
     :return: click
     """
-    if (625 <= mouse_x <= 775) and (75 <= mouse_y <= 125) and useless == "constructor":
-        click[0] = -1 * click[0]
+    if (625 <= mouse_xx <= 775) and (75 <= mouse_yy <= 125) and useless == "constructor":
+        click_arg[0] = -1 * click_arg[0]
         for i in 1, 2, 3, 4:
-            click[i] = -1
-    elif (625 <= mouse_x <= 775) and (150 <= mouse_y <= 200) and useless == "constructor":
-        click[1] = -1 * click[1]
+            click_arg[i] = -1
+    elif (625 <= mouse_xx <= 775) and (150 <= mouse_yy <= 200) and useless == "constructor":
+        click_arg[1] = -1 * click_arg[1]
         for i in 0, 2, 3, 4:
-            click[i] = -1
-    elif (625 <= mouse_x <= 775) and (225 <= mouse_y <= 275) and useless == "constructor":
-        click[2] = -1 * click[2]
+            click_arg[i] = -1
+    elif (625 <= mouse_xx <= 775) and (225 <= mouse_yy <= 275) and useless == "constructor":
+        click_arg[2] = -1 * click_arg[2]
         for i in 0, 1, 3, 4:
-            click[i] = -1
-    elif (625 <= mouse_x <= 775) and (300 <= mouse_y <= 350) and useless == "constructor":
-        click[3] = -1 * click[3]
+            click_arg[i] = -1
+    elif (625 <= mouse_xx <= 775) and (300 <= mouse_yy <= 350) and useless == "constructor":
+        click_arg[3] = -1 * click_arg[3]
         for i in 0, 1, 2, 4:
-            click[i] = -1
-    elif (625 <= mouse_x <= 775) and (375 <= mouse_y <= 425) and useless == "constructor":
-        click[4] = -1 * click[4]
+            click_arg[i] = -1
+    elif (625 <= mouse_xx <= 775) and (375 <= mouse_yy <= 425) and useless == "constructor":
+        click_arg[4] = -1 * click_arg[4]
         for i in 0, 1, 2, 3:
-            click[i] = -1
+            click_arg[i] = -1
     else:
         pass
-    return click
+    return click_arg
 
 
-def show_modules(click):
-    dif_modules = []
-    if click[0] == 1:
-        dif_modules = tanks
-        # draw_modules(tanks, bg_constructor_surf)
-    if click[1] == 1:
-        dif_modules = autopilot
-        # draw_modules(autopilot, bg_constructor_surf)
-    if click[2] == 1:
-        dif_modules = engines
-        # draw_modules(engines, bg_constructor_surf)
-    if click[3] == 1:
-        dif_modules = fairings
-        # draw_modules(fairings, bg_constructor_surf)
-    if click[4] == 1:
-        dif_modules = blocks
-        # draw_modules(blocks, bg_constructor_surf)
-    return dif_modules
+def show_modules(click_arg):
+    """Функция определяет, запчасти какого рода надо показывать"""
+    dif_modules_arg = []
+    if click_arg[0] == 1:
+        dif_modules_arg = tanks
+    if click_arg[1] == 1:
+        dif_modules_arg = autopilot
+    if click_arg[2] == 1:
+        dif_modules_arg = engines
+    if click_arg[3] == 1:
+        dif_modules_arg = fairings
+    if click_arg[4] == 1:
+        dif_modules_arg = blocks
+    return dif_modules_arg
 
 
-flag1 = False
-flag2 = False
-flag_dif = False
-flag_rock = False
+flag1, flag2, flag_dif, flag_rock = False, False, False, False
 k = -1
 j = 0
-
 blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
 rocket_list = []
 click = [-1, -1, -1, -1, -1]
@@ -323,78 +318,77 @@ mouse_x, mouse_y = 0, 0
 moved_module = Module()
 
 
-def draw_constructor_foo(eventus, click, rocket_list, moved_module, flag1, flag2, flag_dif, flag_rock, k, j):
+def draw_constructor_foo(events, clicks, rockets_list, moved_modules, flags1, flags2, flags_dif, flags_rock, ks, js):
     """
     Функция отрисовывает экран конструктора и все изменения, которые с ним происходят
-    :param eventus: тип события мыши (функция должна понимать, когда надо брать координаты курсора мыши, а когда нет)
-    :param click: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
-    :param rocket_list: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
-    :param flag1: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
-    :param flag2: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
-    :param flag_dif: еще один параметр, который должен сохраняться
-    :param flag_rock: еще один параметр, который должен сохраняться
-    :param k: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
-    :param j: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param events: тип события мыши (функция должна понимать, когда надо брать координаты курсора мыши, а когда нет)
+    :param clicks: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param rockets_list: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param moved_modules: параметр должен сохраняться в ходе выполнения функции, поэтому его надо вводить и выводить
+    :param flags1: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param flags2: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param flags_dif: еще один параметр, который должен сохраняться
+    :param flags_rock: еще один параметр, который должен сохраняться
+    :param ks: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
+    :param js: параметр должен сохраняться в ходе выполнения функции, поэтому придется его вводить и выводить
     :return: полностью отрисованный экран и все вводимые параметры
     """
     global cash
-    grid, bg_constructor_surf, rocket_surface = render_bg()
-    buttons_off, buttons_on = render_buttons()
-    dif_modules = show_modules(click)
+    grids, bg_constructors_surf, rockets_surface = render_bg()
+    buttons_offs, buttons_ons = render_buttons()
+    dif_modules_arg = show_modules(clicks)
 
-    if eventus == "mouse_button_down":
-        # rocket_list = delete_rocket(rocket_list)
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if 625 <= mouse_x <= 775 and 450 <= mouse_y <= 500:
-            rocket_list = []
-        click = recognise_modules("constructor", mouse_x, mouse_y, click)
-        flag1 = True
-        flag2 = False
-        flag_dif = False
-        flag_rock = False
-        if check_module(dif_modules) > -1:
-            k = check_module(dif_modules)
-            moved_module = dif_modules[k]
-            flag_dif = True
-        if check_module(rocket_list) > -1:
-            flag_rock = True
-            k = check_module(rocket_list)
-            moved_module = rocket_list[k]
-            rocket_list.pop(k)
-    if eventus == "mouse_button_up":
-        j = k
-        flag1 = False
-        flag2 = True
-        k = -1
-    if flag1 and k >= 0 and flag_dif:
-        move_modules(moved_module, bg_constructor_surf, flag1)
-    if flag1 and k >= 0 and flag_rock:
-        move_modules(moved_module, bg_constructor_surf, flag1)
-    if flag2 and j >= 0 and flag_dif:
-        set_modules(moved_module, flag2, rocket_list)
-        cash -= moved_module.price
-        j = k
-        flag_dif = False
-    if flag2 and j >= 0 and flag_rock:
-        set_modules(moved_module, flag2, rocket_list)
-        j = k
-        flag_rock = False
+    if events == "mouse_button_down":
+        mouse_xx, mouse_yy = pygame.mouse.get_pos()
+        if 625 <= mouse_xx <= 775 and 450 <= mouse_yy <= 500:
+            rockets_list = []
+            cash = 1000
+        clicks = recognise_modules("constructor", mouse_xx, mouse_yy, clicks)
+        flags1 = True
+        flags2 = False
+        flags_dif = False
+        flags_rock = False
+        if check_module(dif_modules_arg) > -1:
+            ks = check_module(dif_modules_arg)
+            moved_modules = dif_modules_arg[ks]
+            flags_dif = True
+        if check_module(rockets_list) > -1:
+            flags_rock = True
+            ks = check_module(rockets_list)
+            moved_modules = rockets_list[ks]
+            rockets_list.pop(ks)
+    if events == "mouse_button_up":
+        js = ks
+        flags1 = False
+        flags2 = True
+        ks = -1
+    if flags1 and ks >= 0 and flags_dif:
+        move_modules(moved_modules, bg_constructors_surf, flags1)
+    if flags1 and ks >= 0 and flags_rock:
+        move_modules(moved_modules, bg_constructors_surf, flags1)
+    if flags2 and js >= 0 and flags_dif:
+        set_modules(moved_modules, flags2, rockets_list)
+        cash -= moved_modules.price
+        js = ks
+        flags_dif = False
+    if flags2 and js >= 0 and flags_rock:
+        set_modules(moved_modules, flags2, rockets_list)
+        js = ks
+        flags_rock = False
 
-    draw_text(rocket_list, bg_constructor_surf)
-    draw_rocket(rocket_list, rocket_surface)
-    draw_center_mass(rocket_list, rocket_surface)
-    draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
-    draw_modules(dif_modules, bg_constructor_surf)
-    draw_bg(grid, bg_constructor_surf, rocket_surface)
+    draw_text(rockets_list, bg_constructors_surf)
+    draw_rocket(rockets_list, rockets_surface)
+    draw_center_mass(rockets_list, rockets_surface)
+    draw_buttons(bg_constructors_surf, buttons_offs, buttons_ons)
+    draw_modules(dif_modules_arg, bg_constructors_surf)
+    draw_bg(grids, bg_constructors_surf, rockets_surface)
 
-    if not rocket_list:
-        rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-    rocket = Rocket()
-    rocket.list = rocket_list
-    rocket.surface = rocket_surface
-    pygame.display.update()
-    clock.tick(FPS)
-    return click, rocket_list, moved_module, flag1, flag2, flag_dif, flag_rock, k, j
+    if not rockets_list:
+        rockets_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+    rockets = Rocket()
+    rockets.list = rockets_list
+    rockets.surface = rockets_surface
+    return clicks, rockets_list, moved_modules, flags1, flags2, flags_dif, flags_rock, ks, js
 
 
 if __name__ == '__main__':
