@@ -1,7 +1,7 @@
 import pygame
 from starship_modules import *
 from starship_constructor import *
-from starsip_rocket import *
+from starship_rocket import *
 # from change_screen import *
 
 pygame.init()
