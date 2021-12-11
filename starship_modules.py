@@ -66,6 +66,10 @@ def read_modules_data_from_file(input_filename):
                     blocks.append(module)
                 if module.type == 'engine':
                     engines.append(module)
+                if module.type == 'engine_r':
+                    engines.append(module)
+                if module.type == 'engine_l':
+                    engines.append(module)
                 if module.type == 'tank':
                     tanks.append(module)
                 if module.type == 'autopilot':

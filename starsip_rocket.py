@@ -1,4 +1,8 @@
+import pygame
+
+
 class Rocket:
+
     """
     класс ракеты
     surf - поверхность ракеты
@@ -8,7 +12,7 @@ class Rocket:
     vx, vy - скорости по осям x и y
     omega -  угловая скорость
     """
-    surf = ''
+    surf = pygame.Surface((0, 0))
     list = ()
     h = 6400
     angle = 0

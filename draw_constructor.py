@@ -1,6 +1,7 @@
 import pygame
 from starship_modules import *
 from starship_constructor import *
+from starsip_rocket import *
 # from change_screen import *
 
 pygame.init()
@@ -446,6 +447,8 @@ if __name__ == '__main__':
 
         if not rocket_list:
             rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-
+        rocket = Rocket()
+        rocket.list = rocket_list
+        rocket.surface = rocket_surface
         pygame.display.update()
         clock.tick(FPS)
