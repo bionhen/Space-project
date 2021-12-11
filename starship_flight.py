@@ -24,8 +24,8 @@ def force_calc(rocket, flag1):
     f_e_y = 0
     for module in rocket.list:
         f_m += module.m * G * M / rocket.h ** 2
-    f_s_y += -rocket.vy * (rocket.angle / 180 + 0, 1)
-    f_s_x += -rocket.vx * ((180 - rocket.angle) / 180 + 0, 1)
+    f_s_y += -rocket.vy * (rocket.angle / 180 + 0.1)
+    f_s_x += -rocket.vx * ((180 - rocket.angle) / 180 + 0.1)
     if flag1:
         for module in rocket.list:
             if module.type == 'engine':
