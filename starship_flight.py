@@ -6,13 +6,17 @@ M = 6.02 * 10 ** (-24)
 
 
 def force_calc(rocket):
+    """
+    функция рассчета сил, действующих на ракету
+    олучает
+    :param rocket:
+    :return:
+    """
     f_m = 0
     f_s_x = 0
     f_s_y = 0
     f_e_x = 0
     f_e_y = 0
-    f_x = 0
-    f_y = 0
     for module in rocket.list:
         f_m += module.m * G * M / rocket.h ** 2
     f_s_y += -rocket.vy * (rocket.angle / 180 + 0, 1)
@@ -31,8 +35,8 @@ def momentum_calc(rocket, left_flag, right_flag):
     mx = 0
     for module in rocket.list:
         m += module.m
-        my = module.m * module.y
-        mx = module.m * module.x
+        my += module.m * module.y
+        mx += module.m * module.x
     y_c = my / m
     x_c = mx / m
     mf = 0
