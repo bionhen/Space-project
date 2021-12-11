@@ -1,5 +1,5 @@
 import pygame
-
+from draw_constructor import rocket_list, rocket_surface
 
 class Rocket:
 
@@ -19,3 +19,8 @@ class Rocket:
     vx = 0
     vy = 0
     omega = 0
+
+
+rocket = Rocket()
+rocket.list = rocket_list
+rocket.surface = rocket_surface
