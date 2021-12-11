@@ -21,7 +21,7 @@ FONT = pygame.font.SysFont('century gothic', 30, bold=True)
 FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
 pygame.font.init()
 
-cash = 10000
+cash = 1000
 BLUE = (39, 40, 91)
 LIGHT_BLUE = (106, 139, 197)
 
@@ -109,11 +109,26 @@ def draw_buttons(bg_surf, buttons_off, buttons_on):
         if buttons_off[i].check_button(pygame.mouse.get_pos()):
             bg_surf.blit(buttons_on[i].button_surf, (buttons_on[i].x, buttons_on[i].y))
 
+def calc_params(rocket_list):
+    mass = 0
+    fuel = 0
+    for rocket_module in rocket_list:
+        mass += rocket_module.m
+    for rocket_module in rocket_list:
+        fuel += rocket_module.fuel
+    return mass, fuel
 
-def draw_points():
+
+def draw_text(rocket_list, bg_constructor_surf):
     """Функция отрисовывает количество денег на заднем фоне слайда."""
-    text = FONT.render('cash: ' + str(cash), True, BLUE)
-    sc.blit(text, (610, 20))
+    mass, fuel = calc_params(rocket_list)
+    cash_text = FONT.render('cash: ' + str(cash), True, BLUE)
+    fuel_text = FONT_small.render('fuel: ' + str(fuel), True, BLUE)
+    mass_text = FONT_small.render('mass: ' + str(mass), True, BLUE)
+    bg_constructor_surf.blit(cash_text, (610, 20))
+    bg_constructor_surf.blit(fuel_text, (200, 555))
+    bg_constructor_surf.blit(mass_text, (350, 555))
+
 
 
 def draw_modules(dif_modules, bg_constructor_surf):
@@ -127,10 +142,12 @@ def draw_modules(dif_modules, bg_constructor_surf):
     for dif_module in dif_modules:
         dif_module.x = x
         dif_module.y = y
-        dif_module.surface = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
-        dif_module.surface = pygame.transform.scale(dif_module.surface, (dif_module.b, dif_module.a))
+        #dif_module.surface = pygame.image.load(("images/constructor/modules/"+dif_module.image+".png"))
+        #dif_module.surface = pygame.transform.scale(dif_module.surface, (dif_module.b, dif_module.a))
         dif_modules_surface.blit(dif_module.surface, (dif_module.x, dif_module.y))
         price = FONT_small.render(str(dif_module.price), True, BLUE)
+        #quality = pygame.Surface(10, 30)
+
         #price_rect = pygame.draw.rect(dif_modules_surface, LIGHT_BLUE, (x-70, y+(dif_module.a / 3), 55, 30), width=1, border_radius=1)
         dif_modules_surface.blit(price, (x-60, y+(dif_module.a / 3)))
 
@@ -152,12 +169,13 @@ def move_modules(moved_module, bg_constructor_surf, flag):
     #print("move", moved_module.x)
 
 
-"""def check_borders(moved_module):
+"""def check_borders(moved_module, rocket_list):
     collide = False
-    u, w = pygame.mouse.get_pos()
-    for rocket_module in rocket_list:
-        if rocket_module.x <= u + moved_module.b <= rocket_module.x + rocket_module.b and rocket_module.y <= moved_module.y <= rocket_module.y + rocket_module.a:
-            collide = True
+    if rocket_list != []:
+        for rocket_module in rocket_list:
+            if pygame.Rect.colliderect(rocket_module.rect, moved_module.rect):
+                collide = True
+    print(collide)
     return collide
     #print("check", moved_module.x)"""
 
@@ -199,6 +217,23 @@ def draw_rocket(rocket_list, rocket_surface):
         rocket_surface.blit(rocket_module.surface, (rocket_module.x - 200, rocket_module.y - 50))
 
 
+def draw_center_mass(rocket_list, rocket_surface):
+    m = 0
+    my = 0
+    mx = 0
+    if rocket_list != []:
+        for module in rocket_list:
+            m += module.m
+            my += module.m * (module.y - 50 + module.a/2)
+            mx += module.m * (module.x - 200 + module.b/2)
+        y_center_mass = my / m
+        x_center_mass = mx / m
+
+        center_mass = pygame.Surface((10, 10))
+        center_mass.fill("tomato")
+        rocket_surface.blit(center_mass, (x_center_mass-5, y_center_mass-5))
+
+
 def find_max_coord(rocket_list):
     """Функция находит наиболее близкий элемент к земле."""
     rocket_modules_y_bottom = []
@@ -227,10 +262,8 @@ def find_max_coord(rocket_list):
 
 
 def delete_rocket(rocket_list):
-    global cash
     if buttons_off[6].check_button(pygame.mouse.get_pos()):
         rocket_list = []
-        cash = 10000
     return rocket_list
 
 
@@ -336,11 +369,13 @@ def draw_constructor_foo(eventus, click, rocket_list, rocket_surface, flag1, fla
     if flag2 and j >= 0:
         set_modules(dif_modules, flag2, j, rocket_list)
         j = k
+
     draw_rocket(rocket_list, rocket_surface)
+
     draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
     draw_modules(dif_modules, bg_constructor_surf)
     draw_bg(grid, bg_constructor_surf, rocket_surface)
-    draw_points()
+    draw_text(rocket_list, bg_constructor_surf)
     if not rocket_list:
         rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
     return click, rocket_list, rocket_surface, flag1, flag2, k, j
@@ -397,14 +432,18 @@ if __name__ == '__main__':
 
         y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
 
+        draw_text(rocket_list, bg_constructor_surf)
+
         draw_rocket(rocket_list, rocket_surface)
+
+        draw_center_mass(rocket_list, rocket_surface)
 
         draw_buttons(bg_constructor_surf, buttons_off, buttons_on)
 
         draw_modules(dif_modules, bg_constructor_surf)
 
         draw_bg(grid, bg_constructor_surf, rocket_surface)
-        draw_points()
+
         if not rocket_list:
             rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 
