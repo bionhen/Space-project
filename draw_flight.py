@@ -1,7 +1,7 @@
 import pygame
 from starship_rocket import *
 from starship_flight import *
-from starship_modules import *
+
 
 pygame.init()
 
@@ -30,10 +30,13 @@ def render_bg():
 
 def draw_bg(bg_flight_surf, cosmodrom, ground, rocket):
     """Функция отрисовывает составляющие заднего фона на экране."""
+    #print(rocket.list)
+    print(rocket.list)
     bg_flight_surf.blit(cosmodrom, (250, 200))
     bg_flight_surf.blit(ground, (0, 525))
-    rocket.surface = pygame.transform.scale(rocket.surface, (100, 200))
-    bg_flight_surf.blit(rocket.surface, (400 - x_left, 315))
+    bg_flight_surf.blit(rocket.surface, (400 - x_left + rocket_surface_widht/2, 520 - rocket_surface_height))
+    #rocket.surface = pygame.transform.scale(rocket.surface, (100, 200))
+
     sc.blit(bg_flight_surf, (0, 0))
 
 
@@ -61,23 +64,8 @@ def fill_gradient(bg_flight_surf, h):
         bg_flight_surf.fill((30, 33, 61))
 
 
-module0 = Module()
-module0.type = 'engine'
-module0.m = 100
-module0.fuel = 100
-module0.price = 0
-module0.resistance = 100
-module0.force = 100
-module0.image = 'engine_2x1'
-module0.a = 50
-module0.b = 100
-module0.x = 0
-module0.y = 0
-module0.surface = pygame.image.load("images/constructor/modules/engine_2x1.png")
-module0.surface = pygame.transform.scale(module0.surface, (module0.b, module0.a))
-
-rocket.list = [module0]
 h = 6400000
+
 if __name__ == '__main__':
     fuel_calc(rocket)
     bg_flight_surf, cosmodrom, ground = render_bg()
@@ -86,9 +74,10 @@ if __name__ == '__main__':
 
         fill_gradient(bg_flight_surf, h)
         draw_status(bg_flight_surf, 100)
+        #sc.blit(rocket.surface, (100, 100)) #(400 - x_left, 315))
         draw_bg(bg_flight_surf, cosmodrom, ground, rocket)
-
-        h += 1000
+        print(cosmodrom)
+        h += 100
 
 
         for event in pygame.event.get():
