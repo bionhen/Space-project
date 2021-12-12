@@ -105,5 +105,5 @@ print(y_bottom, y_top, x_left, x_right)
 rocket = Rocket()
 rocket.list = rocket_list
 rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
-
+rocket.h = 6400000
 

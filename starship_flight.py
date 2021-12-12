@@ -2,7 +2,7 @@ import numpy as np
 
 g = 9.81
 G = 6.67 * 10 ** (-11)
-M = 6.02 * 10 ** (-24)
+M = 6.02 * 10 ** 24
 
 
 def fuel_calc(rocket):

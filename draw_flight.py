@@ -67,17 +67,35 @@ def fill_gradient(bg_flight_surf, h):
 h = 6400000
 
 if __name__ == '__main__':
+    flag_left = flag_right = flag_forward = False
     fuel_calc(rocket)
     bg_flight_surf, cosmodrom, ground = render_bg()
     while True:
-        #h = rocket.h
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                    flag_left = True
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                    flag_right = True
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    flag_forward = True
+                if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
+                    flag_left = False
+                if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
+                    flag_right = False
+                if event.type == pygame.KEYUP and event.key == pygame.K_UP:
+                    flag_forward = False
 
+
+        h = rocket.h
+        rocket_move(rocket, flag_left, flag_right, flag_forward)
         fill_gradient(bg_flight_surf, h)
         draw_status(bg_flight_surf, 100)
         #sc.blit(rocket.surface, (100, 100)) #(400 - x_left, 315))
         draw_bg(bg_flight_surf, cosmodrom, ground, rocket)
-        print(cosmodrom)
-        h += 100
+        print(rocket.h, rocket.fuel, flag_forward)
 
 
         for event in pygame.event.get():

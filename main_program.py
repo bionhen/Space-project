@@ -3,6 +3,7 @@ from draw_menu import *
 from change_screen import *
 from draw_missions import *
 from draw_constructor import *
+from draw_flight import *
 from starship_flight import *
 pygame.init()
 WIDTH, HEIGHT = 800, 600
@@ -62,6 +63,6 @@ while not finished:
             happen, click, rocket_list, moved_module, flag1, flag2, flag_dif, flag_rock, k, j)
     elif draw_screen == "flying":
         circle(sc, (0, 0, 0), (400, 300), 300)
-        rocket_move(rocket, flag_left, flag_right, flag_forward)
+
     show_modules(mouse_click)
     pygame.display.update()
