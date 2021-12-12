@@ -1,6 +1,5 @@
 from starship_modules import *
 from starship_constructor import *
-from starship_rocket import *
 
 pygame.init()
 
