@@ -32,21 +32,21 @@ def draw_bg(bg_flight_surf, cosmodrom, ground, rocket):
     """Функция отрисовывает составляющие заднего фона на экране."""
     #print(rocket.list)
     print(rocket.list)
-    bg_flight_surf.blit(cosmodrom, (250, 200))
-    bg_flight_surf.blit(ground, (0, 525))
+    bg_flight_surf.blit(cosmodrom, (250, 200 + h - 6400000))
+    bg_flight_surf.blit(ground, (0, 525+ h - 6400000))
     bg_flight_surf.blit(rocket.surface, (400 - x_left + rocket_surface_widht/2, 520 - rocket_surface_height))
     #rocket.surface = pygame.transform.scale(rocket.surface, (100, 200))
 
     sc.blit(bg_flight_surf, (0, 0))
 
 
-def draw_status(bg_flight_surf, fuel):
-    fuel_status_image = pygame.Surface((50, fuel + 10))
-    if 50 < fuel:  #FIXME топливо не фиксированное, а в процентах от максимума.
+def draw_status(bg_flight_surf, rocket):
+    fuel_status_image = pygame.Surface((50, rocket.fuel))
+    if 50 < rocket.fuel:  #FIXME топливо не фиксированное, а в процентах от максимума.
         fuel_status_image.fill('green')
-    elif 25 < fuel <= 50:
+    elif 25 < rocket.fuel <= 50:
         fuel_status_image.fill('yellow')
-    elif fuel <= 25:
+    elif rocket.fuel <= 25:
         print('hee')
         fuel_status_image.fill('tomato')
 
@@ -65,45 +65,31 @@ def fill_gradient(bg_flight_surf, h):
 
 
 h = 6400000
-
+flag_left = flag_right = False
+flag_forward = False
 if __name__ == '__main__':
-    flag_left = flag_right = flag_forward = False
     fuel_calc(rocket)
     bg_flight_surf, cosmodrom, ground = render_bg()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                    flag_left = True
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                    flag_right = True
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
                     flag_forward = True
-                if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
-                    flag_left = False
-                if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
-                    flag_right = False
-                if event.type == pygame.KEYUP and event.key == pygame.K_UP:
+                    print(flag_forward)
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP:
                     flag_forward = False
 
 
         h = rocket.h
         rocket_move(rocket, flag_left, flag_right, flag_forward)
         fill_gradient(bg_flight_surf, h)
-        draw_status(bg_flight_surf, 100)
+        draw_status(bg_flight_surf, rocket)
         #sc.blit(rocket.surface, (100, 100)) #(400 - x_left, 315))
         draw_bg(bg_flight_surf, cosmodrom, ground, rocket)
         print(rocket.h, rocket.fuel, flag_forward)
-
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-        flag_left = flag_right = flag = True
-        if rocket_list != []:
-            rocket_move(rocket, flag_left, flag_right, flag)
 
 
         pygame.display.update()

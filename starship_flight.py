@@ -22,18 +22,26 @@ def force_calc(rocket, flag):
     f_s_y = 0
     f_e_x = 0
     f_e_y = 0
-    for module in rocket.list:
-        f_m += module.m * G * M / rocket.h ** 2
-    f_s_y += -rocket.vy * (rocket.angle / 180 + 0.1)
-    f_s_x += -rocket.vx * ((180 - rocket.angle) / 180 + 0.1)
-    if flag:
+    if rocket.h >= 6400000:
         for module in rocket.list:
-            if module.type == 'engine' and rocket.fuel >= 0:
-                f_e_y += module.force * np.cos(rocket.angle)
-                f_e_x += module.force * np.sin(rocket.angle)
-                rocket.fuel -= module.force * 0.005
-    f_x = f_s_x + f_e_x
-    f_y = f_s_y + f_m + f_e_x
+            f_m -= module.m * G * M / rocket.h ** 2
+        f_s_y += - rocket.vy * (rocket.angle / 180 + 0.1)
+        f_s_x += - rocket.vx * ((180 - rocket.angle) / 180 + 0.1)
+        if flag:
+            for module in rocket.list:
+                if module.type == 'engine' and rocket.fuel >= 0:
+                    f_e_y += module.force * np.cos(rocket.angle) * 1000
+                    f_e_x += module.force * np.sin(rocket.angle) * 1000
+                    rocket.fuel -= module.force * 0.0005
+        else:
+            f_e_y = 0
+        f_x = f_s_x + f_e_x
+        f_y = f_s_y + f_m + f_e_y
+    else:
+        f_x = 0
+        f_y = 0
+        rocket.h = 6400100
+    print(f_y)
     return f_x, f_y
 
 
@@ -75,3 +83,4 @@ def rocket_move(rocket, flag_left, flag_right, flag):
     epsilon = momentum_calc(rocket, flag_left, flag_right)
     rocket.omega += epsilon * dt
     rocket.angle += rocket.angle * dt
+
