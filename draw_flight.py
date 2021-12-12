@@ -1,5 +1,7 @@
 import pygame
 from starship_rocket import *
+from starship_flight import *
+from starship_modules import *
 
 pygame.init()
 
@@ -26,74 +28,77 @@ def render_bg():
 
     return bg_flight_surf, cosmodrom, ground
 
-def draw_bg(bg_flight_surf, cosmodrom, ground, rocket, h):
+def draw_bg(bg_flight_surf, cosmodrom, ground, rocket):
     """Функция отрисовывает составляющие заднего фона на экране."""
-    bg_flight_surf.blit(cosmodrom, (250, 200+h))
-    bg_flight_surf.blit(ground, (0, 525+h))
-    #rocket.surface = pygame.transform.scale(rocket.surface, (rocket_surface_heigth, rocket_surface_widht))
-    bg_flight_surf.blit(rocket.surface, (200, 250))
+    bg_flight_surf.blit(cosmodrom, (250, 200))
+    bg_flight_surf.blit(ground, (0, 525))
+    rocket.surface = pygame.transform.scale(rocket.surface, (100, 200))
+    bg_flight_surf.blit(rocket.surface, (400 - x_left, 315))
     sc.blit(bg_flight_surf, (0, 0))
 
 
+def draw_status(bg_flight_surf, fuel):
+    fuel_status_image = pygame.Surface((50, fuel + 10))
+    if 50 < fuel:  #FIXME топливо не фиксированное, а в процентах от максимума.
+        fuel_status_image.fill('green')
+    elif 25 < fuel <= 50:
+        fuel_status_image.fill('yellow')
+    elif fuel <= 25:
+        print('hee')
+        fuel_status_image.fill('tomato')
 
-def fill_gradient(surface, color, gradient, rect=None, vertical=True, forward=True):
-    """fill a surface with a gradient pattern
-    Parameters:
-    color -> starting color
-    gradient -> final color
-    rect -> area to fill; default is surface's rect
-    vertical -> True=vertical; False=horizontal
-    forward -> True=forward; False=reverse
+    #fuel_text = FONT_small.render('fuel: ' + str(fuel), True, BLUE)
 
-    Pygame recipe: http://www.pygame.org/wiki/GradientCode
-    """
-    if rect is None: rect = surface.get_rect()
-    x1, x2 = rect.left, rect.right
-    y1, y2 = rect.top, rect.bottom
-    if vertical:
-        h = y2 - y1
+    bg_flight_surf.blit(fuel_status_image, (50, 50))
+
+def fill_gradient(bg_flight_surf, h):
+    if h<= 6400000 + 30000:
+        color1 = int(127 - (127-30)/30000 * (h-6400000))
+        color2 = int(199 - (199-33)/30000 * (h-6400000))
+        color3 = int(255 - (255-61)/30000 * (h-6400000))
+        bg_flight_surf.fill((color1, color2, color3))
     else:
-        h = x2 - x1
-    if forward:
-        a, b = color, gradient
-    else:
-        b, a = color, gradient
-    rate = (
-        float(b[0] - a[0]) / h,
-        float(b[1] - a[1]) / h,
-        float(b[2] - a[2]) / h
-    )
-    fn_line = pygame.draw.line
-    if vertical:
-        for line in range(y1, y2):
-            color = (
-                min(max(a[0] + (rate[0] * (line - y1)), 0), 255),
-                min(max(a[1] + (rate[1] * (line - y1)), 0), 255),
-                min(max(a[2] + (rate[2] * (line - y1)), 0), 255)
-            )
-            fn_line(surface, color, (x1, line), (x2, line))
-    else:
-        for col in range(x1, x2):
-            color = (
-                min(max(a[0] + (rate[0] * (col - x1)), 0), 255),
-                min(max(a[1] + (rate[1] * (col - x1)), 0), 255),
-                min(max(a[2] + (rate[2] * (col - x1)), 0), 255)
-            )
-            fn_line(surface, color, (col, y1), (col, y2))
-h = 1
+        bg_flight_surf.fill((30, 33, 61))
+
+
+module0 = Module()
+module0.type = 'engine'
+module0.m = 100
+module0.fuel = 100
+module0.price = 0
+module0.resistance = 100
+module0.force = 100
+module0.image = 'engine_2x1'
+module0.a = 50
+module0.b = 100
+module0.x = 0
+module0.y = 0
+module0.surface = pygame.image.load("images/constructor/modules/engine_2x1.png")
+module0.surface = pygame.transform.scale(module0.surface, (module0.b, module0.a))
+
+rocket.list = [module0]
+h = 6400000
 if __name__ == '__main__':
+    fuel_calc(rocket)
+    bg_flight_surf, cosmodrom, ground = render_bg()
     while True:
-        bg_flight_surf, cosmodrom, ground = render_bg()
-        fill_gradient(bg_flight_surf, (30 - 0.5 * h, 33 - 0.5 * h, 61 - 0.05 * h), (127 - h, 199 - h, 255 - 0.5 * h),
-                      rect=None, vertical=True, forward=True)
-        draw_bg(bg_flight_surf, cosmodrom, ground, rocket, h)
+        #h = rocket.h
+
+        fill_gradient(bg_flight_surf, h)
+        draw_status(bg_flight_surf, 100)
+        draw_bg(bg_flight_surf, cosmodrom, ground, rocket)
+
+        h += 1000
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+        flag_left = flag_right = flag = True
+        if rocket_list != []:
+            rocket_move(rocket, flag_left, flag_right, flag)
 
 
-        h += 10
         pygame.display.update()
 
         clock.tick(FPS)
