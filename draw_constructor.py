@@ -1,6 +1,5 @@
 from starship_modules import *
 from starship_constructor import *
-from starship_rocket import *
 
 pygame.init()
 
@@ -385,9 +384,6 @@ def draw_constructor_foo(events, clicks, rockets_list, moved_modules, flags1, fl
 
     if not rockets_list:
         rockets_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-    rockets = Rocket()
-    rockets.list = rockets_list
-    rockets.surface = rockets_surface
     return clicks, rockets_list, moved_modules, flags1, flags2, flags_dif, flags_rock, ks, js
 
 
@@ -456,8 +452,5 @@ if __name__ == '__main__':
 
         if not rocket_list:
             rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
-        rocket = Rocket()
-        rocket.list = rocket_list
-        rocket.surface = rocket_surface
         pygame.display.update()
         clock.tick(FPS)

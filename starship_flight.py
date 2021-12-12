@@ -10,7 +10,7 @@ def fuel_calc(rocket):
         rocket.fuel += module.fuel
 
 
-def force_calc(rocket, flag1):
+def force_calc(rocket, flag):
     """
     функция рассчета сил, действующих на ракету
     получает объект класса rocket, возвращает силы по оси x и y
@@ -26,9 +26,9 @@ def force_calc(rocket, flag1):
         f_m += module.m * G * M / rocket.h ** 2
     f_s_y += -rocket.vy * (rocket.angle / 180 + 0.1)
     f_s_x += -rocket.vx * ((180 - rocket.angle) / 180 + 0.1)
-    if flag1:
+    if flag:
         for module in rocket.list:
-            if module.type == 'engine':
+            if module.type == 'engine' and rocket.fuel >= 0:
                 f_e_y += module.force * np.cos(rocket.angle)
                 f_e_x += module.force * np.sin(rocket.angle)
                 rocket.fuel -= module.force * 0.005
@@ -49,10 +49,10 @@ def momentum_calc(rocket, left_flag, right_flag):
     x_c = mx / m
     mf = 0
     for module in rocket.list:
-        if left_flag:
+        if left_flag and rocket.fuel >= 0:
             if module.type == 'engine_l':
                 rocket.fuel -= module.force * 0.001
-        if right_flag:
+        if right_flag and rocket.fuel >= 0:
             if module.type == 'engine_r':
                 rocket.fuel -= module.force * 0.001
         mf += module.force * (module.x-x_c)
