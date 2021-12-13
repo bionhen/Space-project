@@ -126,3 +126,39 @@ if __name__ == '__main__':
 
         clock.tick(FPS)
         time_step += 1
+
+"""
+Огромный комментарий к функции draw_rotate
+Во-первых, сначала нужно определить следующие переменные (не обязательно как в примере):
+
+img = pygame.image.load(("images/constructor/modules/engine_1x1.png")).convert_alpha()
+img = pygame.transform.scale(img, (50, 50))
+angle = 0
+rotate_left = rotate_right = False
+
+И да, rotate_left и rotate_right надо бы в flag_left и flag_right переименовать
+Во-вторых, вот сама функция: 
+
+def draw_rotate(img, pos, center, angle):
+    Эта функция поворачивает картинку на заданный угол относительно заданного центра вращения
+    :param img: изображение, с которым произойдет преображение :)
+    :param pos: координаты центра вращения на изображении
+    :param center: координаты центра поверхности на экране
+    :param angle: тот самый заданный угол поворота
+    :return: повернутое изображение и координаты точки, где его надо нарисовать
+    w, h = img.get_size()
+    img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
+    img2.blit(img, (w - pos[0], h - pos[1]))
+    img4 = pygame.transform.rotate(img2, angle)
+    rect = img4.get_rect()
+    rect.center = center
+    return img4, rect
+
+В-третьих, нужно написать еще вот эти строчки:
+
+    img4, rect = draw_rotate(img, (25, 25), (300, 100), angle)
+    sc.blit(img4, rect)
+
+Потому что sc.blit(draw_rotate (img, (25, 25), (300, 100), angle)) по какой-то причине не работает
+
+"""
