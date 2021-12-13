@@ -1,4 +1,5 @@
 import numpy as np
+from starship_rocket import *
 
 g = 9.81
 G = 6.67 * 10 ** (-11)
@@ -17,31 +18,37 @@ def force_calc(rocket, flag):
     :param rocket: - экземпляр класса
     :return: f_k, f_y - силы, действующие на ракету
     """
+    if rocket.h <= 6440000:
+        k = 0.001*(6440000-rocket.h)/40000
+    else:
+        k = 0
     f_m = 0
     f_s_x = 0
     f_s_y = 0
     f_e_x = 0
     f_e_y = 0
-    if rocket.h >= 6400000:
-        for module in rocket.list:
+    y_bottom, y_top, x_left, x_right = find_max_coord(rocket.list)
+    height = np.abs(y_bottom - y_top)
+    width = np.abs(x_left - x_right)
+    for module in rocket.list:
+        if rocket.h >= 6400000:
             f_m -= module.m * G * M / rocket.h ** 2
-        f_s_y += - rocket.vy * (rocket.angle / 180 + 0.1)
-        f_s_x += - rocket.vx * ((180 - rocket.angle) / 180 + 0.1)
-        if flag:
-            for module in rocket.list:
-                if module.type == 'engine' and rocket.fuel >= 0:
-                    f_e_y += module.force * np.cos(rocket.angle) * 1000
-                    f_e_x += module.force * np.sin(rocket.angle) * 1000
-                    rocket.fuel -= module.force * 0.0005
         else:
-            f_e_y = 0
-        f_x = f_s_x + f_e_x
-        f_y = f_s_y + f_m + f_e_y
+            f_m = 0
+            rocket.vy = 0
+    f_s_y = - rocket.vy * (k * height * rocket.angle + k * width * (180 - rocket.angle))
+    f_s_x = - rocket.vx * (k * width * rocket.angle + k * height * (180 - rocket.angle))
+    if flag:
+        for module in rocket.list:
+            if module.type == 'engine' and rocket.fuel >= 0:
+                f_e_y += module.force * np.cos(rocket.angle) * 50
+                f_e_x += module.force * np.sin(rocket.angle) * 50
+                rocket.fuel -= module.force * 0.0005
     else:
-        f_x = 0
-        f_y = 0
-        rocket.h = 6400100
-    print(f_y)
+        f_e_y = 0
+        f_e_x = 0
+    f_x = f_s_x + f_e_x
+    f_y = f_s_y + f_m + f_e_y
     return f_x, f_y
 
 
@@ -70,7 +77,7 @@ def momentum_calc(rocket, left_flag, right_flag):
 
 def rocket_move(rocket, flag_left, flag_right, flag):
     m = 0
-    dt = 0.01
+    dt = 1 / 30
     for module in rocket.list:
         m += module.m
     f_x, f_y = force_calc(rocket, flag)

@@ -2,6 +2,7 @@ import pygame
 from draw_constructor import rocket_list
 from starship_modules import *
 
+
 class Rocket:
 
     """
@@ -22,6 +23,7 @@ class Rocket:
     vy = 0
     omega = 0
     fuel = 0
+
 
 module0 = Module()
 module0.type = 'engine'
@@ -96,6 +98,7 @@ def render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket):
         rocket.surface.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
     print(rocket.surface)
     return rocket.surface
+
 
 y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
 rocket_surface_height, rocket_surface_widht = y_bottom - y_top, x_right - x_left
