@@ -169,6 +169,41 @@ def move_modules(moved_module_arg, bg_constructor_surf_arg, flag):
     if flag:
         bg_constructor_surf_arg.blit(moved_module_arg.surface, (x, y))
 
+def check_point(cord_x, cord_y, rocket_module):
+    upped_1 = False
+    if (rocket_module.x  + 5 < cord_x < rocket_module.x + rocket_module.b - 5) and (rocket_module.y + 5 < cord_y < rocket_module.y + rocket_module.a - 5):
+        upped_1 = True
+    print(upped_1)
+    return upped_1
+
+def check_modules(rocket_list, moved_module):
+    upped = False
+    k = 0
+    upped_list = []
+    x_mouse, y_mouse = pygame.mouse.get_pos()
+    moved_module_x_r_u, moved_module_y_r_u = x_mouse, y_mouse - 10
+    moved_module_x_l_u, moved_module_y_l_u = x_mouse + moved_module.b, y_mouse - 10
+    moved_module_x_r_d, moved_module_y_r_d = x_mouse, y_mouse + moved_module.a
+    moved_module_x_l_d, moved_module_y_l_d = x_mouse + moved_module.b, y_mouse + moved_module.a
+    moved_module_x_c, moved_module_y_c = x_mouse + moved_module.b/2, y_mouse + moved_module.a/2
+    moved_module_point = [(moved_module_x_r_u, moved_module_y_r_u), (moved_module_x_l_u, moved_module_y_l_u),
+                          (moved_module_x_r_d, moved_module_y_r_d), (moved_module_x_l_d, moved_module_y_l_d),
+                          (moved_module_x_c, moved_module_y_c)]
+
+    for rocket_module in rocket_list:
+        for i in range(len(moved_module_point)):
+            upped = check_point(moved_module_point[i][0], moved_module_point[i][1], rocket_module)
+            if upped:
+                break
+    """for i in upped_list:
+        if i:
+            k += 1
+    if k > 0:"""
+    print("upped", upped)
+    return upped
+
+
+
 
 def set_modules(moved_module_arg, flag, rocket_list_arg):
     """
@@ -179,7 +214,7 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
     """
     global cash
     u, w = pygame.mouse.get_pos()
-    if flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550:
+    if flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and rocket_list == []:
         rocket_module = Module()
         rocket_module.type = moved_module_arg.type
         rocket_module.m = moved_module_arg.m
@@ -194,7 +229,23 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.y = w - w % 25
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
-
+    elif flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and \
+            not check_modules(rocket_list_arg, moved_module_arg):
+        rocket_module = Module()
+        rocket_module.type = moved_module_arg.type
+        rocket_module.m = moved_module_arg.m
+        rocket_module.fuel = moved_module_arg.fuel
+        rocket_module.price = moved_module_arg.price
+        rocket_module.resistance = moved_module_arg.resistance
+        rocket_module.force = moved_module_arg.force
+        rocket_module.image = moved_module_arg.image
+        rocket_module.a = moved_module_arg.a
+        rocket_module.b = moved_module_arg.b
+        rocket_module.x = u - u % 50
+        rocket_module.y = w - w % 25
+        rocket_module.surface = moved_module_arg.surface
+        rocket_list_arg.append(rocket_module)
+    print(rocket_list_arg)
 
 def draw_rocket(rocket_list_arg, rocket_surface_arg):
     """
@@ -223,8 +274,8 @@ def draw_center_mass(rocket_list_arg, rocket_surface_arg):
         rocket_surface_arg.blit(center_mass, (x_center_mass - 5, y_center_mass - 5))
 
 
-def find_max_coord(rocket_list_arg):
-    """Функция находит наиболее близкий элемент к земле, а так же самый правый и самый левый элементы"""
+"""def find_max_coord(rocket_list_arg):
+    """"""Функция находит наиболее близкий элемент к земле, а так же самый правый и самый левый элементы""""""
     rocket_modules_y_bottom = []
     rocket_modules_y_top = []
     rocket_modules_x_left = []
@@ -247,7 +298,7 @@ def find_max_coord(rocket_list_arg):
         x_left_arg = min(rocket_modules_x_left)
         x_right_arg = max(rocket_modules_x_right)
 
-    return y_bottom_arg, y_top_arg, x_left_arg, x_right_arg
+    return y_bottom_arg, y_top_arg, x_left_arg, x_right_arg"""
 
 
 def delete_rocket(rocket_list_arg):
@@ -436,7 +487,7 @@ if __name__ == '__main__':
             j = k
             flag_rock = False
 
-        y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
+        #y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
 
         draw_text(rocket_list, bg_constructor_surf)
 
@@ -452,5 +503,6 @@ if __name__ == '__main__':
 
         if not rocket_list:
             rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+
         pygame.display.update()
         clock.tick(FPS)
