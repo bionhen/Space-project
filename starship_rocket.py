@@ -55,7 +55,37 @@ module1.y = 100
 module1.surface = pygame.image.load("images/constructor/modules/engine_1x1.png")
 module1.surface = pygame.transform.scale(module1.surface, (module1.b, module1.a))
 
-rocket_list = [module0, module1]
+module2 = Module()
+module2.type = 'engine_r'
+module2.m = 100
+module2.fuel = 0
+module2.price = 0
+module2.resistance = 100
+module2.force = 200
+module2.image = 'engine_2x1'
+module2.a = 100
+module2.b = 50
+module2.x = 100
+module2.y = 50
+module2.surface = pygame.image.load("images/constructor/modules/engine_right_2x1.png")
+module2.surface = pygame.transform.scale(module2.surface, (module2.b, module2.a))
+
+module3 = Module()
+module3.type = 'engine_l'
+module3.m = 100
+module3.fuel = 0
+module3.price = 0
+module3.resistance = 100
+module3.force = 200
+module3.image = 'engine_2x1'
+module3.a = 100
+module3.b = 50
+module3.x = 0
+module3.y = 50
+module3.surface = pygame.image.load("images/constructor/modules/engine_left_2x1.png")
+module3.surface = pygame.transform.scale(module3.surface, (module3.b, module3.a))
+
+rocket_list = [module0, module1, module2, module3]
 
 def find_max_coord(rocket_list):
     """Функция находит наиболее близкий элемент к земле."""
@@ -90,8 +120,12 @@ def find_max_coord(rocket_list):
 
 
 def render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket):
-    rocket.surface = pygame.Surface((rocket_surface_widht, rocket_surface_height)) #, pygame.SRCALPHA)
-    return rocket.surface
+    rocket.surf = pygame.Surface((rocket_surface_widht, rocket_surface_height)) #, pygame.SRCALPHA)
+    for rocket_module in rocket.list:
+        rocket_module.x = rocket_module.x - x_left
+        rocket_module.y = rocket_module.y - y_top
+        rocket.surf.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
+    return rocket.surf
 
 
 def find_engines(rocket):
