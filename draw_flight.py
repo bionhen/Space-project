@@ -113,7 +113,7 @@ def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
         fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, LIGHT_BLUE)
     if rocket.h < 30000 + 6400000 and rocket.fuel <= 0:
         fuel_text = FONT_small.render('fuel: ' + str(0), True, BLUE)
-    if rocket.h >= 30000 + 6400000 and rocket.fuel < 0:
+    if rocket.h >= 30000 + 6400000 and rocket.fuel <= 0:
         fuel_text = FONT_small.render('fuel: ' + str(0), True, LIGHT_BLUE)
     bg_flight_surf.blit(fuel_max_image, (50, 300))
     bg_flight_surf.blit(fuel_status_image, (50, 400+(100 - fuel_per_height)))
@@ -122,7 +122,7 @@ def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
 
 def draw_height(bg_flight_surf, rocket, earth, space):
     # FIXME сделать всплывающую плашку "вы достигли космоса"
-    cosmos_height_per = 100 * (rocket.h - 6400000) / 30000
+    cosmos_height_per = 100 * (rocket.h - 6400000) / 80000
     cosmos_height_stick = pygame.Surface((5, 300))
     cosmos_height_roll = pygame.Surface((15, 5))
     cosmos_height_stick.fill('white')
@@ -156,17 +156,25 @@ def draw_speed(bg_flight_surf, rocket):
 
     bg_flight_surf.blit(speed_text, (25, 270))
 
-"""def draw_angle(bg_flight_surf, rocket_angle):
-    angle_ideal = 90 / 80000 * rocket.h
-    pos = , y_center_mass
-    center = (400, 520 - rocket_surface_height + 50 + y_center_mass)
-    w, h = rocket_surface_widht, rocket_surface_height
-    img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
-    img2.blit(rocket.surface, (w - pos[0], h - pos[1]))
-    img4 = pygame.transform.rotate(img2, angle)
-    rect = img4.get_rect()
-    rect.center = center"""
+def draw_angle(bg_flight_surf, rocket):
+    #FIXME поправить периодичность угла
+    angle_ideal = 3.14 / (2 * 80000) * (rocket.h - 6400000)
+    angle_difference = angle_ideal - rocket.angle
+    pos_angle = 25, 50
+    center_angle = (760, 100)
+    angle1 = pygame.image.load("images/flight/angle.png")
+    angle1 = pygame.transform.scale(angle1, (25, 50))
+    w_angle, h_angle = angle1.get_size()
+    angle2 = pygame.Surface((2*w_angle, 2*h_angle), pygame.SRCALPHA)
+    angle2.blit(angle1, (w_angle - pos_angle[0], h_angle - pos_angle[1]))
+    angle4 = pygame.transform.rotate(angle2, angle_ideal)
+    rect_angle = angle4.get_rect()
+    rect_angle.center = center_angle
 
+    angle_text = FONT_small.render('deviation: ' + str(abs(round(angle_difference, 1))), True, BLUE)
+
+    bg_flight_surf.blit(angle4, rect_angle)
+    bg_flight_surf.blit(angle_text, (620, 120))
 
 
 
@@ -222,6 +230,7 @@ if __name__ == '__main__':
         draw_fuel(bg_flight_surf, rocket, rocket_fuel_max)
         draw_height(bg_flight_surf, rocket, earth, space)
         draw_speed(bg_flight_surf, rocket)
+        draw_angle(bg_flight_surf, rocket)
 
         draw_bg(bg_flight_surf, cosmodrom, ground)
 
