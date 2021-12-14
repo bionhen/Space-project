@@ -1,5 +1,6 @@
 import numpy as np
 from starship_rocket import *
+from random import *
 
 g = 9.81
 G = 6.67 * 10 ** (-11)
@@ -19,7 +20,7 @@ def force_calc(rocket, flag):
     :return: f_k, f_y - силы, действующие на ракету
     """
     if rocket.h <= 6440000:
-        k = 0.001*(6440000-rocket.h)/40000
+        k = 0.01*(6490000-rocket.h)/90000
     else:
         k = 0
     f_m = 0
@@ -32,7 +33,7 @@ def force_calc(rocket, flag):
     width = np.abs(x_left - x_right)
     for module in rocket.list:
         if rocket.h >= 6400000:
-            f_m -= module.m * G * M / rocket.h ** 2
+            f_m -= module.m * G * M / rocket.h ** 2 - module.m * rocket.vx**2/rocket.h
         else:
             f_m = 0
             rocket.vy = 0
@@ -42,8 +43,8 @@ def force_calc(rocket, flag):
     if flag:
         for module in rocket.list:
             if module.type == 'engine' and rocket.fuel >= 0:
-                f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 50
-                f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 50
+                f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 1000
+                f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 1000
                 rocket.fuel -= module.force * 0.0005
     else:
         f_e_y = 0
@@ -53,7 +54,7 @@ def force_calc(rocket, flag):
     return f_x, f_y
 
 
-def momentum_calc(rocket, left_flag, right_flag):
+def momentum_calc(rocket, left_flag, right_flag, flag_forward):
     m = 0
     my = 0
     mx = 0
@@ -73,7 +74,11 @@ def momentum_calc(rocket, left_flag, right_flag):
             if module.type == 'engine_r':
                 rocket.fuel -= module.force * 0.001
                 mf += module.force * (module.x - x_c)
-
+        if flag_forward and rocket.fuel >= 0:
+            if module.type == 'engine':
+                rocket.fuel -= module.force * 0.001
+                mf += module.force * (module.x - x_c)
+    mf += randint(0, 1)
     epsilon = mf/m
     return epsilon
 
@@ -90,7 +95,7 @@ def rocket_move(rocket, flag_left, flag_right, flag):
     rocket.vy += a_y * dt
     rocket.x += rocket.vx * dt
     rocket.h += rocket.vy * dt
-    epsilon = momentum_calc(rocket, flag_left, flag_right)
+    epsilon = momentum_calc(rocket, flag_left, flag_right, flag)
     rocket.omega += epsilon * dt
     rocket.angle += rocket.omega * dt
-
+    print(np.sqrt(rocket.vx**2+rocket.vy**2), rocket.vx, rocket.vy)
