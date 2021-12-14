@@ -82,10 +82,7 @@ def draw_rotate(rocket, pos, center, angle):
     :param angle: тот самый заданный угол поворота
     :return: повернутое изображение и координаты точки, где его надо нарисовать"""
     #print(rocket.surf)
-    for rocket_module in rocket.list:
-        rocket_module.x = rocket_module.x - x_left
-        rocket_module.y = rocket_module.y - y_top
-        rocket.surf.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
+
     w, h = rocket_surface_widht, rocket_surface_height
     img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
     img2.blit(rocket.surf, (w - pos[0], h - pos[1]))
