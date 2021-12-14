@@ -26,13 +26,13 @@ class Rocket:
 
 
 module0 = Module()
-module0.type = 'engine'
+module0.type = 'block'
 module0.m = 100
 module0.fuel = 100
 module0.price = 0
 module0.resistance = 100
 module0.force = 100
-module0.image = 'engine_2x1'
+module0.image = 'fuel_1x1'
 module0.a = 50
 module0.b = 50
 module0.x = 50
@@ -72,7 +72,6 @@ def find_max_coord(rocket_list):
         rocket_modules_y_top.append(rocket_module.y) #- 50)
         rocket_modules_x_left.append(rocket_module.x) #- 200)
         rocket_modules_x_right.append(rocket_module.x + rocket_module.b) #- 200)
-        print(rocket_module.x)
     if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
         y_bottom = max(rocket_modules_y_bottom)
         y_top = min(rocket_modules_y_top)
@@ -91,22 +90,24 @@ def find_max_coord(rocket_list):
 
 
 def render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket):
-    rocket.surface = pygame.Surface((rocket_surface_widht, rocket_surface_height), pygame.SRCALPHA)
-    for rocket_module in rocket.list:
-        rocket_module.x = rocket_module.x - x_left
-        rocket_module.y = rocket_module.y - y_top
-        rocket.surface.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
-    print(rocket.surface)
+    rocket.surface = pygame.Surface((rocket_surface_widht, rocket_surface_height)) #, pygame.SRCALPHA)
     return rocket.surface
 
 
-y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
-rocket_surface_height, rocket_surface_widht = y_bottom - y_top, x_right - x_left
+def find_engines(rocket):
+    engines_cord = []
+    for rocket_module in rocket.list:
+        if rocket_module.type == 'engine':
+            engines_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
+    return engines_cord
 
-print(y_bottom, y_top, x_left, x_right)
+y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
+rocket_surface_height, rocket_surface_widht = y_bottom - y_top + 50, x_right - x_left
 
 rocket = Rocket()
 rocket.list = rocket_list
-rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+rocket.surf = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
 rocket.h = 6400000
+engines_cord = find_engines(rocket)
+ #FIXME rocket.fuel
 
