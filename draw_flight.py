@@ -24,27 +24,30 @@ time_step = 0
 i = 1
 
 def render_bg():
-    """Функция генерирует составляющие фона."""
+    """Функция генерирует составляющие фона.
+    :returns
+    bg_flight_surf - поверхность данного слайда игры
+    cosmodrom - изображение космодрома
+    ground - изображение земли
+    earth - изображение Земли на панели сбоку
+    space - изображение космоса на панели сбоку"""
     bg_flight_surf = pygame.Surface((800, 600))
     cosmodrom = pygame.image.load(("images/flight/cosmodrom.png")).convert_alpha()
     cosmodrom = pygame.transform.scale(cosmodrom, (300, 375))
     ground = pygame.image.load(("images/flight/ground.png")).convert_alpha()
     ground = pygame.transform.scale(ground, (800, 80))
-    #ground = pygame.transform.scale(ground, (800, 75))
+    earth = pygame.image.load(("images/flight/earth.png")).convert_alpha()
+    earth = pygame.transform.scale(earth, (20, 20))
+    space = pygame.image.load(("images/flight/space.png")).convert_alpha()
+    space = pygame.transform.scale(space, (20, 20))
 
-    return bg_flight_surf, cosmodrom, ground
+    return bg_flight_surf, cosmodrom, ground, earth, space
 
 def draw_bg(bg_flight_surf, cosmodrom, ground):
     """Функция отрисовывает составляющие заднего фона на экране."""
     bg_flight_surf.blit(cosmodrom, (250, 200 + (h - 6400000) * 15))
-    bg_flight_surf.blit(ground, (0, 525+ (h - 6400000) * 15))
+    bg_flight_surf.blit(ground, (0, 525 + (h - 6400000) * 15))
     sc.blit(bg_flight_surf, (0, 0))
-
-#def draw_rocket(bg_flight_surf, rocket, fire_big, flag_forward):
-    #draw_fire(rocket, fire_big, flag_forward)
-    #bg_flight_surf.blit(rocket.surf, (400 - rocket_surface_widht/2, 520 - rocket_surface_height))
-    #sc.blit(bg_flight_surf, (0, 0))
-    #rocket.surface = pygame.transform.scale(rocket.surface, (100, 200))
 
 
 def render_fire():
@@ -63,58 +66,112 @@ def draw_fire(rocket, fire_big, flag_forward):
         if i % 5 == 0:
             i = 0
         for k in range(len(engines_cord)):
-            rocket.surf.blit(fire_big[i], (engines_cord[k][0], engines_cord[k][1] + engines_cord[k][2]))
-            #print("cvth")
-"""
-Огромный комментарий к функции draw_rotate
-Во-первых, сначала нужно определить следующие переменные (не обязательно как в примере):"""
-angle = 20
-center = (400 - rocket_surface_widht/2, 520 - rocket_surface_height)
-pos = [25, 50]
-flag_left = flag_right = False
-"""И да, rotate_left и rotate_right надо бы в flag_left и flag_right переименовать
-Во-вторых, вот сама функция:"""
-def draw_rotate(rocket, pos, center, angle):
+            rocket.surface.blit(fire_big[i], (engines_cord[k][0], engines_cord[k][1] + engines_cord[k][2]))
+
+
+def draw_rocket(rocket, bg_flight_surf):
     """Эта функция поворачивает картинку на заданный угол относительно заданного центра вращения
     :param img: изображение, с которым произойдет преображение :)
     :param pos: координаты центра вращения на изображении
     :param center: координаты центра поверхности на экране
     :param angle: тот самый заданный угол поворота
     :return: повернутое изображение и координаты точки, где его надо нарисовать"""
-    #print(rocket.surf)
-
+    #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+    x_center_mass, y_center_mass = find_center_mass(rocket)
+    angle = rocket.angle
+    pos = x_center_mass, y_center_mass
+    center = (400, 520 - rocket_surface_height + 50 + y_center_mass)
     w, h = rocket_surface_widht, rocket_surface_height
     img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
-    img2.blit(rocket.surf, (w - pos[0], h - pos[1]))
+    img2.blit(rocket.surface, (w - pos[0], h - pos[1]))
     img4 = pygame.transform.rotate(img2, angle)
     rect = img4.get_rect()
     rect.center = center
-    return img4, rect
-"""В-третьих, нужно написать еще вот эти строчки:"""
 
-"""Потому что sc.blit(draw_rotate (img, (25, 25), (300, 100), angle)) по какой-то причине не работает"""
+    bg_flight_surf.blit(img4, rect)
+    #sc.blit(img4, rect)
 
-def draw_status(bg_flight_surf, rocket):
+
+def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
+    #FIXME сделать всплывающую плашку "закончилось топливо"
     fuel_per = rocket.fuel*(100/rocket_fuel_max)
-    fuel_status_image = pygame.Surface((50, fuel_per))
+    fuel_per_height = (200 / 100 * fuel_per)
+    fuel_status_image = pygame.Surface((50, fuel_per_height))
+    fuel_max_image = pygame.Surface((50, 200))
+    fuel_max_image.fill(LIGHT_BLUE)
     if 75 < fuel_per:
-        fuel_status_image.fill('green')
-    if 50 < fuel_per <= 75:  #FIXME топливо не фиксированное, а в процентах от максимума.
+        fuel_status_image.fill('aquamarine4')
+    if 50 < fuel_per <= 75:
         fuel_status_image.fill('yellow')
-    elif 25 < rocket.fuel <= 50:
+    elif 25 < fuel_per <= 50:
         fuel_status_image.fill('orange')
-    elif rocket.fuel <= 25:
+    elif 0 < fuel_per <= 25:
         fuel_status_image.fill('tomato')
-    if rocket.h < 3000 + 6400000:
+    if rocket.h < 30000 + 6400000 and rocket.fuel > 0:
         fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, BLUE)
-    if rocket.h >= 3000 + 6400000:
+    if rocket.h >= 30000 + 6400000 and rocket.fuel < 0:
         fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, LIGHT_BLUE)
-    bg_flight_surf.blit(fuel_text, (50 - 25, 450))
-    bg_flight_surf.blit(fuel_status_image, (50, 350+(100 - fuel_per)))
+    if rocket.h < 30000 + 6400000 and rocket.fuel <= 0:
+        fuel_text = FONT_small.render('fuel: ' + str(0), True, BLUE)
+    if rocket.h >= 30000 + 6400000 and rocket.fuel < 0:
+        fuel_text = FONT_small.render('fuel: ' + str(0), True, LIGHT_BLUE)
+    bg_flight_surf.blit(fuel_max_image, (50, 300))
+    bg_flight_surf.blit(fuel_status_image, (50, 400+(100 - fuel_per_height)))
+    bg_flight_surf.blit(fuel_text, (50 - 25, 510))
+
+
+def draw_height(bg_flight_surf, rocket, earth, space):
+    # FIXME сделать всплывающую плашку "вы достигли космоса"
+    cosmos_height_per = 100 * (rocket.h - 6400000) / 30000
+    cosmos_height_stick = pygame.Surface((5, 300))
+    cosmos_height_roll = pygame.Surface((15, 5))
+    cosmos_height_stick.fill('white')
+    cosmos_height_roll.fill(BLUE)
+    bg_flight_surf.blit(cosmos_height_stick, (750, 200))
+    if cosmos_height_per < 100:
+        bg_flight_surf.blit(cosmos_height_roll, (750 - 5, 200 + 300 - (300 / 100 * cosmos_height_per)))
+    else:
+            bg_flight_surf.blit(cosmos_height_roll, (750 - 5, 200))
+    bg_flight_surf.blit(earth, (743, 510))
+    bg_flight_surf.blit(space, (743, 170))
+
+
+def draw_speed(bg_flight_surf, rocket):
+    # FIXME сделать всплывающую плашку "вы достигли первой комической скорости"
+    speed = (rocket.vx**2 + rocket.vy**2)**0.5
+    speed_per = speed*(100 / 7910)
+    speed_per_height = (200 / 100 * speed_per)
+    speed_image = pygame.Surface((50, speed_per_height))
+    speed_image_max = pygame.Surface((50, 200))
+    speed_image_max.fill(LIGHT_BLUE)
+    speed_image.fill('tomato')
+    speed_text = FONT_small.render('speed: ' + str(round(speed, 1)), True, BLUE)
+    bg_flight_surf.blit(speed_image_max, (50, 50))
+    if speed_per < 100:
+        bg_flight_surf.blit(speed_image, (50, 50+(200 - speed_per_height)))
+    else:
+        speed_image = pygame.Surface((50, 200))
+        speed_image.fill('tomato')
+        bg_flight_surf.blit(speed_image, (50, 50))
+
+    bg_flight_surf.blit(speed_text, (25, 270))
+
+"""def draw_angle(bg_flight_surf, rocket_angle):
+    angle_ideal = 90 / 80000 * rocket.h
+    pos = , y_center_mass
+    center = (400, 520 - rocket_surface_height + 50 + y_center_mass)
+    w, h = rocket_surface_widht, rocket_surface_height
+    img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
+    img2.blit(rocket.surface, (w - pos[0], h - pos[1]))
+    img4 = pygame.transform.rotate(img2, angle)
+    rect = img4.get_rect()
+    rect.center = center"""
+
+
 
 
 def fill_gradient(bg_flight_surf, h):
-    if h<= 6400000 + 30000:
+    if h <= 6400000 + 30000:
         color1 = int(127 - (127-30)/30000 * (h-6400000))
         color2 = int(199 - (199-33)/30000 * (h-6400000))
         color3 = int(255 - (255-61)/30000 * (h-6400000))
@@ -128,15 +185,14 @@ flag_left = flag_right = False
 flag_forward = False
 if __name__ == '__main__':
     fuel_calc(rocket)
-    bg_flight_surf, cosmodrom, ground = render_bg()
+    bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
     rocket_fuel_max = rocket.fuel
     fire_big = render_fire()
-    #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+    rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
     while True:
-        center = (400, 520 - rocket_surface_height/2)
-        pos = [25, 50]
-        #img4, rect = draw_rotate(rocket, pos, center, angle)
         #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+        print(rocket.surface)
+        print(rocket.list)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
@@ -154,27 +210,27 @@ if __name__ == '__main__':
                     flag_left = False
                 if event.key == pygame.K_RIGHT:
                     flag_right = False
-        img4, rect = draw_rotate(rocket, pos, center, angle)
+
         h = rocket.h
-        angle = rocket.angle
-        print(flag_forward)
+
         rocket_move(rocket, flag_left, flag_right, flag_forward)
+
+
         fill_gradient(bg_flight_surf, h)
-        draw_status(bg_flight_surf, rocket)
+
+
+        draw_fuel(bg_flight_surf, rocket, rocket_fuel_max)
+        draw_height(bg_flight_surf, rocket, earth, space)
+        draw_speed(bg_flight_surf, rocket)
+
         draw_bg(bg_flight_surf, cosmodrom, ground)
 
-        bg_flight_surf.blit(img4, rect)
+
         draw_fire(rocket, fire_big, flag_forward)
 
-        #draw_rocket(bg_flight_surf, rocket, fire_big, flag_forward)
+        draw_rocket(rocket, bg_flight_surf)
+        #sc.blit(rocket.surface, (0,0))
         sc.blit(bg_flight_surf, (0, 0))
-
-
-        #sc.blit(rocket.surface, (100, 100)) #(400 - x_left, 315))
-
-
-
-
 
         pygame.display.update()
 
