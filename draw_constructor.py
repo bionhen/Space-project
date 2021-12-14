@@ -246,6 +246,7 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.y = w - w % 25
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
+        cash -= moved_module.price
     elif flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and \
             not check_modules(rocket_list_arg, moved_module_arg):
         rocket_module = Module()
@@ -262,7 +263,7 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.y = w - w % 25
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
-    print(rocket_list_arg)
+        cash -= moved_module.price
 
 def draw_rocket(rocket_list_arg, rocket_surface_arg):
     """
@@ -320,8 +321,10 @@ def draw_center_mass(rocket_list_arg, rocket_surface_arg):
 
 def delete_rocket(rocket_list_arg):
     """Эта функция удаляет все поставленные игроком запчасти (вызывается после нажатия кнопки delete в игре)"""
+    global cash
     if buttons_off[6].check_button(pygame.mouse.get_pos()):
         rocket_list_arg = []
+        cash = 1000
     return rocket_list_arg
 
 
@@ -435,7 +438,6 @@ def draw_constructor_foo(events, clicks, rockets_list, moved_modules, flags1, fl
         move_modules(moved_modules, bg_constructors_surf, flags1)
     if flags2 and js >= 0 and flags_dif:
         set_modules(moved_modules, flags2, rockets_list)
-        cash -= moved_modules.price
         js = ks
         flags_dif = False
     if flags2 and js >= 0 and flags_rock:
@@ -495,7 +497,6 @@ if __name__ == '__main__':
 
         if flag2 and j >= 0 and flag_dif:
             set_modules(moved_module, flag2, rocket_list)
-            cash -= moved_module.price
             j = k
             flag_dif = False
 
@@ -503,8 +504,6 @@ if __name__ == '__main__':
             set_modules(moved_module, flag2, rocket_list)
             j = k
             flag_rock = False
-
-        #y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
 
         draw_text(rocket_list, bg_constructor_surf)
 
