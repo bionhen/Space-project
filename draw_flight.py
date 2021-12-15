@@ -188,6 +188,38 @@ def fill_gradient(bg_flight_surf, h):
         bg_flight_surf.fill((30, 33, 61))
 
 
+def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, rocket_fuel_max):
+    bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
+    fire_big = render_fire()
+    if events[0] == "key_down" and events[1] == "forward":
+        flag_forward = True
+    if events[0] == "key_down" and events[1] == "left":
+        flag_left = True
+    if events[0] == "key_down" and events[1] == "right":
+        flag_right = True
+    if events[0] == "key_up" and events[1] == "forward":
+        flag_forward = False
+    if events[0] == "key_up" and events[1] == "left":
+        flag_left = False
+    if events[0] == "key_up" and events[1] == "right":
+        flag_right = False
+    h = rocket.h
+    rocket_move(rocket, flag_left, flag_right, flag_forward)
+    fill_gradient(bg_flight_surf, h)
+    draw_fuel(bg_flight_surf, rocket, rocket_fuel_max)
+    draw_height(bg_flight_surf, rocket, earth, space)
+    draw_speed(bg_flight_surf, rocket)
+    draw_angle(bg_flight_surf, rocket)
+    draw_bg(bg_flight_surf, cosmodrom, ground)
+    draw_fire(rocket, fire_big, flag_forward)
+    draw_rocket(rocket, bg_flight_surf)
+    sc.blit(bg_flight_surf, (0, 0))
+    pygame.display.update()
+    clock.tick(FPS)
+    # time_step += 1
+    return rocket, flag_forward, flag_left, flag_right, rocket_fuel_max
+
+
 h = 6400000
 flag_left = flag_right = False
 flag_forward = False
