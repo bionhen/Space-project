@@ -246,7 +246,6 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.y = w - w % 25
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
-        cash -= moved_module.price
     elif flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and \
             not check_modules(rocket_list_arg, moved_module_arg):
         rocket_module = Module()
@@ -263,7 +262,6 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.y = w - w % 25
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
-        cash -= moved_module.price
 
 def draw_rocket(rocket_list_arg, rocket_surface_arg):
     """
@@ -497,6 +495,7 @@ if __name__ == '__main__':
 
         if flag2 and j >= 0 and flag_dif:
             set_modules(moved_module, flag2, rocket_list)
+            cash -= moved_module.price
             j = k
             flag_dif = False
 
