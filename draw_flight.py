@@ -52,6 +52,10 @@ def draw_bg(bg_flight_surf, cosmodrom, ground):
 
 
 def render_fire():
+    """Функция генерирует массивыы изображений огней.
+    :returns
+    fire_big - огни для центральных двигателей
+    fire_small - огни для боковых двигателей"""
     fire_big = [pygame.image.load('images/flight/fire/fire1.png'), pygame.image.load('images/flight/fire/fire2.png'),
                 pygame.image.load('images/flight/fire/fire3.png'), pygame.image.load('images/flight/fire/fire4.png'),
                 pygame.image.load('images/flight/fire/fire5.png')]
@@ -62,6 +66,16 @@ def render_fire():
 
 def draw_fire(img, fire_big, fire_small,
               flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord):
+    """Функция рисует огни у ракеты.
+    :param img - повернхность, на которой отображается огонь
+    :param fire_big - массив огней для центральных двигателей
+    :param fire_small - массив огней для центральных двигателей
+    :param flag_forward - флаг движения вперёд
+    :param flag_left - флаг движения налево
+    :param flag_right - флаг движения направо
+    :param engines_cord - массив кординат центральных двигателей
+    :param engines_left_cord - массив кординат левых двигателей
+    :param engines_right_cord - массив кординат правых двигателей"""
     global i
     global j
     global time_step
@@ -89,11 +103,11 @@ def draw_fire(img, fire_big, fire_small,
 
 def draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord):
     """Эта функция поворачивает картинку на заданный угол относительно заданного центра вращения
-    :param img: изображение, с которым произойдет преображение :)
+    :param rocket: ракета, элемент класса Rocket
     :param pos: координаты центра вращения на изображении
     :param center: координаты центра поверхности на экране
     :param angle: тот самый заданный угол поворота
-    :return: повернутое изображение и координаты точки, где его надо нарисовать"""
+    :returns: повернутое изображение и координаты точки, где его надо нарисовать"""
 
     x_center_mass, y_center_mass = find_center_mass(rocket)
     angle = rocket.angle
@@ -111,10 +125,18 @@ def draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_righ
 
 
 def draw_rocket(img4, rect, bg_flight_surf):
+    """Функция рисует ракету.
+    :param img4 - обновлённое изображение ракеты
+    :param rect - координаты, где нужно рисовать ракету
+    :param bg_flight_surf - поверхность, на которой рисуется ракета"""
     bg_flight_surf.blit(img4, rect)
 
 
 def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
+    """Функция рисует текущее состояние топлива.
+    :param bg_flight_surf - поверхность, на которой рисуется состояние
+    :param rocket - ракета, элемент класса Rocket
+    :param rocket_fuel_max - максимальный уровень топлива ракеты (в начале)"""
     #FIXME сделать всплывающую плашку "закончилось топливо"
     fuel_per = rocket.fuel*(100/rocket_fuel_max)
     fuel_per_height = (200 / 100 * fuel_per)
@@ -143,6 +165,12 @@ def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
 
 
 def draw_height(bg_flight_surf, rocket, earth, space):
+    """Функция рисует текущую высоту ракеты.
+    :param bg_flight_surf - поверхность, на которой рисуется состояние
+    :param rocket - ракета, элемент класса Rocket
+    :param earth - картинка земли
+    :param - space - картинка космоса
+    """
     # FIXME сделать всплывающую плашку "вы достигли космоса"
     cosmos_height_per = 100 * (rocket.h - 6400000) / 100000
     cosmos_height_stick = pygame.Surface((5, 300))
@@ -159,6 +187,9 @@ def draw_height(bg_flight_surf, rocket, earth, space):
 
 
 def draw_speed(bg_flight_surf, rocket):
+    """Функция рисует текущую скорость ракеты.
+    :param bg_flight_surf - поверхность, на которой рисуется состояние
+    :param rocket - ракета, элемент класса Rocket"""
     # FIXME сделать всплывающую плашку "вы достигли первой комической скорости"
     speed = (rocket.vx**2 + rocket.vy**2)**0.5
     #v_1 = 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
@@ -189,6 +220,9 @@ def draw_speed(bg_flight_surf, rocket):
     bg_flight_surf.blit(speed_vy_text, (25, 245))
 
 def draw_angle(bg_flight_surf, rocket):
+    """Функция рисует текущий угол ракеты.
+    :param bg_flight_surf - поверхность, на которой рисуется состояние
+    :param rocket - ракета, элемент класса Rocket"""
     #FIXME поправить периодичность угла
     if rocket.h <= 6400000 + 100000:
         angle_ideal = - 180 / (2 * 100000) * (rocket.h - 6400000)
@@ -214,8 +248,10 @@ def draw_angle(bg_flight_surf, rocket):
     bg_flight_surf.blit(angle_text, (615, 120))
 
 
-
 def fill_gradient(bg_flight_surf, h):
+    """Функция рисует градиентный фон в зависимости от высоты.
+    :param bg_flight_surf - поверхность, на которой рисуется состояние
+    :param h - высота ракеты"""
     if h <= 6400000 + 30000:
         color1 = int(127 - (127-30)/30000 * (h-6400000))
         color2 = int(199 - (199-33)/30000 * (h-6400000))
@@ -272,7 +308,6 @@ if __name__ == '__main__':
         rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, x_left, y_top, rocket)
         img4, rect = draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord,
                                  engines_left_cord, engines_right_cord)
-        #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, x_left, y_top, rocket)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -296,9 +331,7 @@ if __name__ == '__main__':
 
         rocket_move(rocket, flag_left, flag_right, flag_forward)
 
-
         fill_gradient(bg_flight_surf, h)
-
 
         draw_fuel(bg_flight_surf, rocket, rocket_fuel_max)
         draw_height(bg_flight_surf, rocket, earth, space)
@@ -307,10 +340,8 @@ if __name__ == '__main__':
 
         draw_bg(bg_flight_surf, cosmodrom, ground)
 
-
-        #draw_fire(img4, fire_big, flag_forward, rocket, x_center_mass, y_center_mass)
-
         draw_rocket(img4, rect, bg_flight_surf)
+
         sc.blit(bg_flight_surf, (0, 0))
         pygame.display.update()
 
