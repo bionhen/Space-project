@@ -171,22 +171,22 @@ def move_modules(moved_module_arg, bg_constructor_surf_arg, flag):
 
 def check_point(cord_x, cord_y, rocket_module):
     upped_1 = False
-    if (rocket_module.x + 10 < cord_x < rocket_module.x + rocket_module.b - 5) and (rocket_module.y + 5 < cord_y < rocket_module.y + rocket_module.a - 5):
+    if (rocket_module.x + 30 < cord_x < rocket_module.x + rocket_module.b - 5) and (rocket_module.y + 5 < cord_y < rocket_module.y + rocket_module.a - 5):
         upped_1 = True
     print("upped_1", upped_1)
     return upped_1
 
 def check_dist(cord_x, cord_y, rocket_module, moved_module):
     upped_2 = False
-    if (rocket_module.x + rocket_module.b + 50 < cord_x or cord_x < rocket_module.x - 50) or (rocket_module.y + moved_module.a + 50 < cord_y or cord_y < rocket_module.y - moved_module.a - 50):
+    if (rocket_module.x + rocket_module.b + 50 < cord_x or cord_x < rocket_module.x - 50) or (rocket_module.y + moved_module.a + 45 < cord_y or cord_y < rocket_module.y - moved_module.a - 45):
         upped_2 = True
     print("upped_2", upped_2)
     return upped_2
 
 def check_modules(rocket_list, moved_module):
     upped = False
-    k = 0
-    upped_list = []
+    #upped_list = []
+    upped_2_list = []
     x_mouse, y_mouse = pygame.mouse.get_pos()
     moved_module_x_r_u, moved_module_y_r_u = x_mouse, y_mouse - 10
     moved_module_x_l_u, moved_module_y_l_u = x_mouse + moved_module.b, y_mouse - 10
@@ -208,10 +208,10 @@ def check_modules(rocket_list, moved_module):
     for rocket_module in rocket_list:
             upped_2 = check_dist(moved_module_x_r_u, moved_module_y_r_u, rocket_module, moved_module)
             if upped_2:
-                upped = True
-                break
+                upped_2_list.append(upped_2)
 
-
+    if len(upped_2_list) == len(rocket_list):
+        upped = True
     """for i in upped_list:
         if i:
             k += 1
