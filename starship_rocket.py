@@ -7,14 +7,14 @@ class Rocket:
 
     """
     класс ракеты
-    surf - поверхность ракеты
+    surface - поверхность ракеты
     list - список элементов ракеты
     h - расстояние до цента Земли в км
     angle - угол поворота ракеты
     vx, vy - скорости по осям x и y
     omega -  угловая скорость
     """
-    surf = pygame.Surface((0, 0))
+    surface = pygame.Surface((0, 0))
     list = ()
     h = 6400
     x = 0
@@ -26,9 +26,9 @@ class Rocket:
 
 
 module0 = Module()
-module0.type = 'block'
+module0.type = 'tank'
 module0.m = 100
-module0.fuel = 100
+module0.fuel = 1000
 module0.price = 0
 module0.resistance = 100
 module0.force = 100
@@ -43,7 +43,7 @@ module0.surface = pygame.transform.scale(module0.surface, (module0.b, module0.a)
 module1 = Module()
 module1.type = 'engine'
 module1.m = 100
-module1.fuel = 100
+module1.fuel = 0
 module1.price = 0
 module1.resistance = 100
 module1.force = 100
@@ -120,13 +120,26 @@ def find_max_coord(rocket_list):
 
 
 def render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket):
-    rocket.surf = pygame.Surface((rocket_surface_widht, rocket_surface_height)) #, pygame.SRCALPHA)
+    rocket.surface = pygame.Surface((rocket_surface_widht, rocket_surface_height), pygame.SRCALPHA)
     for rocket_module in rocket.list:
         rocket_module.x = rocket_module.x - x_left
         rocket_module.y = rocket_module.y - y_top
-        rocket.surf.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
-    return rocket.surf
+        rocket.surface.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
+    return rocket.surface
 
+
+def find_center_mass(rocket):
+    m = 0
+    mx = 0
+    my = 0
+    for module in rocket.list:
+        m += module.m
+        my += module.m * (module.y + module.a / 2)
+        mx += module.m * (module.x + module.b / 2)
+    y_center_mass = my / m
+    x_center_mass = mx / m
+
+    return x_center_mass, y_center_mass
 
 def find_engines(rocket):
     engines_cord = []
@@ -140,8 +153,7 @@ rocket_surface_height, rocket_surface_widht = y_bottom - y_top + 50, x_right - x
 
 rocket = Rocket()
 rocket.list = rocket_list
-rocket.surf = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+#rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
 rocket.h = 6400000
 engines_cord = find_engines(rocket)
- #FIXME rocket.fuel
 
