@@ -21,7 +21,8 @@ FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
 pygame.font.init()
 
 time_step = 0
-i = 1
+i = 0
+j = 0
 
 def render_bg():
     """Функция генерирует составляющие фона.
@@ -47,18 +48,22 @@ def draw_bg(bg_flight_surf, cosmodrom, ground):
     """Функция отрисовывает составляющие заднего фона на экране."""
     bg_flight_surf.blit(cosmodrom, (250, 200 + (h - 6400000) * 15))
     bg_flight_surf.blit(ground, (0, 525 + (h - 6400000) * 15))
-    sc.blit(bg_flight_surf, (0, 0))
+    #sc.blit(bg_flight_surf, (0, 0))
 
 
 def render_fire():
     fire_big = [pygame.image.load('images/flight/fire/fire1.png'), pygame.image.load('images/flight/fire/fire2.png'),
                 pygame.image.load('images/flight/fire/fire3.png'), pygame.image.load('images/flight/fire/fire4.png'),
                 pygame.image.load('images/flight/fire/fire5.png')]
-    return fire_big
+    fire_small = [pygame.image.load('images/flight/fire/fire9.png'), pygame.image.load('images/flight/fire/fire8.png'),
+                pygame.image.load('images/flight/fire/fire7.png'), pygame.image.load('images/flight/fire/fire6.png')]
+    return fire_big, fire_small
 
 
-def draw_fire(rocket, fire_big, flag_forward):
+def draw_fire(img, fire_big, fire_small,
+              flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord):
     global i
+    global j
     global time_step
     if flag_forward:
         if time_step % 2 == 0:
@@ -66,30 +71,47 @@ def draw_fire(rocket, fire_big, flag_forward):
         if i % 5 == 0:
             i = 0
         for k in range(len(engines_cord)):
-            rocket.surface.blit(fire_big[i], (engines_cord[k][0], engines_cord[k][1] + engines_cord[k][2]))
+            img.blit(fire_big[i], (engines_cord[k][0], engines_cord[k][1] + engines_cord[k][2]))
+    if flag_left:
+        if time_step % 2 == 0:
+            j += 1
+        if j % 4 == 0:
+            j = 0
+        for k in range(len(engines_left_cord)):
+            img.blit(fire_small[j], (engines_left_cord[k][0], engines_left_cord[k][1] + engines_left_cord[k][2]))
+    if flag_right:
+        if time_step % 2 == 0:
+            j += 1
+        if j % 4 == 0:
+            j = 0
+        for k in range(len(engines_right_cord)):
+            img.blit(fire_small[j], (engines_right_cord[k][0], engines_right_cord[k][1] + engines_right_cord[k][2]))
 
-
-def draw_rocket(rocket, bg_flight_surf):
+def draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord):
     """Эта функция поворачивает картинку на заданный угол относительно заданного центра вращения
     :param img: изображение, с которым произойдет преображение :)
     :param pos: координаты центра вращения на изображении
     :param center: координаты центра поверхности на экране
     :param angle: тот самый заданный угол поворота
     :return: повернутое изображение и координаты точки, где его надо нарисовать"""
-    #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+
     x_center_mass, y_center_mass = find_center_mass(rocket)
     angle = rocket.angle
     pos = x_center_mass, y_center_mass
     center = (400, 520 - rocket_surface_height + 50 + y_center_mass)
     w, h = rocket_surface_widht, rocket_surface_height
+    draw_fire(rocket.surface, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord)
     img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
     img2.blit(rocket.surface, (w - pos[0], h - pos[1]))
     img4 = pygame.transform.rotate(img2, angle)
     rect = img4.get_rect()
     rect.center = center
 
+    return img4, rect
+
+
+def draw_rocket(img4, rect, bg_flight_surf):
     bg_flight_surf.blit(img4, rect)
-    #sc.blit(img4, rect)
 
 
 def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
@@ -107,13 +129,13 @@ def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
         fuel_status_image.fill('orange')
     elif 0 < fuel_per <= 25:
         fuel_status_image.fill('tomato')
-    if rocket.h < 30000 + 6400000 and rocket.fuel > 0:
+    if rocket.h < 20000 + 6400000 and rocket.fuel > 0:
         fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, BLUE)
-    if rocket.h >= 30000 + 6400000 and rocket.fuel < 0:
+    if rocket.h >= 20000 + 6400000 and rocket.fuel > 0:
         fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, LIGHT_BLUE)
-    if rocket.h < 30000 + 6400000 and rocket.fuel <= 0:
+    if rocket.h < 20000 + 6400000 and rocket.fuel <= 0:
         fuel_text = FONT_small.render('fuel: ' + str(0), True, BLUE)
-    if rocket.h >= 30000 + 6400000 and rocket.fuel <= 0:
+    if rocket.h >= 20000 + 6400000 and rocket.fuel <= 0:
         fuel_text = FONT_small.render('fuel: ' + str(0), True, LIGHT_BLUE)
     bg_flight_surf.blit(fuel_max_image, (50, 300))
     bg_flight_surf.blit(fuel_status_image, (50, 400+(100 - fuel_per_height)))
@@ -122,7 +144,7 @@ def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
 
 def draw_height(bg_flight_surf, rocket, earth, space):
     # FIXME сделать всплывающую плашку "вы достигли космоса"
-    cosmos_height_per = 100 * (rocket.h - 6400000) / 80000
+    cosmos_height_per = 100 * (rocket.h - 6400000) / 100000
     cosmos_height_stick = pygame.Surface((5, 300))
     cosmos_height_roll = pygame.Surface((15, 5))
     cosmos_height_stick.fill('white')
@@ -139,26 +161,39 @@ def draw_height(bg_flight_surf, rocket, earth, space):
 def draw_speed(bg_flight_surf, rocket):
     # FIXME сделать всплывающую плашку "вы достигли первой комической скорости"
     speed = (rocket.vx**2 + rocket.vy**2)**0.5
-    speed_per = speed*(100 / 7910)
+    #v_1 = 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
+    speed_per = speed*(100/7910)
     speed_per_height = (200 / 100 * speed_per)
     speed_image = pygame.Surface((50, speed_per_height))
     speed_image_max = pygame.Surface((50, 200))
     speed_image_max.fill(LIGHT_BLUE)
     speed_image.fill('tomato')
-    speed_text = FONT_small.render('speed: ' + str(round(speed, 1)), True, BLUE)
-    bg_flight_surf.blit(speed_image_max, (50, 50))
+    if rocket.h < 20000 + 6400000:
+        speed_text = FONT_small.render('speed: ' + str(round(speed, 1)), True, BLUE)
+        speed_vx_text = FONT_small.render('speed vx: ' + str(abs(round(rocket.vx, 1))), True, BLUE)
+        speed_vy_text = FONT_small.render('speed vy: ' + str(abs(round(rocket.vy, 1))), True, BLUE)
+    if rocket.h >= 20000 + 6400000:
+        speed_text = FONT_small.render('speed: ' + str(round(speed, 1)), True, LIGHT_BLUE)
+        speed_vx_text = FONT_small.render('speed vx: ' + str(abs(round(rocket.vx, 1))), True, LIGHT_BLUE)
+        speed_vy_text = FONT_small.render('speed vy: ' + str(abs(round(rocket.vy, 1))), True, LIGHT_BLUE)
+    bg_flight_surf.blit(speed_image_max, (50, 20))
     if speed_per < 100:
-        bg_flight_surf.blit(speed_image, (50, 50+(200 - speed_per_height)))
+        bg_flight_surf.blit(speed_image, (50, 20+(200 - speed_per_height)))
     else:
         speed_image = pygame.Surface((50, 200))
         speed_image.fill('tomato')
-        bg_flight_surf.blit(speed_image, (50, 50))
+        bg_flight_surf.blit(speed_image, (50, 20))
 
     bg_flight_surf.blit(speed_text, (25, 270))
+    bg_flight_surf.blit(speed_vx_text, (25, 225))
+    bg_flight_surf.blit(speed_vy_text, (25, 245))
 
 def draw_angle(bg_flight_surf, rocket):
     #FIXME поправить периодичность угла
-    angle_ideal = 3.14 / (2 * 80000) * (rocket.h - 6400000)
+    if rocket.h <= 6400000 + 100000:
+        angle_ideal = - 180 / (2 * 100000) * (rocket.h - 6400000)
+    else:
+        angle_ideal =  - 90
     angle_difference = angle_ideal - rocket.angle
     pos_angle = 25, 50
     center_angle = (760, 100)
@@ -170,11 +205,13 @@ def draw_angle(bg_flight_surf, rocket):
     angle4 = pygame.transform.rotate(angle2, angle_ideal)
     rect_angle = angle4.get_rect()
     rect_angle.center = center_angle
-
-    angle_text = FONT_small.render('deviation: ' + str(abs(round(angle_difference, 1))), True, BLUE)
+    if rocket.h < 20000 + 6400000:
+        angle_text = FONT_small.render('deviation: ' + str(abs(round(angle_difference, 1))), True, BLUE)
+    if rocket.h >= 20000 + 6400000:
+        angle_text = FONT_small.render('deviation: ' + str(abs(round(angle_difference, 1))), True, LIGHT_BLUE)
 
     bg_flight_surf.blit(angle4, rect_angle)
-    bg_flight_surf.blit(angle_text, (620, 120))
+    bg_flight_surf.blit(angle_text, (615, 120))
 
 
 
@@ -195,12 +232,16 @@ if __name__ == '__main__':
     fuel_calc(rocket)
     bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
     rocket_fuel_max = rocket.fuel
-    fire_big = render_fire()
-    rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+    fire_big, fire_small = render_fire()
+
     while True:
-        #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
-        print(rocket.surface)
-        print(rocket.list)
+        y_bottom, y_top, x_left, x_right = find_max_coord(rocket.list)
+        rocket_surface_height, rocket_surface_widht = y_bottom - y_top + 50, x_right - x_left
+        rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, x_left, y_top, rocket)
+        img4, rect = draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord,
+                                 engines_left_cord, engines_right_cord)
+        #rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, x_left, y_top, rocket)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
@@ -235,12 +276,10 @@ if __name__ == '__main__':
         draw_bg(bg_flight_surf, cosmodrom, ground)
 
 
-        draw_fire(rocket, fire_big, flag_forward)
+        #draw_fire(img4, fire_big, flag_forward, rocket, x_center_mass, y_center_mass)
 
-        draw_rocket(rocket, bg_flight_surf)
-        #sc.blit(rocket.surface, (0,0))
+        draw_rocket(img4, rect, bg_flight_surf)
         sc.blit(bg_flight_surf, (0, 0))
-
         pygame.display.update()
 
         clock.tick(FPS)
