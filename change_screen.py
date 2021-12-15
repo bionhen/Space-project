@@ -14,7 +14,7 @@ def show_screen(draw_screen, mouse_xx, mouse_yy):
     elif (draw_screen == "list_of_missions") and (100 <= mouse_xx <= 400) and (250 <= mouse_yy <= 300):
         draw_screen = "constructor"
     elif (draw_screen == "constructor") and (625 <= mouse_xx <= 775) and (525 <= mouse_yy <= 575):
-        draw_screen = "flying"
+        draw_screen = "flying_unprepared"
     return draw_screen
 
 
