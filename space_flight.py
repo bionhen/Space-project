@@ -1,8 +1,10 @@
+import numpy as np
+
 G = 6.67408E-11
 """Гравитационная постоянная Ньютона G"""
 
 
-def calculate_force(body, space_objects):
+def calculate_force(body, space_objects, flag, flag_l, flag_r):
     """Вычисляет силу, действующую на тело.
     Параметры:
     **body** — тело, для которого нужно вычислить дейстующую силу.
@@ -16,6 +18,40 @@ def calculate_force(body, space_objects):
         r = ((body.x - obj.x)**2 + (body.y - obj.y)**2)**0.5
         body.Fx += G*obj.m*body.m*(obj.x - body.x)/(r**3)
         body.Fy += G*obj.m*body.m*(obj.y - body.y)/(r**3)
+        if obj.type == 'rocket':
+            for module in obj.list:
+                if module.type == 'engine' and flag:
+                    body.Fx += module.force * np.cos(body.angle)
+                    body.Fx += module.force * np.sin(body.angle)
+                if module.type == 'engine_l' and flag_l:
+                    body.Fx += module.force * np.cos(body.angle)
+                    body.Fx += module.force * np.sin(body.angle)
+                if module.type == 'engine_r' and flag_r:
+                    body.Fx += module.force * np.cos(body.angle)
+                    body.Fx += module.force * np.sin(body.angle)
+        m = 0
+        my = 0
+        mx = 0
+        for module in obj.list:
+            m += module.m
+            my += module.m * (module.y + module.a / 2)
+            mx += module.m * (module.x + module.b / 2)
+        y_c = my / m
+        x_c = mx / m
+        mf = 0
+        for module in obj.list:
+            if flag_l and obj.fuel >= 0:
+                if module.type == 'engine_l':
+                    obj.fuel -= module.force * 0.001
+                    mf += module.force * (module.x + module.b / 2 - x_c)
+            if flag_r and obj.fuel >= 0:
+                if module.type == 'engine_r':
+                    obj.fuel -= module.force * 0.001
+                    mf += module.force * (module.x + module.b / 2 - x_c)
+            if flag and obj.fuel >= 0:
+                if module.type == 'engine':
+                    obj.fuel -= module.force * 0.001
+                    mf += module.force * (module.x + module.b / 2 - x_c)
 
 
 def move_space_object(body, dt):
@@ -30,16 +66,17 @@ def move_space_object(body, dt):
     body.Vy += ay*dt
     body.x += body.Vx*dt
     body.y += body.Vy*dt
+    body.angle += body.omega*dt
 
 
-def recalculate_space_objects_positions(space_objects, dt):
+def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r):
     """Пересчитывает координаты объектов.
     Параметры:
-    **space_objects** — список оьъектов, для которых нужно пересчитать координаты.
+    **space_objects** — список объектов, для которых нужно пересчитать координаты.
     **dt** — шаг по времени
     """
 
     for body in space_objects:
-        calculate_force(body, space_objects)
+        calculate_force(body, space_objects, flag, flag_l, flag_r)
     for body in space_objects:
         move_space_object(body, dt)
