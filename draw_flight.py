@@ -114,7 +114,8 @@ def draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_righ
     pos = x_center_mass, y_center_mass
     center = (400, 520 - rocket_surface_height + 50 + y_center_mass)
     w, h = rocket_surface_widht, rocket_surface_height
-    draw_fire(rocket.surface, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord)
+    if rocket.fuel > 0:
+        draw_fire(rocket.surface, fire_big, fire_small, flag_forward, flag_left, flag_right, engines_cord, engines_left_cord, engines_right_cord)
     img2 = pygame.Surface((2*w, 2*h), pygame.SRCALPHA)
     img2.blit(rocket.surface, (w - pos[0], h - pos[1]))
     img4 = pygame.transform.rotate(img2, angle)
@@ -152,15 +153,15 @@ def draw_fuel(bg_flight_surf, rocket, rocket_fuel_max):
     elif 0 < fuel_per <= 25:
         fuel_status_image.fill('tomato')
     if rocket.h < 20000 + 6400000 and rocket.fuel > 0:
-        fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, BLUE)
+        fuel_text = FONT_small.render('fuel: '+str(round(rocket.fuel, 1))+' kg', True, BLUE)
     if rocket.h >= 20000 + 6400000 and rocket.fuel > 0:
-        fuel_text = FONT_small.render('fuel: ' + str(round(rocket.fuel, 1)), True, LIGHT_BLUE)
+        fuel_text = FONT_small.render('fuel: '+str(round(rocket.fuel, 1))+' kg', True, LIGHT_BLUE)
     if rocket.h < 20000 + 6400000 and rocket.fuel <= 0:
-        fuel_text = FONT_small.render('fuel: ' + str(0), True, BLUE)
+        fuel_text = FONT_small.render('fuel: '+str(0)+' kg', True, BLUE)
     if rocket.h >= 20000 + 6400000 and rocket.fuel <= 0:
-        fuel_text = FONT_small.render('fuel: ' + str(0), True, LIGHT_BLUE)
-    bg_flight_surf.blit(fuel_max_image, (50, 300))
-    bg_flight_surf.blit(fuel_status_image, (50, 400+(100 - fuel_per_height)))
+        fuel_text = FONT_small.render('fuel: '+str(0)+' kg', True, LIGHT_BLUE)
+    bg_flight_surf.blit(fuel_max_image, (50, 310))
+    bg_flight_surf.blit(fuel_status_image, (50, 410+(100 - fuel_per_height)))
     bg_flight_surf.blit(fuel_text, (50 - 25, 510))
 
 
@@ -177,13 +178,19 @@ def draw_height(bg_flight_surf, rocket, earth, space):
     cosmos_height_roll = pygame.Surface((15, 5))
     cosmos_height_stick.fill('white')
     cosmos_height_roll.fill(BLUE)
-    bg_flight_surf.blit(cosmos_height_stick, (750, 200))
+    bg_flight_surf.blit(cosmos_height_stick, (750, 160))
+    if rocket.h < 20000 + 6400000:
+        cosmos_text = FONT_small.render('height: ' + str(abs(round((rocket.h - 6400000)/1000, 1))) + ' km', True, BLUE)
+    if rocket.h >= 20000 + 6400000:
+        cosmos_text = FONT_small.render('height: ' + str(abs(round((rocket.h - 6400000)/1000, 1))) + ' km', True, LIGHT_BLUE)
+
     if cosmos_height_per < 100:
-        bg_flight_surf.blit(cosmos_height_roll, (750 - 5, 200 + 300 - (300 / 100 * cosmos_height_per)))
+        bg_flight_surf.blit(cosmos_height_roll, (750 - 5, 160 + 300 - (300 / 100 * cosmos_height_per)))
     else:
-            bg_flight_surf.blit(cosmos_height_roll, (750 - 5, 200))
-    bg_flight_surf.blit(earth, (743, 510))
-    bg_flight_surf.blit(space, (743, 170))
+            bg_flight_surf.blit(cosmos_height_roll, (750 - 5, 160))
+    bg_flight_surf.blit(earth, (743, 470))
+    bg_flight_surf.blit(space, (743, 130))
+    bg_flight_surf.blit(cosmos_text, (610, 510))
 
 
 def draw_speed(bg_flight_surf, rocket):
@@ -200,24 +207,24 @@ def draw_speed(bg_flight_surf, rocket):
     speed_image_max.fill(LIGHT_BLUE)
     speed_image.fill('tomato')
     if rocket.h < 20000 + 6400000:
-        speed_text = FONT_small.render('speed: ' + str(round(speed, 1)), True, BLUE)
-        speed_vx_text = FONT_small.render('speed vx: ' + str(abs(round(rocket.vx, 1))), True, BLUE)
-        speed_vy_text = FONT_small.render('speed vy: ' + str(abs(round(rocket.vy, 1))), True, BLUE)
+        speed_text = FONT_small.render('speed: ' + str(round(speed, 1)) + ' m/c', True, BLUE)
+        speed_vx_text = FONT_small.render('speed vx: ' + str(abs(round(rocket.vx, 1))) + ' m/c', True, BLUE)
+        speed_vy_text = FONT_small.render('speed vy: ' + str(round(rocket.vy, 1)) + ' m/c', True, BLUE)
     if rocket.h >= 20000 + 6400000:
         speed_text = FONT_small.render('speed: ' + str(round(speed, 1)), True, LIGHT_BLUE)
-        speed_vx_text = FONT_small.render('speed vx: ' + str(abs(round(rocket.vx, 1))), True, LIGHT_BLUE)
-        speed_vy_text = FONT_small.render('speed vy: ' + str(abs(round(rocket.vy, 1))), True, LIGHT_BLUE)
-    bg_flight_surf.blit(speed_image_max, (50, 20))
+        speed_vx_text = FONT_small.render('speed vx: ' + str(abs(round(rocket.vx, 1)))  + ' m/c', True, LIGHT_BLUE)
+        speed_vy_text = FONT_small.render('speed vy: ' + str(abs(round(rocket.vy, 1))) + ' m/c', True, LIGHT_BLUE)
+    bg_flight_surf.blit(speed_image_max, (50, 90))
     if speed_per < 100:
-        bg_flight_surf.blit(speed_image, (50, 20+(200 - speed_per_height)))
+        bg_flight_surf.blit(speed_image, (50, 90+(200 - speed_per_height)))
     else:
         speed_image = pygame.Surface((50, 200))
         speed_image.fill('tomato')
-        bg_flight_surf.blit(speed_image, (50, 20))
+        bg_flight_surf.blit(speed_image, (50, 90))
 
-    bg_flight_surf.blit(speed_text, (25, 270))
-    bg_flight_surf.blit(speed_vx_text, (25, 225))
-    bg_flight_surf.blit(speed_vy_text, (25, 245))
+    bg_flight_surf.blit(speed_text, (25, 55))
+    bg_flight_surf.blit(speed_vx_text, (25, 10))
+    bg_flight_surf.blit(speed_vy_text, (25, 30))
 
 def draw_angle(bg_flight_surf, rocket):
     """Функция рисует текущий угол ракеты.
@@ -227,10 +234,10 @@ def draw_angle(bg_flight_surf, rocket):
     if rocket.h <= 6400000 + 100000:
         angle_ideal = - 180 / (2 * 100000) * (rocket.h - 6400000)
     else:
-        angle_ideal =  - 90
+        angle_ideal = - 90
     angle_difference = angle_ideal - rocket.angle
     pos_angle = 25, 50
-    center_angle = (760, 100)
+    center_angle = (760, 110)
     angle1 = pygame.image.load("images/flight/angle.png")
     angle1 = pygame.transform.scale(angle1, (25, 50))
     w_angle, h_angle = angle1.get_size()
@@ -245,7 +252,7 @@ def draw_angle(bg_flight_surf, rocket):
         angle_text = FONT_small.render('deviation: ' + str(abs(round(angle_difference, 1))), True, LIGHT_BLUE)
 
     bg_flight_surf.blit(angle4, rect_angle)
-    bg_flight_surf.blit(angle_text, (615, 120))
+    bg_flight_surf.blit(angle_text, (615, 20))
 
 
 def fill_gradient(bg_flight_surf, h):
@@ -296,6 +303,7 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, rocket_
 h = 6400000
 flag_left = flag_right = False
 flag_forward = False
+
 if __name__ == '__main__':
     fuel_calc(rocket)
     bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
