@@ -56,10 +56,12 @@ def render_bg():
 
     return moon_images"""
 
+
 def draw_objects(space_objects, bg_space_flight_surf):
     for object in space_objects:
-        bg_space_flight_surf.blit(object.image, (object.x/1000000, object.y/1000000))
-
+        bg_space_flight_surf.blit(object.image, ((object.x-object.R)/10**6, (object.y-object.R)/10**6))
+        if object == Earth:
+            print('coord', (object.x-object.R)/10**6, (object.y-object.R)/10**6)
 
 """def draw_earth(bg_space_flight_surf, earth_images):
     global e
@@ -82,8 +84,10 @@ def draw_objects(space_objects, bg_space_flight_surf):
     bg_space_flight_surf.blit(moon_images[m], (500, 250))"""
 
 if __name__ == '__main__':
+    flag_left = flag_right = False
+    flag_forward = False
     Earth = Object()
-    Earth.type = "planet"
+    Earth.type = 'planet'
     Earth.m = 6 * 10**24
     Earth.x = 100 * 10**6
     Earth.y = 200 * 10**6
@@ -91,41 +95,41 @@ if __name__ == '__main__':
     Earth.Vy = 0
     Earth.Fx = 0
     Earth.Fy = 0
-    Earth.R = 0
+    Earth.R = 15 * 10 ** 6
     Earth.image = pygame.image.load("images/space_flight/earth_above.png")
-    Earth.image = pygame.transform.scale(Earth.image, (100, 100))
+    Earth.image = pygame.transform.scale(Earth.image, (30, 30))
     Earth.angle = 0
     Earth.omega = 0
 
     Moon = Object()
-    Moon.type = "planet"
+    Moon.type = 'planet'
     Moon.m = 7.35 * 10**22
-    Moon.x = 362 * 10**6 + 100 * 10**6
+    Moon.x = 462 * 10**6
     Moon.y = 200 * 10**6
     Moon.Vx = 0
     Moon.Vy = -1020
     Moon.Fx = 0
     Moon.Fy = 0
-    Moon.R = 0
+    Moon.R = 10 * 10**6
     Moon.image = pygame.image.load("images/space_flight/moon_1.png")
-    Moon.image = pygame.transform.scale(Moon.image, (30, 30))
+    Moon.image = pygame.transform.scale(Moon.image, (20, 20))
     Moon.angle = 0
     Moon.omega = 0
 
     Rocket_Obj = Object()
-    Rocket_Obj.type = "rocket"
-    Rocket_Obj.m = 1
+    Rocket_Obj.type = 'rocket'
+    Rocket_Obj.m = 0
     Rocket_Obj.x = 110 * 10**6
     Rocket_Obj.y = 200 * 10**6
     Rocket_Obj.Vx = 0
-    Rocket_Obj.Vy = 0
+    Rocket_Obj.Vy = (G*Earth.m/(10*10**6))**0.5
     Rocket_Obj.Fx = 0
     Rocket_Obj.Fy = 0
     Rocket_Obj.R = 0
-    Rocket_Obj.image = pygame.Surface((100, 100), pygame.SRCALPHA)
+    Rocket_Obj.image = pygame.Surface((50, 50), pygame.SRCALPHA)
     pygame.draw.polygon(Rocket_Obj.image, 'tomato', ((0, 100), (50, 0), (100, 100)))
     Rocket_Obj.list = rocket.list
-    Rocket_Obj.angle = 90
+    Rocket_Obj.angle = 0
     Rocket_Obj.omega = 0
 
     space_objects = [Earth, Moon, Rocket_Obj]
@@ -135,10 +139,8 @@ if __name__ == '__main__':
     #moon_images = render_moon()
 
     while True:
+        Earth.Vx = Earth.Vy = 0
         bg_space_flight_surf = render_bg()
-        print(rocket.surface)
-        draw_objects(space_objects, bg_space_flight_surf)
-        recalculate_space_objects_positions(space_objects, 10000, False, False, False)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
@@ -156,7 +158,9 @@ if __name__ == '__main__':
                     flag_left = False
                 if event.key == pygame.K_RIGHT:
                     flag_right = False
-
+        draw_objects(space_objects, bg_space_flight_surf)
+        recalculate_space_objects_positions(space_objects, 100, flag_forward, flag_left, flag_right)
+        print(Rocket_Obj.angle)
         #draw_earth(bg_space_flight_surf, earth_images)
         #draw_moon(bg_space_flight_surf, moon_images)
         sc.blit(bg_space_flight_surf, (0, 0))

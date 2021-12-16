@@ -4,6 +4,13 @@ G = 6.67408E-11
 """Гравитационная постоянная Ньютона G"""
 
 
+def calculate_m_rocket(rocket):
+    m = 0
+    for module in rocket.list:
+        m += module.m
+    return m
+
+
 def calculate_force(body, space_objects, flag, flag_l, flag_r):
     """Вычисляет силу, действующую на тело.
     Параметры:
@@ -13,6 +20,8 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
 
     body.Fx = body.Fy = 0
     for obj in space_objects:
+        if obj.type == 'rocket':
+            obj.m = calculate_m_rocket(obj)
         if body == obj:
             continue  # тело не действует гравитационной силой на само себя!
         r = ((body.x - obj.x)**2 + (body.y - obj.y)**2)**0.5
@@ -21,23 +30,20 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
         if obj.type == 'rocket':
             for module in obj.list:
                 if module.type == 'engine' and flag:
-                    body.Fx += module.force * np.cos(body.angle)
-                    body.Fx += module.force * np.sin(body.angle)
+                    body.Fx += 1000 * module.force * np.cos(body.angle*np.pi/180)
+                    body.Fy += 1000 * module.force * np.sin(body.angle*np.pi/180)
                 if module.type == 'engine_l' and flag_l:
-                    body.Fx += module.force * np.cos(body.angle)
-                    body.Fx += module.force * np.sin(body.angle)
+                    body.Fx += module.force * np.cos(body.angle*np.pi/180)
+                    body.Fx += module.force * np.sin(body.angle*np.pi/180)
                 if module.type == 'engine_r' and flag_r:
-                    body.Fx += module.force * np.cos(body.angle)
-                    body.Fx += module.force * np.sin(body.angle)
-            m = 0
+                    body.Fx += module.force * np.cos(body.angle*np.pi/180)
+                    body.Fx += module.force * np.sin(body.angle*np.pi/180)
             my = 0
             mx = 0
             for module in obj.list:
-                m += module.m
                 my += module.m * (module.y + module.a / 2)
                 mx += module.m * (module.x + module.b / 2)
-            y_c = my / m
-            x_c = mx / m
+            x_c = mx / obj.m
             mf = 0
             for module in obj.list:
                 if flag_l and obj.fuel >= 0:
@@ -61,7 +67,7 @@ def move_space_object(body, dt):
     **body** — тело, которое нужно переместить.
     """
 
-    ax = body.Fx/body.m
+    ax = body.Fx / body.m
     ay = body.Fy / body.m
     body.Vx += ax*dt
     body.Vy += ay*dt
