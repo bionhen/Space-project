@@ -20,7 +20,7 @@ pygame.font.init()
 
 time_step_space = 0
 e = 0
-
+m = 0
 def render_bg():
     """Функция генерирует составляющие фона.
     :returns
@@ -51,9 +51,25 @@ def render_earth():
     fire_small - огни для боковых двигателей"""
     earth_images = []
     for n in range(1, 13):
-        earth_images.append(pygame.image.load('images/space_flight/earth_'+str(n)+'.png'))
+        earth = pygame.image.load('images/space_flight/earth_'+str(n)+'.png')
+        earth = pygame.transform.scale(earth, (100, 100))
+        earth_images.append(earth)
 
     return earth_images
+
+def render_moon():
+    """Функция генерирует массивыы изображений огней.
+    :returns
+    fire_big - огни для центральных двигателей
+    fire_small - огни для боковых двигателей"""
+    moon_images = []
+    for n in range(1, 20):
+        moon = pygame.image.load('images/space_flight/moon_'+str(n)+'.png')
+        moon = pygame.transform.scale(moon, (30, 30))
+        moon_images.append(moon)
+
+    return moon_images
+
 
 def draw_earth(bg_space_flight_surf, earth_images):
     global e
@@ -65,9 +81,20 @@ def draw_earth(bg_space_flight_surf, earth_images):
 
     bg_space_flight_surf.blit(earth_images[e], (200, 250))
 
+def draw_moon(bg_space_flight_surf, moon_images):
+    global m
+    global time_step_space
+    if time_step_space % 3 == 0:
+        m += 1
+    if m % 19 == 0:
+        m = 0
+
+    bg_space_flight_surf.blit(moon_images[m], (500, 250))
+
 if __name__ == '__main__':
     bg_space_flight_surf = render_bg()
     earth_images = render_earth()
+    moon_images = render_moon()
     while True:
 
         for event in pygame.event.get():
@@ -89,6 +116,7 @@ if __name__ == '__main__':
                     flag_right = False
 
         draw_earth(bg_space_flight_surf, earth_images)
+        draw_moon(bg_space_flight_surf, moon_images)
         sc.blit(bg_space_flight_surf, (0, 0))
         pygame.display.update()
 
