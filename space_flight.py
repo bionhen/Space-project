@@ -52,6 +52,7 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
                 if module.type == 'engine':
                     obj.fuel -= module.force * 0.001
                     mf += module.force * (module.x + module.b / 2 - x_c)
+        obj.epsilon = mf/obj.m
 
 
 def move_space_object(body, dt):
@@ -67,6 +68,7 @@ def move_space_object(body, dt):
     body.x += body.Vx*dt
     body.y += body.Vy*dt
     body.angle += body.omega*dt
+    body.omega += body.epsilon*dt
 
 
 def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r):

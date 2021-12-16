@@ -37,8 +37,10 @@ class Object:
     angle = 0
     """угол от оси x"""
 
-    list = ()
+    list = []
 
     omega = 0
 
     fuel = 0
+
+    epsilon = 0
