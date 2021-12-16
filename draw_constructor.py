@@ -305,15 +305,12 @@ def draw_center_mass(rocket_list_arg, rocket_surface_arg):
         rocket_modules_y_top.append(rocket_module.y - 50)
         rocket_modules_x_left.append(rocket_module.x - 200)
         rocket_modules_x_right.append(rocket_module.x + rocket_module.b - 200)
-
     if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
         y_bottom_arg = max(rocket_modules_y_bottom)
         y_top_arg = min(rocket_modules_y_top)
-
     if rocket_modules_x_left != [] and rocket_modules_x_right != []:
         x_left_arg = min(rocket_modules_x_left)
         x_right_arg = max(rocket_modules_x_right)
-
     return y_bottom_arg, y_top_arg, x_left_arg, x_right_arg"""
 
 

@@ -29,30 +29,30 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
                 if module.type == 'engine_r' and flag_r:
                     body.Fx += module.force * np.cos(body.angle)
                     body.Fx += module.force * np.sin(body.angle)
-        m = 0
-        my = 0
-        mx = 0
-        for module in obj.list:
-            m += module.m
-            my += module.m * (module.y + module.a / 2)
-            mx += module.m * (module.x + module.b / 2)
-        y_c = my / m
-        x_c = mx / m
-        mf = 0
-        for module in obj.list:
-            if flag_l and obj.fuel >= 0:
-                if module.type == 'engine_l':
-                    obj.fuel -= module.force * 0.001
-                    mf += module.force * (module.x + module.b / 2 - x_c)
-            if flag_r and obj.fuel >= 0:
-                if module.type == 'engine_r':
-                    obj.fuel -= module.force * 0.001
-                    mf += module.force * (module.x + module.b / 2 - x_c)
-            if flag and obj.fuel >= 0:
-                if module.type == 'engine':
-                    obj.fuel -= module.force * 0.001
-                    mf += module.force * (module.x + module.b / 2 - x_c)
-        obj.epsilon = mf/obj.m
+            m = 0
+            my = 0
+            mx = 0
+            for module in obj.list:
+                m += module.m
+                my += module.m * (module.y + module.a / 2)
+                mx += module.m * (module.x + module.b / 2)
+            y_c = my / m
+            x_c = mx / m
+            mf = 0
+            for module in obj.list:
+                if flag_l and obj.fuel >= 0:
+                    if module.type == 'engine_l':
+                        obj.fuel -= module.force * 0.001
+                        mf += module.force * (module.x + module.b / 2 - x_c)
+                if flag_r and obj.fuel >= 0:
+                    if module.type == 'engine_r':
+                        obj.fuel -= module.force * 0.001
+                        mf += module.force * (module.x + module.b / 2 - x_c)
+                if flag and obj.fuel >= 0:
+                    if module.type == 'engine':
+                        obj.fuel -= module.force * 0.001
+                        mf += module.force * (module.x + module.b / 2 - x_c)
+            obj.epsilon = mf/obj.m
 
 
 def move_space_object(body, dt):
