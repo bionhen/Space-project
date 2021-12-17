@@ -129,16 +129,13 @@ if __name__ == '__main__':
     Rocket_Obj.Fx = 0
     Rocket_Obj.Fy = 0
     Rocket_Obj.R = 0
-    Rocket_Obj.image = pygame.Surface((50, 50), pygame.SRCALPHA)
-    pygame.draw.polygon(Rocket_Obj.image, 'tomato', ((0, 100), (50, 0), (100, 100)))
+    Rocket_Obj.image = pygame.Surface((5, 10), pygame.SRCALPHA)
+    pygame.draw.polygon(Rocket_Obj.image, 'tomato', ((0, 10), (2.5, 0), (5, 10)))
     Rocket_Obj.list = rocket.list
     Rocket_Obj.angle = 0
     Rocket_Obj.omega = 0
     Rocket_Obj.fuel = calculate_m_fuel(Rocket_Obj)
     space_objects = [Earth, Moon, Rocket_Obj]
-
-    # earth_images = render_earth()
-    # moon_images = render_moon()
 
     while True:
         Earth.Vx = Earth.Vy = 0
