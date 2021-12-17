@@ -118,7 +118,7 @@ def calculation_orbit(body, center):
             ay = body_test.Fy / body.m
             body_test.Vx += ax * dt
             body_test.Vy += ay * dt
-            body_test.x += body.Vx * dt
-            body_test.y += body.Vy * dt
+            body_test.x += body_test.Vx * dt
+            body_test.y += body_test.Vy * dt
             calc_list.append([body_test.x, body_test.y])
     return calc_list
