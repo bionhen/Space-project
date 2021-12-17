@@ -19,10 +19,15 @@ def force_coord(flag, engine_type, rocket, f_e_y, f_e_x):
                 f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 100
                 f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 100
                 rocket.fuel -= module.force * 0.0005
+    return f_e_y, f_e_x
 
 
-def mass_calc():
-    pass
+def moment_coord(flag, rocket, module, module_type, x_c, mf):
+    if flag and rocket.fuel >= 0:
+        if module.type == module_type:
+            rocket.fuel -= module.force * 0.001
+            mf += module.force * (module.x + module.b / 2 - x_c)
+    return mf
 
 
 def force_calc(rocket, flag, flag_l, flag_r, sign):
@@ -54,24 +59,9 @@ def force_calc(rocket, flag, flag_l, flag_r, sign):
             rocket.h = 6400000
     f_s_y = - rocket.vy * np.abs(rocket.vy) * (k * height * rocket.angle + k * width * (180 - rocket.angle))
     f_s_x = - rocket.vx * np.abs(rocket.vx) * (k * width * rocket.angle + k * height * (180 - rocket.angle))
-    if flag:
-        for module in rocket.list:
-            if rocket.fuel >= 0 and module.type == 'engine':
-                f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 100
-                f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 100
-                rocket.fuel -= module.force * 0.0005
-    if flag_l:
-        for module in rocket.list:
-            if rocket.fuel >= 0 and module.type == 'engine_l':
-                f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 100
-                f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 100
-                rocket.fuel -= module.force * 0.0005
-    if flag_r:
-        for module in rocket.list:
-            if rocket.fuel >= 0 and module.type == 'engine_r':
-                f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 100
-                f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 100
-                rocket.fuel -= module.force * 0.0005
+    f_e_y, f_e_x = force_coord(flag, 'engine', rocket, f_e_y, f_e_x)
+    f_e_y, f_e_x = force_coord(flag_l, 'engine_l', rocket, f_e_y, f_e_x)
+    f_e_y, f_e_x = force_coord(flag_r, 'engine_r', rocket, f_e_y, f_e_x)
     f_x = f_s_x + f_e_x
     f_y = f_s_y + f_m + f_e_y
     return f_x, f_y
@@ -93,18 +83,9 @@ def momentum_calc(rocket, left_flag, right_flag, flag_forward):
     x_c = mx / m
     mf = 0
     for module in rocket.list:
-        if left_flag and rocket.fuel >= 0:
-            if module.type == 'engine_l':
-                rocket.fuel -= module.force * 0.001
-                mf += module.force * (module.x + module.b / 2 - x_c)
-        if right_flag and rocket.fuel >= 0:
-            if module.type == 'engine_r':
-                rocket.fuel -= module.force * 0.001
-                mf += module.force * (module.x + module.b / 2 - x_c)
-        if flag_forward and rocket.fuel >= 0:
-            if module.type == 'engine':
-                rocket.fuel -= module.force * 0.001
-                mf += module.force * (module.x + module.b / 2 - x_c)
+        mf = moment_coord(left_flag, rocket, module, 'engine_l', x_c, mf)
+        mf = moment_coord(right_flag, rocket, module, 'engine_r', x_c, mf)
+        mf = moment_coord(flag_forward, rocket, module, 'engine', x_c, mf)
     y_bottom, y_top, x_left, x_right = find_max_coord(rocket.list)
     height = np.abs(y_bottom - y_top)
     width = np.abs(x_left - x_right)
