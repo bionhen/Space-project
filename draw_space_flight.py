@@ -131,7 +131,7 @@ if __name__ == '__main__':
     Rocket_Obj.list = rocket.list
     Rocket_Obj.angle = 0
     Rocket_Obj.omega = 0
-
+    Rocket_Obj.fuel = calculate_m_fuel(Rocket_Obj)
     space_objects = [Earth, Moon, Rocket_Obj]
 
 
@@ -160,9 +160,9 @@ if __name__ == '__main__':
                     flag_right = False
         draw_objects(space_objects, bg_space_flight_surf)
         recalculate_space_objects_positions(space_objects, 100, flag_forward, flag_left, flag_right)
-        print(Rocket_Obj.angle)
         #draw_earth(bg_space_flight_surf, earth_images)
         #draw_moon(bg_space_flight_surf, moon_images)
+        print(Rocket_Obj.angle)
         sc.blit(bg_space_flight_surf, (0, 0))
         pygame.display.update()
 

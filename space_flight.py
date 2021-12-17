@@ -11,6 +11,13 @@ def calculate_m_rocket(rocket):
     return m
 
 
+def calculate_m_fuel(rocket):
+    fuel = 0
+    for module in rocket.list:
+        fuel += module.fuel
+    return fuel
+
+
 def calculate_force(body, space_objects, flag, flag_l, flag_r):
     """Вычисляет силу, действующую на тело.
     Параметры:
@@ -27,38 +34,41 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
         r = ((body.x - obj.x)**2 + (body.y - obj.y)**2)**0.5
         body.Fx += G*obj.m*body.m*(obj.x - body.x)/(r**3)
         body.Fy += G*obj.m*body.m*(obj.y - body.y)/(r**3)
-        if obj.type == 'rocket':
-            for module in obj.list:
-                if module.type == 'engine' and flag:
-                    body.Fx += 1000 * module.force * np.cos(body.angle*np.pi/180)
-                    body.Fy += 1000 * module.force * np.sin(body.angle*np.pi/180)
-                if module.type == 'engine_l' and flag_l:
+        if body.type == 'rocket':
+            for module in body.list:
+                if module.type == 'engine' and flag and body.fuel >= 0:
                     body.Fx += module.force * np.cos(body.angle*np.pi/180)
-                    body.Fx += module.force * np.sin(body.angle*np.pi/180)
-                if module.type == 'engine_r' and flag_r:
+                    body.Fy += module.force * np.sin(body.angle*np.pi/180)
+                    body.fuel -= module.force * 0.001
+                if module.type == 'engine_l' and flag_l and body.fuel >= 0:
                     body.Fx += module.force * np.cos(body.angle*np.pi/180)
-                    body.Fx += module.force * np.sin(body.angle*np.pi/180)
+                    body.Fy += module.force * np.sin(body.angle*np.pi/180)
+                    body.fuel -= module.force * 0.001
+                if module.type == 'engine_r' and flag_r and body.fuel >= 0:
+                    body.Fx += module.force * np.cos(body.angle*np.pi/180)
+                    body.Fy += module.force * np.sin(body.angle*np.pi/180)
+                    body.fuel -= module.force * 0.001
             my = 0
             mx = 0
-            for module in obj.list:
+            for module in body.list:
                 my += module.m * (module.y + module.a / 2)
                 mx += module.m * (module.x + module.b / 2)
-            x_c = mx / obj.m
+            x_c = mx / body.m
             mf = 0
-            for module in obj.list:
-                if flag_l and obj.fuel >= 0:
+            for module in body.list:
+                if flag_l and body.fuel >= 0:
                     if module.type == 'engine_l':
-                        obj.fuel -= module.force * 0.001
-                        mf += module.force * (module.x + module.b / 2 - x_c)
-                if flag_r and obj.fuel >= 0:
+                        body.fuel -= module.force * 0.001
+                        mf += 10**(-6)*module.force * (module.x + module.b / 2 - x_c)
+                if flag_r and body.fuel >= 0:
                     if module.type == 'engine_r':
-                        obj.fuel -= module.force * 0.001
-                        mf += module.force * (module.x + module.b / 2 - x_c)
-                if flag and obj.fuel >= 0:
+                        body.fuel -= module.force * 0.001
+                        mf += 10**(-6)*module.force * (module.x + module.b / 2 - x_c)
+                if flag and body.fuel >= 0:
                     if module.type == 'engine':
-                        obj.fuel -= module.force * 0.001
-                        mf += module.force * (module.x + module.b / 2 - x_c)
-            obj.epsilon = mf/obj.m
+                        body.fuel -= module.force * 0.001
+                        mf += 10**(-6)*module.force * (module.x + module.b / 2 - x_c)
+            body.epsilon = mf/body.m
 
 
 def move_space_object(body, dt):
