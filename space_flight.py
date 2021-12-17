@@ -1,4 +1,5 @@
 import numpy as np
+from space_obj import Object
 
 G = 6.67408E-11
 """Гравитационная постоянная Ньютона G"""
@@ -102,15 +103,22 @@ def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r)
 
 def calculation_orbit(body, center):
     calc_list = []
-    for t in range(10 ** 10):
-        dt = 1000
-        r = ((body.x - center.x) ** 2 + (body.y - center.y) ** 2) ** 0.5
-        body.Fx += G * center.m * body.m * (center.x - body.x) / (r ** 3)
-        body.Fy += G * center.m * body.m * (center.y - body.y) / (r ** 3)
-        ax = body.Fx / body.m
-        ay = body.Fy / body.m
-        body.Vx += ax * dt
-        body.Vy += ay * dt
-        body.x += body.Vx * dt
-        body.y += body.Vy * dt
-        calc_list.append((body.x, body.y))
+    if body == center:
+        pass
+    else:
+        body_test = Object()
+        body_test.x = body.x
+        body_test.y = body.y
+        for t in range(10 ** 4):
+            dt = 100
+            r = ((body_test.x - center.x) ** 2 + (body_test.y - center.y) ** 2) ** 0.5
+            body_test.Fx += G * center.m * body.m * (center.x - body_test.x) / (r ** 3)
+            body_test.Fy += G * center.m * body.m * (center.y - body_test.y) / (r ** 3)
+            ax = body_test.Fx / body.m
+            ay = body_test.Fy / body.m
+            body_test.Vx += ax * dt
+            body_test.Vy += ay * dt
+            body_test.x += body.Vx * dt
+            body_test.y += body.Vy * dt
+            calc_list.append([body_test.x, body_test.y])
+    return calc_list
