@@ -2,6 +2,7 @@ import pygame
 from space_flight import *
 from space_obj import *
 from starship_rocket import *
+#from draw_flight import rocket_fuel_max
 
 pygame.init()
 
@@ -96,6 +97,40 @@ def draw_roctate(bg_space_flight_surf, rocket):
 
     bg_space_flight_surf.blit(rocket_rotated, rect_rocket)
 
+def draw_fuel(bg_flight_surf_arg, rocket_arg, rocket_fuel_max_arg):
+    """Функция рисует текущее состояние топлива.
+    :param bg_flight_surf_arg - поверхность, на которой рисуется состояние
+    :param rocket_arg - ракета, элемент класса Rocket
+    :param rocket_fuel_max_arg - максимальный уровень топлива ракеты (в начале)"""
+    fuel_bar_height = 200
+    fuel_bar_width = 50
+    fuel_bar_pos_x = 50
+    fuel_bar_pos_y = 310
+    fuel_per = rocket_arg.fuel * (100 / rocket_fuel_max_arg)
+    fuel_per_height = (fuel_bar_height / 100 * fuel_per)
+    fuel_image = pygame.Surface((fuel_bar_width, fuel_per_height))
+    fuel_max_image = pygame.Surface((fuel_bar_width, fuel_bar_height))
+    fuel_max_image.fill(LIGHT_BLUE)
+    if 75 < fuel_per:
+        fuel_image.fill('aquamarine4')
+    if 50 < fuel_per <= 75:
+        fuel_image.fill('yellow')
+    elif 25 < fuel_per <= 50:
+        fuel_image.fill('orange')
+    elif 0 < fuel_per <= 25:
+        fuel_image.fill('tomato')
+
+    if rocket.fuel > 0:
+        fuel_quantity = round(rocket.fuel, 1)
+    else:
+        fuel_quantity = 0
+
+    fuel_text = FONT_small.render('fuel: ' + str(fuel_quantity) + 'kg', True, LIGHT_BLUE)
+
+    bg_flight_surf_arg.blit(fuel_max_image, (fuel_bar_pos_x, fuel_bar_pos_y))
+    bg_flight_surf_arg.blit(fuel_image, (fuel_bar_pos_x, fuel_bar_pos_y + 100 + (100 - fuel_per_height)))
+    bg_flight_surf_arg.blit(fuel_text, (fuel_bar_pos_x - 25, fuel_bar_pos_y + 200))
+
 if __name__ == '__main__':
     flag_left = flag_right = False
     flag_forward = False
@@ -117,7 +152,7 @@ if __name__ == '__main__':
     Moon = Object()
     Moon.type = 'planet'
     Moon.m = 7.35 * 10 ** 22
-    Moon.x = 662 * 10 ** 6
+    Moon.x = 562 * 10 ** 6
     Moon.y = 300 * 10 ** 6
     Moon.Vx = 0
     Moon.Vy = -1020
@@ -147,7 +182,7 @@ if __name__ == '__main__':
     Rocket_Obj.fuel = calculate_m_fuel(Rocket_Obj)
     space_objects = [Earth, Moon, Rocket_Obj]
 
-
+    rocket_fuel_max = Rocket_Obj.fuel
     while True:
         Earth.Vx = Earth.Vy = 0
         bg_space_flight_surf = render_bg()
@@ -169,7 +204,7 @@ if __name__ == '__main__':
                 if event.key == pygame.K_RIGHT:
                     flag_right = False
         draw_objects(space_objects, bg_space_flight_surf)
-        draw_roctate(bg_space_flight_surf, Rocket_Obj)
+
         recalculate_space_objects_positions(space_objects, 200, flag_forward, flag_left, flag_right)
         # draw_earth(bg_space_flight_surf, earth_images)
         # draw_moon(bg_space_flight_surf, moon_images)
@@ -190,6 +225,9 @@ if __name__ == '__main__':
                                  calc_list[i],
                                  calc_list[i + 1])
                 print(calc_list[i])
+
+        draw_fuel(bg_space_flight_surf, Rocket_Obj, rocket_fuel_max)
+        draw_roctate(bg_space_flight_surf, Rocket_Obj)
         sc.blit(bg_space_flight_surf, (0, 0))
         #print(calc_list)
 
