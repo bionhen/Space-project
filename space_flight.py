@@ -31,22 +31,22 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
             obj.m = calculate_m_rocket(obj)
         if body == obj:
             continue  # тело не действует гравитационной силой на само себя!
-        r = ((body.x - obj.x)**2 + (body.y - obj.y)**2)**0.5
-        body.Fx += G*obj.m*body.m*(obj.x - body.x)/(r**3)
-        body.Fy += G*obj.m*body.m*(obj.y - body.y)/(r**3)
+        r = ((body.x - obj.x) ** 2 + (body.y - obj.y) ** 2) ** 0.5
+        body.Fx += G * obj.m * body.m * (obj.x - body.x) / (r ** 3)
+        body.Fy += G * obj.m * body.m * (obj.y - body.y) / (r ** 3)
         if body.type == 'rocket':
             for module in body.list:
                 if module.type == 'engine' and flag and body.fuel >= 0:
-                    body.Fx += module.force * np.cos(body.angle*np.pi/180)
-                    body.Fy += module.force * np.sin(body.angle*np.pi/180)
+                    body.Fx += module.force * np.cos(body.angle * np.pi / 180)
+                    body.Fy += module.force * np.sin(body.angle * np.pi / 180)
                     body.fuel -= module.force * 0.001
                 if module.type == 'engine_l' and flag_l and body.fuel >= 0:
-                    body.Fx += module.force * np.cos(body.angle*np.pi/180)
-                    body.Fy += module.force * np.sin(body.angle*np.pi/180)
+                    body.Fx += module.force * np.cos(body.angle * np.pi / 180)
+                    body.Fy += module.force * np.sin(body.angle * np.pi / 180)
                     body.fuel -= module.force * 0.001
                 if module.type == 'engine_r' and flag_r and body.fuel >= 0:
-                    body.Fx += module.force * np.cos(body.angle*np.pi/180)
-                    body.Fy += module.force * np.sin(body.angle*np.pi/180)
+                    body.Fx += module.force * np.cos(body.angle * np.pi / 180)
+                    body.Fy += module.force * np.sin(body.angle * np.pi / 180)
                     body.fuel -= module.force * 0.001
             my = 0
             mx = 0
@@ -59,16 +59,16 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
                 if flag_l and body.fuel >= 0:
                     if module.type == 'engine_l':
                         body.fuel -= module.force * 0.001
-                        mf += 10**(-6)*module.force * (module.x + module.b / 2 - x_c)
+                        mf += 10 ** (-6) * module.force * (module.x + module.b / 2 - x_c)
                 if flag_r and body.fuel >= 0:
                     if module.type == 'engine_r':
                         body.fuel -= module.force * 0.001
-                        mf += 10**(-6)*module.force * (module.x + module.b / 2 - x_c)
+                        mf += 10 ** (-6) * module.force * (module.x + module.b / 2 - x_c)
                 if flag and body.fuel >= 0:
                     if module.type == 'engine':
                         body.fuel -= module.force * 0.001
-                        mf += 10**(-6)*module.force * (module.x + module.b / 2 - x_c)
-            body.epsilon = mf/body.m
+                        mf += 10 ** (-6) * module.force * (module.x + module.b / 2 - x_c)
+            body.epsilon = mf / body.m
 
 
 def move_space_object(body, dt):
@@ -79,12 +79,12 @@ def move_space_object(body, dt):
 
     ax = body.Fx / body.m
     ay = body.Fy / body.m
-    body.Vx += ax*dt
-    body.Vy += ay*dt
-    body.x += body.Vx*dt
-    body.y += body.Vy*dt
-    body.angle += body.omega*dt
-    body.omega += body.epsilon*dt
+    body.Vx += ax * dt
+    body.Vy += ay * dt
+    body.x += body.Vx * dt
+    body.y += body.Vy * dt
+    body.angle += body.omega * dt
+    body.omega += body.epsilon * dt
 
 
 def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r):
@@ -98,3 +98,19 @@ def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r)
         calculate_force(body, space_objects, flag, flag_l, flag_r)
     for body in space_objects:
         move_space_object(body, dt)
+
+
+def calculation_orbit(body, center):
+    calc_list = []
+    for t in range(10 ** 10):
+        dt = 1000
+        r = ((body.x - center.x) ** 2 + (body.y - center.y) ** 2) ** 0.5
+        body.Fx += G * center.m * body.m * (center.x - body.x) / (r ** 3)
+        body.Fy += G * center.m * body.m * (center.y - body.y) / (r ** 3)
+        ax = body.Fx / body.m
+        ay = body.Fy / body.m
+        body.Vx += ax * dt
+        body.Vy += ay * dt
+        body.x += body.Vx * dt
+        body.y += body.Vy * dt
+        calc_list.append((body.x, body.y))
