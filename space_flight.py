@@ -101,24 +101,31 @@ def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r)
         move_space_object(body, dt)
 
 
-def calculation_orbit(body, center):
+def calculation_orbit(body, object_list, dt):
     calc_list = []
-    if body == center:
-        pass
-    else:
-        body_test = Object()
-        body_test.x = body.x
-        body_test.y = body.y
-        for t in range(10 ** 4):
-            dt = 100
-            r = ((body_test.x - center.x) ** 2 + (body_test.y - center.y) ** 2) ** 0.5
-            body_test.Fx += G * center.m * body.m * (center.x - body_test.x) / (r ** 3)
-            body_test.Fy += G * center.m * body.m * (center.y - body_test.y) / (r ** 3)
-            ax = body_test.Fx / body.m
-            ay = body_test.Fy / body.m
-            body_test.Vx += ax * dt
-            body_test.Vy += ay * dt
-            body_test.x += body_test.Vx * dt
-            body_test.y += body_test.Vy * dt
-            calc_list.append([body_test.x, body_test.y])
+    body_test = Object()
+    body_test.type = 'rocket'
+    body_test.x = body.x
+    body_test.y = body.y
+    body_test.Vx = body.Vx
+    body_test.Vy = body.Vy
+    body_test.m = body.m
+    for t in range(10 * dt):
+        body_test.Fx = body_test.Fy = 0
+        for obj in object_list:
+            if obj == body:
+                continue
+            r = ((body_test.x - obj.x) ** 2 + (body_test.y - obj.y) ** 2) ** 0.5
+            body_test.Fx += G * obj.m * body_test.m * (obj.x - body_test.x) / (r ** 3)
+            body_test.Fy += G * obj.m * body_test.m * (obj.y - body_test.y) / (r ** 3)
+            #print('ob)
+        ax = body_test.Fx / body_test.m
+        ay = body_test.Fy / body_test.m
+        body_test.Vx += ax * dt
+        body_test.Vy += ay * dt
+        body_test.x += body_test.Vx * dt
+        body_test.y += body_test.Vy * dt
+        calc_list.append([body_test.x/10**6, body_test.y/10**6])
+        t += dt
     return calc_list
+
