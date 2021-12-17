@@ -112,7 +112,8 @@ def draw_fire(img_arg, fire_big_arg, fire_small_arg,
 
 def draw_rotate(rocket_arg, fire_big_arg, fire_small_arg, flag_forward_arg, flag_left_arg, flag_right_arg,
                 engines_cord_arg,
-                engines_left_cord_arg, engines_right_cord_arg, fire_big_step_arg, fire_small_step_arg, time_step_arg):
+                engines_left_cord_arg, engines_right_cord_arg, fire_big_step_arg, fire_small_step_arg, time_step_arg,
+                rocket_surface_width, rocket_surface_height):
     """
     :param rocket_arg - повернхность, на которой отображается огонь
     :param fire_big_arg - массив огней для центральных двигателей
@@ -135,8 +136,8 @@ def draw_rotate(rocket_arg, fire_big_arg, fire_small_arg, flag_forward_arg, flag
         draw_fire(rocket_arg.surface, fire_big_arg, fire_small_arg, flag_forward_arg, flag_left_arg, flag_right_arg,
                   engines_cord_arg, engines_left_cord_arg, engines_right_cord_arg, fire_big_step_arg,
                   fire_small_step_arg, time_step_arg)
-    img2 = pygame.Surface((2 * rocket_surface_widht, 2 * rocket_surface_height), pygame.SRCALPHA)
-    img2.blit(rocket_arg.surface, (rocket_surface_widht - pos[0], rocket_surface_height - pos[1]))
+    img2 = pygame.Surface((2 * rocket_surface_width, 2 * rocket_surface_height), pygame.SRCALPHA)
+    img2.blit(rocket_arg.surface, (rocket_surface_width - pos[0], rocket_surface_height - pos[1]))
     rocket_rotated_arg = pygame.transform.rotate(img2, angle)
     rect_arg = rocket_rotated_arg.get_rect()
     rect_arg.center = center
@@ -191,6 +192,7 @@ def draw_fuel(bg_flight_surf_arg, rocket_arg, rocket_fuel_max_arg):
 
     fuel_text = change_font_color(rocket, 'fuel', fuel_quantity, 'kg')
 
+    bg_flight_surf_arg.blit(fuel_max_image, (fuel_bar_pos_x, fuel_bar_pos_y))
     bg_flight_surf_arg.blit(fuel_image, (fuel_bar_pos_x, fuel_bar_pos_y + 100 + (100 - fuel_per_height)))
     bg_flight_surf_arg.blit(fuel_text, (fuel_bar_pos_x - 25, fuel_bar_pos_y + 200))
 
@@ -230,11 +232,11 @@ def draw_height(bg_flight_surf_arg, rocket_arg, earth_arg, space_arg):
         elif 50000 < rocket_arg.h - 6400000 <= 85000:
             text_height = FONT_small.render('You are in the mesosphere', True, LIGHT_BLUE)
         elif 85000 < rocket_arg.h - 6400000 <= 100000:
-            text_height = FONT_small.render('You are approaching the Karman line', True, LIGHT_BLUE)
+            text_height = FONT_small.render('You are up to the Karman line', True, LIGHT_BLUE)
         elif 100000 < rocket_arg.h - 6400000:
             text_height = FONT_small.render('You have crossed Karman line', True, LIGHT_BLUE)
 
-        bg_flight_surf_arg.blit(text_height, (250, 30))
+        bg_flight_surf_arg.blit(text_height, (250, 15))
 
     bg_flight_surf_arg.blit(earth_arg, (cosmos_bar_pos_x - 7, cosmos_bar_height + cosmos_bar_pos_y + 10))
     bg_flight_surf_arg.blit(space_arg, (cosmos_bar_pos_x - 7, cosmos_bar_pos_y - 30))
@@ -330,7 +332,7 @@ def draw_status(bg_flight_surf_arg, rocket_arg, rocket_fuel_max_arg, earth_arg, 
 
 def check_space_flight(bg_flight_surf_arg, rocket_arg):
     v_1 = 79  # 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
-    if abs(round(rocket_arg.angle) + 90) % 360 <= 5 and (rocket_arg.vx**2+rocket_arg.vy**2)**0.5 >= v_1\
+    if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx**2+rocket_arg.vy**2)**0.5 >= v_1\
             and rocket_arg.h - 6400000 >= 100000:
         pass_level1 = FONT_small.render('You have entered the space.',  True, LIGHT_BLUE)
         pass_level2 = FONT_small.render('Congratulations!', True, LIGHT_BLUE)
@@ -398,11 +400,11 @@ if __name__ == '__main__':
 
     while True:
 
-        rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, x_left, y_top, rocket)
+        rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
 
         rocket_rotated, rect = draw_rotate(rocket, fire_big, fire_small, flag_forward, flag_left, flag_right,
                                            engines_cord, engines_left_cord, engines_right_cord, fire_big_step,
-                                           fire_small_step, time_step)
+                                           fire_small_step, time_step, rocket_surface_width, rocket_surface_height)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
