@@ -5,8 +5,8 @@ from starship_constructor import *
 
 pygame.init()
 
-pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
-pygame.mixer.music.play(-1)
+#pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
+#pygame.mixer.music.play(-1)
 
 
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
