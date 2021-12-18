@@ -7,25 +7,48 @@ G = 6.67 * 10 ** (-11)
 M = 6.02 * 10 ** 24
 
 
-def fuel_calc(rocket):
-    for module in rocket.list:
-        rocket.fuel += module.fuel
+def fuel_calc(rocket_e):
+    """
+    функция рассчитывающая максимальное значение топлива в ракете
+    :param rocket_e: - экземпляр класса Rocket
+    """
+    for module in rocket_e.list:
+        rocket_e.fuel += module.fuel
 
 
-def force_coord(flag, engine_type, rocket, f_e_y, f_e_x):
+def force_coord(flag, engine_type, rocket_e, f_e_y, f_e_x):
+    """
+    функция рассчитывающая значения силы при условии flag
+    :param flag: - флаг, если True - то двигатели включены, False - отключены
+    :param engine_type: строка, являющаяся обозначением типа двигателя
+    :param rocket_e: экземпляр класса Rocket, для которого рассчитывается сила
+    :param f_e_y: параметер силы тяги по y до прибавления сил engine_type
+    :param f_e_x: параметер силы тяги по x до прибавления сил engine_type
+    :return: f_e_y, f_e_x - параметры силы после прибавления
+    """
     if flag:
-        for module in rocket.list:
-            if rocket.fuel >= 0 and module.type == engine_type:
-                f_e_y += module.force * np.cos(rocket.angle*np.pi/180) * 100
-                f_e_x += module.force * np.sin(rocket.angle*np.pi/180) * 100
-                rocket.fuel -= module.force * 0.0005
+        for module in rocket_e.list:
+            if rocket_e.fuel >= 0 and module.type == engine_type:
+                f_e_y += module.force * np.cos(rocket_e.angle*np.pi/180) * 100
+                f_e_x += module.force * np.sin(rocket_e.angle*np.pi/180) * 100
+                rocket_e.fuel -= module.force * 0.0005
     return f_e_y, f_e_x
 
 
-def moment_coord(flag, rocket, module, module_type, x_c, mf):
-    if flag and rocket.fuel >= 0:
+def moment_coord(flag, rocket_e, module, module_type, x_c, mf):
+    """
+    Функция, прибавляющая к mf - моменту сил, значения моментов от определенных двигателей
+    :param flag: флаг, если True - то двигатели включены, False - отключены
+    :param rocket_e: экземпляр класса Rocket, для которого рассчитывается сила
+    :param module: экземпляр класса module
+    :param module_type: - строка, являющаяся обозначением типа двигателя
+    :param x_c: - значение координаты центра масс
+    :param mf: - момент сил до прибавления
+    :return: mf - момент сил после прибавления
+    """
+    if flag and rocket_e.fuel >= 0:
         if module.type == module_type:
-            rocket.fuel -= module.force * 0.001
+            rocket_e.fuel -= module.force * 0.001
             mf += module.force * (module.x + module.b / 2 - x_c)
     return mf
 
@@ -35,6 +58,10 @@ def force_calc(rocket, flag, flag_l, flag_r, sign):
     функция рассчета сил, действующих на ракету
     получает объект класса rocket, возвращает силы по оси x и y
     :param rocket: - экземпляр класса
+    :param flag - флаг, определяющий включение основных двигателей
+    :param flag_l - флаг, определяющий включение левых маневровых двигателей
+    :param flag_r - флаг, определяющий включение правых маневровых двигателей
+    :param sign - флаг, характеризующий наличие трения, True - если есть, False - если нет
     :return: f_k, f_y - силы, действующие на ракету
     """
     if sign:
@@ -67,9 +94,22 @@ def force_calc(rocket, flag, flag_l, flag_r, sign):
     return f_x, f_y
 
 
-def momentum_calc(rocket, left_flag, right_flag, flag_forward):
-    if rocket.h <= 6440000:
-        k = 0.000001 * (6490000-rocket.h)/90000
+def momentum_calc(rocket, left_flag, right_flag, flag_forward, sign):
+    """
+        функция рассчета сил, действующих на ракету
+        получает объект класса rocket, возвращает силы по оси x и y
+        :param rocket: - экземпляр класса
+        :param left_flag - флаг, определяющий включение левых маневровых двигателей
+        :param right_flag - флаг, определяющий включение правых маневровых двигателей
+        :param flag_forward - флаг, определяющий включение основных двигателей
+        :param sign - флаг, характеризующий наличие трения, True - если есть, False - если нет
+        :return: mf - момент сил, действующих на ракету
+        """
+    if sign:
+        if rocket.h <= 6440000:
+            k = 0.000001 * (6490000-rocket.h)/90000
+        else:
+            k = 0
     else:
         k = 0
     m = 0
@@ -101,6 +141,14 @@ def momentum_calc(rocket, left_flag, right_flag, flag_forward):
 
 
 def rocket_move(rocket, flag_left, flag_right, flag, sign):
+    """
+    функция, перемещающая ракету
+    :param rocket: экземпляр класса ракета
+    :param flag_left: - флаг, характеризующий включение левых маневровых  двигателей
+    :param flag_right: - флаг, характеризующий включение правых маневровых  двигателей
+    :param flag:- флаг, характеризующий включение двигателей
+    :param sign: - флаг, характеризующий наличие трения, True - если есть, False - если нет
+    """
     m = 0
     dt = 0.1
     rocket.angle = rocket.angle % 360
@@ -114,7 +162,7 @@ def rocket_move(rocket, flag_left, flag_right, flag, sign):
     rocket.vy += a_y * dt
     rocket.x += rocket.vx * dt
     rocket.h += rocket.vy * dt
-    epsilon = momentum_calc(rocket, flag_left, flag_right, flag)
+    epsilon = momentum_calc(rocket, flag_left, flag_right, flag, sign)
     rocket.omega += epsilon * dt
     rocket.angle += rocket.omega * dt
 
