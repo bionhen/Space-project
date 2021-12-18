@@ -1,12 +1,11 @@
 from constants import *
 from draw_menu import Button, ButtonOff
 from starship_modules import *
-from starship_constructor import *
 
 pygame.init()
 
-#pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
-#pygame.mixer.music.play(-1)
+# pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
+# pygame.mixer.music.play(-1)
 
 
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -82,6 +81,20 @@ def draw_buttons(bg_surf, buttons_off_arg, buttons_on_arg):
             bg_surf.blit(buttons_on_arg[i].button_surf, (buttons_on_arg[i].x, buttons_on_arg[i].y))
 
 
+def check_module(surf_list):
+    """
+    функция, проверяющая попадание мышью в область, где находится модуль из surf_list
+    :param surf_list: список модулей, для которых выполняетсяя проверка
+    :return: k - номер модуля для которго мышь попадает в его область
+    """
+    k = -1
+    x, y = pygame.mouse.get_pos()
+    for i in range(len(surf_list)):
+        if surf_list[i].x <= x <= surf_list[i].x + surf_list[i].b and surf_list[i].y <= y <= surf_list[i].y + surf_list[i].a:
+            k = i
+    return k
+
+
 def calc_params(rocket_list_arg):
     """
     Функция рассчитывает общую массу самой ракеты и ее топлива
@@ -144,48 +157,45 @@ def move_modules(moved_module_arg, bg_constructor_surf_arg, flag):
         bg_constructor_surf_arg.blit(moved_module_arg.surface, (x, y))
 
 
-def check_point(cord_x, cord_y, rocket_module):
+def check_point(cord_x, cord_y, rocket_module_arg):
     upped_1 = False
-    if (rocket_module.x + 10 < cord_x < rocket_module.x + rocket_module.b - 10) and (rocket_module.y + 10 < cord_y < rocket_module.y + rocket_module.a - 10):
+    if (rocket_module_arg.x + 10 < cord_x < rocket_module_arg.x + rocket_module_arg.b - 10) and (rocket_module_arg.y + 10 < cord_y < rocket_module_arg.y + rocket_module_arg.a - 10):
         upped_1 = True
-    print("upped_1", upped_1)
     return upped_1
 
 
-def check_dist(cord_x, cord_y, rocket_module, moved_module):
+def check_dist(cord_x, cord_y, rocket_module_arg, moved_module_arg):
     upped_2 = False
-    if rocket_module.x + rocket_module.b + 50 < cord_x or cord_x < rocket_module.x - 50 or rocket_module.y + moved_module.a + 45 < cord_y or cord_y < rocket_module.y - moved_module.a - 45:
+    if rocket_module_arg.x + rocket_module_arg.b + 50 < cord_x or cord_x < rocket_module_arg.x - 50 or rocket_module_arg.y + moved_module_arg.a + 45 < cord_y or cord_y < rocket_module_arg.y - moved_module_arg.a - 45:
         upped_2 = True
-    print("upped_2", upped_2)
     return upped_2
 
 
-def check_modules_pos(rocket_list, moved_module):
+def check_modules_pos(rocket_list_arg, moved_module_arg):
     upped = False
     upped_2_list = []
     x_mouse, y_mouse = pygame.mouse.get_pos()
     moved_module_x_r_u, moved_module_y_r_u = x_mouse, y_mouse - 10
-    moved_module_x_l_u, moved_module_y_l_u = x_mouse + moved_module.b, y_mouse - 10
-    moved_module_x_r_d, moved_module_y_r_d = x_mouse, y_mouse + moved_module.a
-    moved_module_x_l_d, moved_module_y_l_d = x_mouse + moved_module.b, y_mouse + moved_module.a
-    moved_module_x_c, moved_module_y_c = x_mouse + moved_module.b/2, y_mouse + moved_module.a/2
+    moved_module_x_l_u, moved_module_y_l_u = x_mouse + moved_module_arg.b, y_mouse - 10
+    moved_module_x_r_d, moved_module_y_r_d = x_mouse, y_mouse + moved_module_arg.a
+    moved_module_x_l_d, moved_module_y_l_d = x_mouse + moved_module_arg.b, y_mouse + moved_module_arg.a
+    moved_module_x_c, moved_module_y_c = x_mouse + moved_module_arg.b/2, y_mouse + moved_module_arg.a/2
     moved_module_point = [(moved_module_x_r_u, moved_module_y_r_u), (moved_module_x_l_u, moved_module_y_l_u),
                           (moved_module_x_r_d, moved_module_y_r_d), (moved_module_x_l_d, moved_module_y_l_d),
                           (moved_module_x_c, moved_module_y_c)]
-    for rocket_module in rocket_list:
+    for rocket_module in rocket_list_arg:
         for i in range(len(moved_module_point)):
             upped_1 = check_point(moved_module_point[i][0], moved_module_point[i][1], rocket_module)
             if upped_1:
                 upped = True
                 break
-    for rocket_module in rocket_list:
+    for rocket_module in rocket_list_arg:
             upped_2 = check_dist(moved_module_x_r_u, moved_module_y_r_u, rocket_module, moved_module)
             if upped_2:
                 upped_2_list.append(upped_2)
 
-    if len(upped_2_list) == len(rocket_list):
+    if len(upped_2_list) == len(rocket_list_arg):
         upped = True
-    print("upped", upped)
     return upped
 
 
@@ -198,7 +208,7 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
     """
     global cash
     u, w = pygame.mouse.get_pos()
-    if flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and rocket_list == []:
+    if flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and rocket_list_arg == []:
         rocket_module = Module()
         rocket_module.type = moved_module_arg.type
         rocket_module.m = moved_module_arg.m
@@ -229,6 +239,7 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.y = w - w % 25
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
+
 
 def draw_rocket(rocket_list_arg, rocket_surface_arg):
     """
@@ -400,6 +411,7 @@ def draw_constructor_foo(events, clicks, rockets_list, moved_modules, flags1, fl
         move_modules(moved_modules, bg_constructors_surf, flags1)
     if flags2 and js >= 0 and flags_dif:
         set_modules(moved_modules, flags2, rockets_list)
+        cash -= moved_module.price
         js = ks
         flags_dif = False
     if flags2 and js >= 0 and flags_rock:
