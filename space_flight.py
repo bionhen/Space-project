@@ -2,10 +2,15 @@ import numpy as np
 from space_obj import Object
 
 G = 6.67408E-11
-"""Гравитационная постоянная Ньютона G"""
+"""Гравитационная постоянная"""
 
 
 def calculate_m_rocket(rocket):
+    """
+    функция, рассчитывающая массу ракеты
+    :param rocket: - экземпляр класса Rocket
+    :return: m - масса ракеты
+    """
     m = 0
     for module in rocket.list:
         m += module.m
@@ -13,6 +18,11 @@ def calculate_m_rocket(rocket):
 
 
 def calculate_m_fuel(rocket):
+    """
+    функция, рассчитывающая топливо ракеты
+    :param rocket: - экземпляр класса Rocket
+    :return: fuel - топливо ракеты
+    """
     fuel = 0
     for module in rocket.list:
         fuel += module.fuel
@@ -20,10 +30,13 @@ def calculate_m_fuel(rocket):
 
 
 def calculate_force(body, space_objects, flag, flag_l, flag_r):
-    """Вычисляет силу, действующую на тело.
-    Параметры:
-    **body** — тело, для которого нужно вычислить дейстующую силу.
-    **space_objects** — список объектов, которые воздействуют на тело.
+    """
+    функция, рассчитывающая силу и момент сил, действующих на тело
+    :param body: тело, для которого рассчитывется сила
+    :param space_objects: список тел, которые взаимодействуют с телом
+    :param flag - флаг, определяющий включение основных двигателей
+    :param flag_l - флаг, определяющий включение левых маневровых двигателей
+    :param flag_r - флаг, определяющий включение правых маневровых двигателей
     """
 
     body.Fx = body.Fy = 0
@@ -31,21 +44,13 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
         if obj.type == 'rocket':
             obj.m = calculate_m_rocket(obj)
         if body == obj:
-            continue  # тело не действует гравитационной силой на само себя!
+            continue
         r = ((body.x - obj.x) ** 2 + (body.y - obj.y) ** 2) ** 0.5
         body.Fx += G * obj.m * body.m * (obj.x - body.x) / (r ** 3)
         body.Fy += G * obj.m * body.m * (obj.y - body.y) / (r ** 3)
         if body.type == 'rocket':
             for module in body.list:
                 if module.type == 'engine' and flag and body.fuel >= 0:
-                    body.Fx += module.force * np.cos(body.angle * np.pi / 180)
-                    body.Fy += module.force * np.sin(body.angle * np.pi / 180)
-                    body.fuel -= module.force * 0.001
-                if module.type == 'engine_l' and flag_l and body.fuel >= 0:
-                    body.Fx += module.force * np.cos(body.angle * np.pi / 180)
-                    body.Fy += module.force * np.sin(body.angle * np.pi / 180)
-                    body.fuel -= module.force * 0.001
-                if module.type == 'engine_r' and flag_r and body.fuel >= 0:
                     body.Fx += module.force * np.cos(body.angle * np.pi / 180)
                     body.Fy += module.force * np.sin(body.angle * np.pi / 180)
                     body.fuel -= module.force * 0.001
@@ -60,24 +65,24 @@ def calculate_force(body, space_objects, flag, flag_l, flag_r):
                 if flag_l and body.fuel >= 0:
                     if module.type == 'engine_l':
                         body.fuel -= module.force * 0.001
-                        mf += 10 ** (-6) * module.force * (module.x + module.b / 2 - x_c)
+                        mf += 10 ** (-7) * module.force * (module.x + module.b / 2 - x_c)
                 if flag_r and body.fuel >= 0:
                     if module.type == 'engine_r':
                         body.fuel -= module.force * 0.001
-                        mf += 10 ** (-6) * module.force * (module.x + module.b / 2 - x_c)
+                        mf += 10 ** (-7) * module.force * (module.x + module.b / 2 - x_c)
                 if flag and body.fuel >= 0:
                     if module.type == 'engine':
                         body.fuel -= module.force * 0.001
-                        mf += 10 ** (-6) * module.force * (module.x + module.b / 2 - x_c)
+                        mf += 10 ** (-7) * module.force * (module.x + module.b / 2 - x_c)
             body.epsilon = mf / body.m
 
 
 def move_space_object(body, dt):
-    """Перемещает тело в соответствии с действующей на него силой.
-    Параметры:
-    **body** — тело, которое нужно переместить.
     """
-
+    функция, перемещающая космическое тело
+    :param body: - перемещаемое тело
+    :param dt: - маленький промежуток времени
+    """
     ax = body.Fx / body.m
     ay = body.Fy / body.m
     body.Vx += ax * dt
@@ -89,10 +94,13 @@ def move_space_object(body, dt):
 
 
 def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r):
-    """Пересчитывает координаты объектов.
-    Параметры:
-    **space_objects** — список объектов, для которых нужно пересчитать координаты.
-    **dt** — шаг по времени
+    """
+    функция, пересчитывающая координаты тел
+    :param space_objects: - список космических объектов
+    :param dt: промежуток времени
+    :param flag - флаг, определяющий включение основных двигателей
+    :param flag_l - флаг, определяющий включение левых маневровых двигателей
+    :param flag_r - флаг, определяющий включение правых маневровых двигателей
     """
 
     for body in space_objects:
@@ -102,6 +110,13 @@ def recalculate_space_objects_positions(space_objects, dt, flag, flag_l, flag_r)
 
 
 def calculation_orbit(body, object_list, dt):
+    """
+    функция, рассчитывающая список координат предполагаемой орбиты
+    :param body: - тело для которого рассчитываается орбита
+    :param object_list: - список объектов, взаимодействующих с телом
+    :param dt: - промежуток времени
+    :return: calc_list - список координат для предполагаемой орбиты
+    """
     calc_list = []
     body_test = Object()
     body_test.type = 'rocket'
@@ -118,7 +133,6 @@ def calculation_orbit(body, object_list, dt):
             r = ((body_test.x - obj.x) ** 2 + (body_test.y - obj.y) ** 2) ** 0.5
             body_test.Fx += G * obj.m * body_test.m * (obj.x - body_test.x) / (r ** 3)
             body_test.Fy += G * obj.m * body_test.m * (obj.y - body_test.y) / (r ** 3)
-            #print('ob)
         ax = body_test.Fx / body_test.m
         ay = body_test.Fy / body_test.m
         body_test.Vx += ax * dt
