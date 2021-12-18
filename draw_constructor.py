@@ -1,12 +1,13 @@
+from constants import *
+from draw_menu import Button, ButtonOff
 from starship_modules import *
 from starship_constructor import *
 
 pygame.init()
 
-# pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.load('images/constructor/Space_Oddity.mp3')
+pygame.mixer.music.play(-1)
 
-WIDTH, HEIGHT = 800, 600
 
 sc = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Dolgoprudniy Program")
@@ -19,80 +20,48 @@ FONT = pygame.font.SysFont('century gothic', 30, bold=True)
 FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
 pygame.font.init()
 
-cash = 1000
-BLUE = (39, 40, 91)
-LIGHT_BLUE = (106, 139, 197)
-
-
-class Button:
-    """Класс Button (Кнопка, на которую наведен курсор)"""
-    def __init__(self, filename, x, y):
-        """
-        Инициализация класса Button
-        :param filename - имя файла с изображением кнопки
-        :param x - координата левого верхнего угла по горизонтали
-        :param y - координата левого верхнего угла по вертикали
-        """
-        self.x = x
-        self.y = y
-        self.button_surf = pygame.image.load(("images/constructor/"+filename+".png")).convert_alpha()
-
-
-class ButtonOff(Button):
-    """
-    Инициализация класса ButtonOff, дочерний класс  (Кнопка, на которую не наведён курсор)
-    :param filename - имя файла с изображением кнопки
-    :param x - координата левого верхнего угла по горизонтали
-    :param y - координата левого верхнего угла по вертикали
-    """
-    def __init__(self, filename, x, y):
-        super().__init__(filename, x, y)
-        self.button_off_surf_width = pygame.Surface.get_width(self.button_surf)
-        self.button_off_surf_height = pygame.Surface.get_height(self.button_surf)
-
-    def check_button(self, cur_event):
-        """Метод проверяет, наведён ли курсор на кнопку"""
-        if ((cur_event[0] >= self.x)
-                and (cur_event[0] <= self.x + self.button_off_surf_width)
-                and (cur_event[1] >= self.y)
-                and (cur_event[1] <= self.y + self.button_off_surf_height)):
-            button_checked = True
-        else:
-            button_checked = False
-        return button_checked
-
 
 def render_bg():
-    """Функция генерирует составляющие фона: сетку, фон и поверхность ракеты"""
+    """Функция генерирует составляющие фона: сетку, фон и поверхность ракеты
+    :return grid_arg -  поверхность сетки
+    :return bg_constructor_surf_arg - повехность заднего фона
+    :return rocket_surface_arg - повехность ракеты"""
     grid_arg = pygame.image.load("images/constructor/grid.png").convert_alpha()  # сетка конструктора
     bg_constructor_surf_arg = pygame.image.load("images/constructor/bg_constructor.png").convert_alpha()  # задний фон
     rocket_surface_arg = pygame.Surface((400, 500), pygame.SRCALPHA)
+
     return grid_arg, bg_constructor_surf_arg, rocket_surface_arg
 
 
 def draw_bg(grid_arg, bg_constructor_surf_arg, rocket_surface_arg):
-    """Функция отрисовывает составляющие заднего фона (сетку, фон и ракету) на экране"""
+    """Функция отрисовывает составляющие заднего фона (сетку, фон и ракету) на экране
+    :param grid_arg - поверхность сетки
+    :param bg_constructor_surf_arg - поверхность заднего фона
+    :param rocket_surface_arg - поверхность ракеты"""
     bg_constructor_surf_arg.blit(grid_arg, (200, 50))
     bg_constructor_surf_arg.blit(rocket_surface_arg, (200, 50))
     sc.blit(bg_constructor_surf_arg, (0, 0))
 
 
 def render_buttons():
-    """Функция генерирует кнопки"""
-    fuel_on = Button('fuel_on', 625, 75)
-    fuel_off = ButtonOff('fuel_off', 625, 75)
-    autopilot_on = Button('autopilot_on', 625, 150)
-    autopilot_off = ButtonOff('autopilot_off', 625, 150)
-    engines_on = Button('engines_on', 625, 225)
-    engines_off = ButtonOff('engines_off', 625, 225)
-    fairings_on = Button('fairings_on', 625, 300)
-    fairings_off = ButtonOff('fairings_off', 625, 300)
-    modules_on = Button('modules_on', 625, 375)
-    modules_off = ButtonOff('modules_off', 625, 375)
-    done_on = Button('done_on', 625, 525)
-    done_off = ButtonOff('done_off', 625, 525)
-    delete_on = Button('delete_on', 625, 450)
-    delete_off = ButtonOff('delete_off', 625, 450)
+    """Функция генерирует кнопки
+    :return buttons_off_arg - список объектов кнопок класса ButtonOff
+    :return buttons_on_arg - список объектов кнопок класса Button"""
+
+    fuel_on = Button('constructor/fuel_on', 625, 75)
+    fuel_off = ButtonOff('constructor/fuel_off', 625, 75)
+    autopilot_on = Button('constructor/autopilot_on', 625, 150)
+    autopilot_off = ButtonOff('constructor/autopilot_off', 625, 150)
+    engines_on = Button('constructor/engines_on', 625, 225)
+    engines_off = ButtonOff('constructor/engines_off', 625, 225)
+    fairings_on = Button('constructor/fairings_on', 625, 300)
+    fairings_off = ButtonOff('constructor/fairings_off', 625, 300)
+    modules_on = Button('constructor/modules_on', 625, 375)
+    modules_off = ButtonOff('constructor/modules_off', 625, 375)
+    done_on = Button('constructor/done_on', 625, 525)
+    done_off = ButtonOff('constructor/done_off', 625, 525)
+    delete_on = Button('constructor/delete_on', 625, 450)
+    delete_off = ButtonOff('constructor/delete_off', 625, 450)
 
     buttons_off_arg = [fuel_off, autopilot_off, engines_off, fairings_off, modules_off, done_off, delete_off]
     buttons_on_arg = [fuel_on, autopilot_on, engines_on, fairings_on, modules_on, done_on, delete_on]
@@ -117,6 +86,8 @@ def calc_params(rocket_list_arg):
     """
     Функция рассчитывает общую массу самой ракеты и ее топлива
     :param rocket_list_arg: список запчастей, установленных на ракете
+    :return mass - масса ракеты
+    :return fuel - топливо рактеы
     """
     mass = 0
     fuel = 0
@@ -128,7 +99,10 @@ def calc_params(rocket_list_arg):
 
 
 def draw_text(rocket_list_arg, bg_constructor_surf_arg):
-    """Функция отрисовывает количество денег, массу ракеты и массу топлива на заднем фоне слайда"""
+    """Функция отрисовывает количество денег, массу ракеты и массу топлива на заднем фоне слайда
+    :param rocket_list_arg - список модулей ракеты
+    :param bg_constructor_surf_arg - задний фон"""
+
     mass, fuel = calc_params(rocket_list_arg)
     cash_text = FONT.render('cash: ' + str(cash), True, BLUE)
     fuel_text = FONT_small.render('fuel: ' + str(fuel), True, BLUE)
@@ -169,12 +143,14 @@ def move_modules(moved_module_arg, bg_constructor_surf_arg, flag):
     if flag:
         bg_constructor_surf_arg.blit(moved_module_arg.surface, (x, y))
 
+
 def check_point(cord_x, cord_y, rocket_module):
     upped_1 = False
-    if (rocket_module.x + 5 < cord_x < rocket_module.x + rocket_module.b - 5) and (rocket_module.y + 5 < cord_y < rocket_module.y + rocket_module.a - 5):
+    if (rocket_module.x + 10 < cord_x < rocket_module.x + rocket_module.b - 10) and (rocket_module.y + 10 < cord_y < rocket_module.y + rocket_module.a - 10):
         upped_1 = True
     print("upped_1", upped_1)
     return upped_1
+
 
 def check_dist(cord_x, cord_y, rocket_module, moved_module):
     upped_2 = False
@@ -183,9 +159,9 @@ def check_dist(cord_x, cord_y, rocket_module, moved_module):
     print("upped_2", upped_2)
     return upped_2
 
-def check_modules(rocket_list, moved_module):
+
+def check_modules_pos(rocket_list, moved_module):
     upped = False
-    #upped_list = []
     upped_2_list = []
     x_mouse, y_mouse = pygame.mouse.get_pos()
     moved_module_x_r_u, moved_module_y_r_u = x_mouse, y_mouse - 10
@@ -196,9 +172,6 @@ def check_modules(rocket_list, moved_module):
     moved_module_point = [(moved_module_x_r_u, moved_module_y_r_u), (moved_module_x_l_u, moved_module_y_l_u),
                           (moved_module_x_r_d, moved_module_y_r_d), (moved_module_x_l_d, moved_module_y_l_d),
                           (moved_module_x_c, moved_module_y_c)]
-    """moved_module_dist = [(moved_module_x_r_u, moved_module_y_r_u), (moved_module_x_l_u, moved_module_y_l_u),
-                          (moved_module_x_r_d, moved_module_y_r_d), (moved_module_x_l_d, moved_module_y_l_d),
-                          (moved_module_x_c, moved_module_y_c)]"""
     for rocket_module in rocket_list:
         for i in range(len(moved_module_point)):
             upped_1 = check_point(moved_module_point[i][0], moved_module_point[i][1], rocket_module)
@@ -212,14 +185,8 @@ def check_modules(rocket_list, moved_module):
 
     if len(upped_2_list) == len(rocket_list):
         upped = True
-    """for i in upped_list:
-        if i:
-            k += 1
-    if k > 0:"""
     print("upped", upped)
     return upped
-
-
 
 
 def set_modules(moved_module_arg, flag, rocket_list_arg):
@@ -247,7 +214,7 @@ def set_modules(moved_module_arg, flag, rocket_list_arg):
         rocket_module.surface = moved_module_arg.surface
         rocket_list_arg.append(rocket_module)
     elif flag and cash - moved_module_arg.price >= 0 and 200 <= u <= 600 and 50 <= w <= 550 and \
-            not check_modules(rocket_list_arg, moved_module_arg):
+            not check_modules_pos(rocket_list_arg, moved_module_arg):
         rocket_module = Module()
         rocket_module.type = moved_module_arg.type
         rocket_module.m = moved_module_arg.m
