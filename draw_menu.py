@@ -67,4 +67,3 @@ def draw_menu_foo():
         a.blit(c.button_surf, (c.x, c.y))
 
     sc.blit(a, (0, 0))
-
