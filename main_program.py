@@ -1,21 +1,20 @@
-from pygame.draw import *
+from constants import *
 from draw_menu import *
 from change_screen import *
 from draw_missions import *
 from draw_constructor import *
 from draw_flight import *
-# from starship_flight import *
 pygame.init()
-WIDTH, HEIGHT = 800, 600
 draw_screen = "menu"
 mouse_click = [-1, -1, -1, -1, -1]
 mouse_position_x = 0
 mouse_position_y = 0
-sc = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Dolgoprudniy Program")
 pygame.display.set_icon(pygame.image.load("emblem.ico"))
 click = [-1, -1, -1, -1, -1]
+rocket = Rocket()
 rocket_list = []
+rocket_fuel_max = 7
 rocket_surface = pygame.Surface((400, 500), pygame.SRCALPHA)
 flag1 = False
 flag2 = False
@@ -23,9 +22,9 @@ flag_dif = False
 flag_rock = False
 flag_right, flag_left, flag_forward = False, False, False
 happens = ["nothing", "nothing"]
+time_step = fire_big_step = fire_small_step = 0
 moved_module = Module()
-k = -1
-j = -1
+k = j = -1
 clock = pygame.time.Clock()
 FPS = 60
 finished = False
@@ -62,9 +61,9 @@ while not finished:
             happens = ["key_up", "right"]
 
     if draw_screen == "menu":
-        draw_menu(mouse_position_x, mouse_position_y)
+        draw_menu_foo()
     elif draw_screen == "list_of_missions":
-        draw_missions()
+        draw_missions_foo()
     elif draw_screen == "constructor":
         click, rocket_list, moved_module, flag1, flag2, flag_dif, flag_rock, k, j = draw_constructor_foo(
             happen, click, rocket_list, moved_module, flag1, flag2, flag_dif, flag_rock, k, j)
@@ -74,11 +73,13 @@ while not finished:
         rocket.h = 6400000
         fuel_calc(rocket)
         rocket_fuel_max = rocket.fuel
-        rocket.surface = render_rocket_surface(rocket_surface_widht, rocket_surface_height, rocket)
+        y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
+        rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
         draw_screen = "flying_prepared"
     elif draw_screen == "flying_prepared":
-        rocket, flag_forward, flag_left, flag_right, rocket_fuel_max = draw_flight_foo(
-            rocket, happens, flag_forward, flag_left, flag_right, rocket_fuel_max)
+        rocket, flag_forward, flag_left, flag_right, rocket_fuel_max, time_step, fire_big_step, fire_small_step = \
+            draw_flight_foo(rocket, happens, flag_forward, flag_left, flag_right, rocket_fuel_max, time_step,
+                            fire_big_step, fire_small_step)
 
     show_modules(mouse_click)
     pygame.display.update()
