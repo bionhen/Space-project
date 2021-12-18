@@ -142,4 +142,3 @@ def calculation_orbit(body, object_list, dt):
         calc_list.append([body_test.x/10**6, body_test.y/10**6])
         t += dt
     return calc_list
-

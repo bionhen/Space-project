@@ -184,6 +184,7 @@ def find_engines(rocket):
             engines_right_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
     return engines_cord, engines_left_cord, engines_right_cord
 
+
 y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
 rocket_surface_height, rocket_surface_width = y_bottom - y_top + 50, x_right - x_left
 
