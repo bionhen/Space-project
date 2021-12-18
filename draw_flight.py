@@ -21,6 +21,7 @@ pygame.font.init()
 
 def render_bg():
     """Функция генерирует составляющие фона.
+    :params None
     :returns
     bg_flight_surf - поверхность данного слайда игры
     cosmodrom - изображение космодрома
@@ -41,13 +42,19 @@ def render_bg():
 
 
 def draw_bg(bg_flight_surf_arg, cosmodrom_arg, ground_arg, time_step_arg, rocket_arg):
-    """Функция отрисовывает составляющие заднего фона на экране."""
+    """Функция отрисовывает составляющие заднего фона на экране.
+    :param bg_flight_surf_arg - фоновая поверхность (Surface)
+    :param cosmodrom_arg - поверхность с рисунком космодрома
+    :param ground_arg - поверхность с рисунком земли
+    :param time_step_arg - шаг времени
+    :param rocket_arg - объект ракета класса Rocket"""
     bg_flight_surf_arg.blit(cosmodrom_arg, (250 + time_step_arg*rocket_arg.vx, 200 + (rocket_arg.h - 6400000) * 15))
     bg_flight_surf_arg.blit(ground_arg, (0, 525 + (rocket_arg.h - 6400000) * 15))
 
 
 def render_fire():
     """Функция генерирует массивыы изображений огней.
+    :params None
     :returns
     fire_big - огни для центральных двигателей
     fire_small - огни для боковых двигателей"""
@@ -113,8 +120,9 @@ def draw_fire(img_arg, fire_big_arg, fire_small_arg,
 def draw_rotate(rocket_arg, fire_big_arg, fire_small_arg, flag_forward_arg, flag_left_arg, flag_right_arg,
                 engines_cord_arg,
                 engines_left_cord_arg, engines_right_cord_arg, fire_big_step_arg, fire_small_step_arg, time_step_arg,
-                rocket_surface_width, rocket_surface_height):
+                rocket_surface_width_arg, rocket_surface_height_arg):
     """
+    Функциясоздаёт новую поверхность с повёрнутым изображением кареты.
     :param rocket_arg - повернхность, на которой отображается огонь
     :param fire_big_arg - массив огней для центральных двигателей
     :param fire_small_arg - массив огней для центральных двигателей
@@ -126,18 +134,22 @@ def draw_rotate(rocket_arg, fire_big_arg, fire_small_arg, flag_forward_arg, flag
     :param engines_right_cord_arg - массив кординат правых двигателей
     :param fire_big_step_arg - счётчик отображения больших огней
     :param fire_small_step_arg - счётчик отображения маленьких огней
-    :param time_step_arg - счётчик времени"""
+    :param time_step_arg - счётчик времени
+    :param rocket_surface_width_arg - ширина поверхности ракеты
+    :param rocket_surface_height_arg - высота поверхности ракеты
+    :return rocket_rotated_arg - повёрнутая поверхность ракеты
+    :return rect_arg - координаты поверхности повёрнутой ракеты"""
 
     x_center_mass, y_center_mass = find_center_mass(rocket)
     angle = rocket.angle
     pos = x_center_mass, y_center_mass
-    center = (400, 520 - rocket_surface_height + 50 + y_center_mass)  # откуда берётся высота ракеты
+    center = (400, 520 - rocket_surface_height_arg + 50 + y_center_mass)  # откуда берётся высота ракеты
     if rocket_arg.fuel > 0:
         draw_fire(rocket_arg.surface, fire_big_arg, fire_small_arg, flag_forward_arg, flag_left_arg, flag_right_arg,
                   engines_cord_arg, engines_left_cord_arg, engines_right_cord_arg, fire_big_step_arg,
                   fire_small_step_arg, time_step_arg)
-    img2 = pygame.Surface((2 * rocket_surface_width, 2 * rocket_surface_height), pygame.SRCALPHA)
-    img2.blit(rocket_arg.surface, (rocket_surface_width - pos[0], rocket_surface_height - pos[1]))
+    img2 = pygame.Surface((2 * rocket_surface_width_arg, 2 * rocket_surface_height_arg), pygame.SRCALPHA)
+    img2.blit(rocket_arg.surface, (rocket_surface_width_arg - pos[0], rocket_surface_height_arg - pos[1]))
     rocket_rotated_arg = pygame.transform.rotate(img2, angle)
     rect_arg = rocket_rotated_arg.get_rect()
     rect_arg.center = center
@@ -146,19 +158,25 @@ def draw_rotate(rocket_arg, fire_big_arg, fire_small_arg, flag_forward_arg, flag
 
 
 def draw_rocket(bg_flight_surf_arg, rocket_rotated_arg, rect_arg):
-    """Функция рисует ракету.
+    """Функция рисует повёрную ракету.
     :param rocket_rotated_arg - обновлённое изображение ракеты
     :param rect_arg - координаты, где нужно рисовать ракету
     :param bg_flight_surf_arg - поверхность, на которой рисуется ракета"""
     bg_flight_surf_arg.blit(rocket_rotated_arg, rect_arg)
 
 
-def change_font_color(rocket_arg, parametr_arg, quantity_arg, measure_arg):
+def change_font_color(rocket_arg, param_arg, quantity_arg, measure_arg):
+    """Функция меняет цвет текста в зависимости от высоты.
+    :param rocket_arg - объект ракета класса Rocket
+    :param param_arg - параметр, данные которого выводятся на экран
+    :param quantity_arg - количественная величина параметра
+    :param measure_arg - единицы измерения величины
+    :return text - написанный текст с данными"""
     text = FONT_small.render(' ', True, BLUE)
     if rocket_arg.h < 20000 + 6400000:
-        text = FONT_small.render(parametr_arg + ': ' + str(quantity_arg) + ' ' + measure_arg, True, BLUE)
+        text = FONT_small.render(param_arg + ': ' + str(quantity_arg) + ' ' + measure_arg, True, BLUE)
     if rocket.h >= 20000 + 6400000:
-        text = FONT_small.render(parametr_arg + ': ' + str(quantity_arg) + ' ' + measure_arg, True, LIGHT_BLUE)
+        text = FONT_small.render(param_arg + ': ' + str(quantity_arg) + ' ' + measure_arg, True, LIGHT_BLUE)
     return text
 
 
@@ -203,7 +221,7 @@ def draw_height(bg_flight_surf_arg, rocket_arg, earth_arg, space_arg):
     :param rocket_arg - ракета, элемент класса Rocket
     :param earth_arg - картинка земли
     :param space_arg - картинка космоса"""
-    print(round(rocket_arg.h - 6400000))
+    text_height = FONT_small.render(' ', True, BLUE)
     cosmos_bar_height = 300
     cosmos_bar_width = 5
     cosmos_bar_pos_x = 750
@@ -247,13 +265,12 @@ def draw_speed(bg_flight_surf_arg, rocket_arg):
     """Функция рисует текущую скорость ракеты.
     :param bg_flight_surf_arg - поверхность, на которой рисуется состояние
     :param rocket_arg - ракета, элемент класса Rocket"""
-    # FIXME сделать всплывающую плашку "вы достигли первой комической скорости"
     speed_bar_height = 200
     speed_bar_width = 50
     speed_bar_pos_x = 50
     speed_bar_pos_y = 90
     speed = (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5
-    v_1 = 79.10  # 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
+    v_1 = 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
     speed_per = speed * (100 / v_1)
     speed_per_height = (speed_bar_height / 100 * speed_per)
     speed_image = pygame.Surface((speed_bar_width, speed_per_height))
@@ -261,11 +278,26 @@ def draw_speed(bg_flight_surf_arg, rocket_arg):
     speed_image_max.fill(LIGHT_BLUE)
     speed_image.fill('tomato')
 
+    """if rocket_arg.vx <= 0 and rocket_arg.vy <= 0:
+        speed_text = change_font_color(rocket_arg, 'speed', 0, 'm/c')
+    else:
+        speed_text = change_font_color(rocket_arg, 'speed', round(speed, 1), 'm/c')
+
+    if rocket_arg.vx <= 0:
+        speed_vx_text = change_font_color(rocket_arg, 'v_x', 0, 'm/c')
+    else:
+        speed_vx_text = change_font_color(rocket_arg, 'v_x', round(rocket.vx, 1), 'm/c')
+
+    if rocket_arg.vy <= 0:
+        speed_vy_text = change_font_color(rocket_arg, 'v_y', 0, 'm/c')
+    else:
+        speed_vy_text = change_font_color(rocket_arg, 'v_y', round(rocket.vy, 1), 'm/c')"""
+
+    bg_flight_surf_arg.blit(speed_image_max, (speed_bar_pos_x, speed_bar_pos_y))
+
     speed_text = change_font_color(rocket_arg, 'speed', round(speed, 1), 'm/c')
     speed_vx_text = change_font_color(rocket_arg, 'v_x', round(rocket.vx, 1), 'm/c')
     speed_vy_text = change_font_color(rocket_arg, 'v_y', round(rocket.vy, 1), 'm/c')
-
-    bg_flight_surf_arg.blit(speed_image_max, (speed_bar_pos_x, speed_bar_pos_y))
 
     if speed_per < 100:
         bg_flight_surf_arg.blit(speed_image, (speed_bar_pos_x, speed_bar_pos_y + (speed_bar_height - speed_per_height)))
@@ -286,7 +318,7 @@ def draw_angle(bg_flight_surf_arg, rocket_arg):
     # FIXME поправить периодичность угла
     angle_center_x = 25
     angle_center_y = 50
-    angle_center_bg_x = 760
+    angle_center_bg_x = 740
     angle_center_bg_y = 110
     if rocket_arg.h <= 6400000 + 100000:
         angle_ideal = - 180 / (2 * 100000) * (rocket_arg.h - 6400000)
@@ -324,31 +356,64 @@ def fill_gradient(bg_flight_surf_arg, rocket_arg):
 
 
 def draw_status(bg_flight_surf_arg, rocket_arg, rocket_fuel_max_arg, earth_arg, space_arg):
+    """Функция отображает основные параметры ракеты.
+    :param bg_flight_surf_arg - поверхность, на которой отображаются параметры
+    :param rocket_arg - объект ракета класса Rocket
+    :param rocket_fuel_max_arg - максимальное количество топлива в ракете
+    :param earth_arg - поверхность с изображением земли
+    :param space_arg - поверхность с изображением космоса"""
     draw_fuel(bg_flight_surf_arg, rocket_arg, rocket_fuel_max_arg)
     draw_height(bg_flight_surf_arg, rocket_arg, earth_arg, space_arg)
     draw_speed(bg_flight_surf_arg, rocket_arg)
     draw_angle(bg_flight_surf_arg, rocket_arg)
 
 
-def check_space_flight(bg_flight_surf_arg, rocket_arg):
-    v_1 = 79  # 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
+def check_space_flight(rocket_arg, flag_space_flight_arg):
+    """Функция проверяет возможность перехода на следующий уровень.
+    :param flag_space_flight_arg - флаг выполнения условия перехода на новый уровень
+    :param rocket_arg - объект ракета класса Rocket"""
+    v_1 = 6.67 * 10**(-11) * 6 * 10**24 / rocket.h
     if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx**2+rocket_arg.vy**2)**0.5 >= v_1\
             and rocket_arg.h - 6400000 >= 100000:
-        pass_level1 = FONT_small.render('You have entered the space.',  True, LIGHT_BLUE)
+        flag_space_flight_arg = True
+
+    return flag_space_flight_arg
+
+
+def draw_space_flight(bg_flight_surf_arg, flag_space_flight_arg):
+    """Функция рисует текст для перехода на следующий уровень.
+    :param flag_space_flight_arg - флаг выполнения условия перехода на новый уровень
+    :param bg_flight_surf_arg - поверхность, на которой отображается текст"""
+    if flag_space_flight_arg:
+        pass_level1 = FONT_small.render('You have entered the space.', True, LIGHT_BLUE)
         pass_level2 = FONT_small.render('Congratulations!', True, LIGHT_BLUE)
         pass_level3 = FONT_small.render('"Enter" to reach the Moon.', True, LIGHT_BLUE)
         bg_flight_surf_arg.blit(pass_level1, (240, 40))
         bg_flight_surf_arg.blit(pass_level2, (300, 80))
         bg_flight_surf_arg.blit(pass_level3, (250, 120))
 
-    print('angle', round(rocket.angle) - 90)
+
+def check_falling(rocket_arg, flag_fall_arg):
+    """Функция проверяет, упала ли ракета.
+    :param flag_fall_arg - флаг выполнения условия перехода на новый уровень
+    :param rocket_arg - объект ракета класса Rocket"""
+    if (rocket_arg.vx**2 + rocket_arg.vy**2)**0.5 >= 30 and rocket_arg.h - 6400000 <= 10:
+        flag_fall_arg = True
+
+    return flag_fall_arg
 
 
-def check_falling(bg_flight_surf_arg, rocket_arg):
-    text_fall = FONT_small.render(' ', True, BLUE)
-    if (rocket_arg.vx**2 + rocket_arg.vy**2)**0.5 >= 30 and rocket_arg.h <= 100:
+def draw_falling(bg_flight_surf_arg, flag_fall_arg):
+    """Функция рисует текст для перехода на следующий уровень.
+    :param flag_fall_arg - флаг выполнения условия перехода на новый уровень
+    :param bg_flight_surf_arg - поверхность, на которой отображается текст"""
+    if flag_fall_arg:
         text_fall = FONT_small.render('You have fallen.', True, BLUE)
-    bg_flight_surf_arg.blit(text_fall, (250, 120))
+        text_fall_instruct1 = FONT_small.render('"Enter" to start again', True, BLUE)
+        text_fall_instruct2 = FONT_small.render('"Tab" to built new rocket', True, BLUE)
+        bg_flight_surf_arg.blit(text_fall, (310, 20))
+        bg_flight_surf_arg.blit(text_fall_instruct1, (290, 50))
+        bg_flight_surf_arg.blit(text_fall_instruct2, (270, 80))
 
 
 def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, rocket_fuel_max):
@@ -367,7 +432,7 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, rocket_
         flag_left = False
     if events[0] == "key_up" and events[1] == "right":
         flag_right = False
-    rocket_move(rocket, flag_left, flag_right, flag_forward)
+    rocket_move(rocket, flag_left, flag_right, flag_forward, True)
     fill_gradient(bg_flight_surf, rocket)
     draw_fuel(bg_flight_surf, rocket, rocket_fuel_max)
     draw_height(bg_flight_surf, rocket, earth, space)
@@ -387,6 +452,8 @@ if __name__ == '__main__':
     flag_left = False
     flag_right = False
     flag_forward = False
+    flag_fall = False
+    flag_space_flight = False
 
     fuel_calc(rocket)
     rocket_fuel_max = rocket.fuel
@@ -424,19 +491,21 @@ if __name__ == '__main__':
                 if event.key == pygame.K_RIGHT:
                     flag_right = False
 
-        rocket_move(rocket, flag_left, flag_right, flag_forward)
+        rocket_move(rocket, flag_left, flag_right, flag_forward, True)
 
         fill_gradient(bg_flight_surf, rocket)
 
-        draw_status(bg_flight_surf, rocket, rocket_fuel_max, earth, space)
-
         draw_bg(bg_flight_surf, cosmodrom, ground, time_step, rocket)
 
+        draw_status(bg_flight_surf, rocket, rocket_fuel_max, earth, space)
+
+        flag_fall = check_falling(rocket, flag_fall)
+        draw_falling(bg_flight_surf, flag_fall)
+
+        flag_space_flight = check_space_flight(rocket, flag_space_flight)
+        draw_space_flight(bg_flight_surf, flag_space_flight)
+
         draw_rocket(bg_flight_surf, rocket_rotated, rect)
-
-        check_space_flight(bg_flight_surf, rocket)
-
-        check_falling(bg_flight_surf, rocket)
 
         sc.blit(bg_flight_surf, (0, 0))
 
