@@ -7,7 +7,7 @@ def show_screen(draw_screen, mouse_xx, mouse_yy):
     :param mouse_yy: вертикальная координата точки, в которой произошел щелчок мыши
     :return: draw_screen
     """
-    if (draw_screen == "menu") and (325 <= mouse_xx <= 475) and (400 <= mouse_yy <= 450):
+    if (draw_screen == "menu") and (300 <= mouse_xx <= 500) and (400 <= mouse_yy <= 450):
         draw_screen = "list_of_missions"
     elif (draw_screen == "list_of_missions") and (100 <= mouse_xx <= 400) and (150 <= mouse_yy <= 200):
         draw_screen = "constructor"
