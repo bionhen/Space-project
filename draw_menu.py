@@ -1,6 +1,5 @@
-import pygame
+from constants import *
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
 
 
 class Button:
@@ -54,11 +53,9 @@ def load_image(i, x, y):
     return menu_bg_surf
 
 
-def draw_menu(mouse_x, mouse_y):
+def draw_menu_foo():
     """
     Эта функция отрисовывает экран главного меню в зависимости от того, наведен ли курсор мыши нв кнопку
-    :param mouse_x: горизонтальная координата курсора
-    :param mouse_y: вертикальная координата курсора
     """
     a = load_image("images/menu/space_bg_4.jpg", 800, 600)
     b = ButtonOff('menu', 'Кнопка Missions 2', 300, 400)
@@ -69,5 +66,5 @@ def draw_menu(mouse_x, mouse_y):
     if b.check_button(pygame.mouse.get_pos()):
         a.blit(c.button_surf, (c.x, c.y))
 
-    screen.blit(a, (0, 0))
+    sc.blit(a, (0, 0))
 
