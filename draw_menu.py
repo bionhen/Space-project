@@ -1,6 +1,43 @@
-import pygame
+from constants import *
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+
+
+class Button:
+    """Класс Button (Кнопка, на которую наведен курсор)"""
+    def __init__(self, filename, x, y):
+        """
+        Инициализация класса Button
+        :param filename - путь к файлу с изображением кнопки
+        :param x - координата левого верхнего угла по горизонтали
+        :param y - координата левого верхнего угла по вертикали
+        """
+        self.x = x
+        self.y = y
+        self.button_surf = pygame.image.load(("images/"+filename+".png")).convert_alpha()
+
+
+class ButtonOff(Button):
+    """
+    Инициализация класса ButtonOff, дочерний класс  (Кнопка, на которую не наведён курсор)
+    :param filename - имя файла с изображением кнопки
+    :param x - координата левого верхнего угла по горизонтали
+    :param y - координата левого верхнего угла по вертикали
+    """
+    def __init__(self, filename, x, y):
+        super().__init__(filename, x, y)
+        self.button_off_surf_width = pygame.Surface.get_width(self.button_surf)
+        self.button_off_surf_height = pygame.Surface.get_height(self.button_surf)
+
+    def check_button(self, cur_event):
+        """Метод проверяет, наведён ли курсор на кнопку"""
+        if ((cur_event[0] >= self.x)
+                and (cur_event[0] <= self.x + self.button_off_surf_width)
+                and (cur_event[1] >= self.y)
+                and (cur_event[1] <= self.y + self.button_off_surf_height)):
+            button_checked = True
+        else:
+            button_checked = False
+        return button_checked
 
 
 def load_image(i, x, y):
@@ -16,17 +53,17 @@ def load_image(i, x, y):
     return menu_bg_surf
 
 
-def draw_menu(mouse_x, mouse_y):
+def draw_menu_foo():
     """
     Эта функция отрисовывает экран главного меню в зависимости от того, наведен ли курсор мыши нв кнопку
-    :param mouse_x: горизонтальная координата курсора
-    :param mouse_y: вертикальная координата курсора
     """
     a = load_image("images/menu/space_bg_4.jpg", 800, 600)
-    b = load_image("images/menu/Кнопка Missions 2.png", 150, 50)
-    c = load_image("images/menu/Кнопка Missions нажатая 1.png", 150, 50)
-    screen.blit(a, (0, 0))
-    if (mouse_x >= 325) and (mouse_x <= 475) and (mouse_y <= 450) and mouse_y >= 400:
-        screen.blit(c, (325, 400))
-    else:
-        screen.blit(b, (325, 400))
+    b = ButtonOff('menu/Кнопка Missions 2', 300, 400)
+    c = Button('menu/Кнопка Missions нажатая 1', 300, 400)
+
+    a.blit(b.button_surf, (b.x, b.y))
+
+    if b.check_button(pygame.mouse.get_pos()):
+        a.blit(c.button_surf, (c.x, c.y))
+
+    sc.blit(a, (0, 0))
