@@ -1,9 +1,8 @@
-# переменная cash - глобальная, отвечает за модуль
 import pygame
 pygame.init()
 
 
-class Module():
+class Module:
     """
     Класс, описывающий модули ракеты, например элементы корпуса или топливные баки
     """
@@ -58,7 +57,7 @@ def read_modules_data_from_file(input_filename):
     with open(input_filename) as input_file:
         for line in input_file:
             if len(line.strip()) == 0 or line[0] == '#':
-                continue  # пустые строки и строки-комментарии
+                continue
             else:
                 module = Module()
                 parse_modules_parameters(line, module)
