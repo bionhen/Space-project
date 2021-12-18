@@ -4,16 +4,16 @@ pygame.init()
 
 class Button:
     """Класс Button (Кнопка, на которую наведен курсор)"""
-    def __init__(self, foldername, filename, x, y):
+    def __init__(self, filename, x, y):
         """
         Инициализация класса Button
-        :param filename - имя файла с изображением кнопки
+        :param filename - путь к файлу с изображением кнопки
         :param x - координата левого верхнего угла по горизонтали
         :param y - координата левого верхнего угла по вертикали
         """
         self.x = x
         self.y = y
-        self.button_surf = pygame.image.load(("images/"+foldername+"/"+filename+".png")).convert_alpha()
+        self.button_surf = pygame.image.load(("images/"+filename+".png")).convert_alpha()
 
 
 class ButtonOff(Button):
@@ -23,8 +23,8 @@ class ButtonOff(Button):
     :param x - координата левого верхнего угла по горизонтали
     :param y - координата левого верхнего угла по вертикали
     """
-    def __init__(self, foldername, filename, x, y):
-        super().__init__(foldername, filename, x, y)
+    def __init__(self, filename, x, y):
+        super().__init__(filename, x, y)
         self.button_off_surf_width = pygame.Surface.get_width(self.button_surf)
         self.button_off_surf_height = pygame.Surface.get_height(self.button_surf)
 
@@ -58,8 +58,8 @@ def draw_menu_foo():
     Эта функция отрисовывает экран главного меню в зависимости от того, наведен ли курсор мыши нв кнопку
     """
     a = load_image("images/menu/space_bg_4.jpg", 800, 600)
-    b = ButtonOff('menu', 'Кнопка Missions 2', 300, 400)
-    c = Button('menu', 'Кнопка Missions нажатая 1', 300, 400)
+    b = ButtonOff('menu/Кнопка Missions 2', 300, 400)
+    c = Button('menu/Кнопка Missions нажатая 1', 300, 400)
 
     a.blit(b.button_surf, (b.x, b.y))
 
