@@ -130,8 +130,10 @@ def momentum_calc(rocket_obj, left_flag, right_flag, flag_forward, sign):
     y_1, y_2, x_1, x_2 = find_max_coord(rocket_obj.list)
     height = np.abs(y_1 - y_2)
     width = np.abs(x_1 - x_2)
-    f_s_y = - rocket_obj.vy * np.abs(rocket_obj.vy) * (k * height * rocket_obj.angle + k * width * (180 - rocket_obj.angle))
-    f_s_x = - rocket_obj.vx * np.abs(rocket_obj.vx) * (k * width * rocket_obj.angle + k * height * (180 - rocket_obj.angle))
+    f_s_y = - rocket_obj.vy * np.abs(rocket_obj.vy) * (
+            k * height * rocket_obj.angle + k * width * (180 - rocket_obj.angle))
+    f_s_x = - rocket_obj.vx * np.abs(rocket_obj.vx) * (
+            k * width * rocket_obj.angle + k * height * (180 - rocket_obj.angle))
     mf += f_s_y * (randint(-5, 5))
     mf -= -f_s_x * (randint(-5, 5))
     mf -= 10**6 * 0.0000001 * rocket_obj.omega**3
@@ -163,4 +165,3 @@ def rocket_move(rocket_obj, flag_left, flag_right, flag, sign):
     epsilon = momentum_calc(rocket_obj, flag_left, flag_right, flag, sign)
     rocket_obj.omega += epsilon * dt
     rocket_obj.angle += rocket_obj.omega * dt
-
