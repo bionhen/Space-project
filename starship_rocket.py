@@ -1,10 +1,7 @@
-import pygame
-from draw_constructor import rocket_list
 from starship_modules import *
 
 
 class Rocket:
-
     """
     класс ракеты
     surface - поверхность ракеты
@@ -14,183 +11,80 @@ class Rocket:
     vx, vy - скорости по осям x и y
     omega -  угловая скорость
     """
-    surface = pygame.Surface((0, 0))
-    list = ()
-    h = 6400
-    x = 0
-    angle = 0
-    vx = 0
-    vy = 0
-    omega = 0
-    fuel = 0
+    def __init__(self):
+        self.surface = pygame.Surface((400, 500), pygame.SRCALPHA)
+        self.list = []
+        self.h = 6400000
+        self.x = 0
+        self.angle = 0
+        self.vx = 0
+        self.vy = 0
+        self.omega = 0
+        self.fuel = 0
+        self.fuel_max = 0
+        self.mass = 0
+        self.x_left = 0
+        self.x_right = 0
+        self.y_top = 0
+        self.y_bottom = 0
+        self.x_center_mass = 0
+        self.y_center_mass = 0
+        self.surface_width = self.x_right - self.x_left
+        self.surface_height = self.y_bottom - self.y_top + 50
+        self.engines_cord = []
+        self.left_engines_cord = []
+        self.right_engines_cord = []
 
+    def find_max_coord(self):
+        """Функция находит наиболее близкий элемент к земле."""
+        rocket_modules_y_bottom = []
+        rocket_modules_y_top = []
+        rocket_modules_x_left = []
+        rocket_modules_x_right = []
+        for rocket_module in self.list:
+            rocket_modules_y_bottom.append(rocket_module.y + rocket_module.a)
+            rocket_modules_y_top.append(rocket_module.y)
+            rocket_modules_x_left.append(rocket_module.x)
+            rocket_modules_x_right.append(rocket_module.x + rocket_module.b)
+        if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
+            self.y_bottom = max(rocket_modules_y_bottom)
+            self.y_top = min(rocket_modules_y_top)
 
-module0 = Module()
-module0.type = 'tank'
-module0.m = 100
-module0.fuel = 1000
-module0.price = 0
-module0.resistance = 100
-module0.force = 100
-module0.image = 'fuel_1x1'
-module0.a = 50
-module0.b = 50
-module0.x = 50
-module0.y = 200
-module0.surface = pygame.image.load("images/constructor/modules/fuel_1x1.png")
-module0.surface = pygame.transform.scale(module0.surface, (module0.b, module0.a))
+        if rocket_modules_x_left != [] and rocket_modules_x_right != []:
+            self.x_left = min(rocket_modules_x_left)
+            self.x_right = max(rocket_modules_x_right)
 
-module1 = Module()
-module1.type = 'engine'
-module1.m = 100
-module1.fuel = 0
-module1.price = 0
-module1.resistance = 100
-module1.force = 100
-module1.image = 'engine_2x1'
-module1.a = 50
-module1.b = 50
-module1.x = 50
-module1.y = 250
-module1.surface = pygame.image.load("images/constructor/modules/engine_1x1.png")
-module1.surface = pygame.transform.scale(module1.surface, (module1.b, module1.a))
+        if self.x_left == self.x_right:
+            self.x_left = 0
 
-module2 = Module()
-module2.type = 'engine_r'
-module2.m = 100
-module2.fuel = 0
-module2.price = 0
-module2.resistance = 100
-module2.force = 200
-module2.image = 'engine_2x1'
-module2.a = 100
-module2.b = 50
-module2.x = 100
-module2.y = 200
-module2.surface = pygame.image.load("images/constructor/modules/engine_right_2x1.png")
-module2.surface = pygame.transform.scale(module2.surface, (module2.b, module2.a))
+        if self.y_top == self.y_bottom:
+            self.y_top = 0
 
-module3 = Module()
-module3.type = 'engine_l'
-module3.m = 100
-module3.fuel = 0
-module3.price = 0
-module3.resistance = 100
-module3.force = 200
-module3.image = 'engine_2x1'
-module3.a = 100
-module3.b = 50
-module3.x = 0
-module3.y = 200
-module3.surface = pygame.image.load("images/constructor/modules/engine_left_2x1.png")
-module3.surface = pygame.transform.scale(module3.surface, (module3.b, module3.a))
+    def render_rocket_surface(self):
+        self.surface = pygame.Surface((self.surface_width, self.surface_height), pygame.SRCALPHA)
+        for rocket_module in self.list:
+            rocket_module.x = rocket_module.x - self.x_left
+            rocket_module.y = rocket_module.y - self.y_top
+            self.surface.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
 
-module4 = Module()
-module4.type = 'block'
-module4.m = 100
-module4.fuel = 0
-module4.price = 0
-module4.resistance = 100
-module4.force = 200
-module4.image = 'module_2x1'
-module4.a = 100
-module4.b = 50
-module4.x = 50
-module4.y = 100
-module4.surface = pygame.image.load("images/constructor/modules/block_2x1.png")
-module4.surface = pygame.transform.scale(module4.surface, (module4.b, module4.a))
+    def find_center_mass(self):
+        m = 0
+        mx = 0
+        my = 0
+        for module in self.list:
+            m += module.m
+            my += module.m * (module.y + module.a / 2)
+            mx += module.m * (module.x + module.b / 2)
+        if m == 0:
+            m = 100
+        self.y_center_mass = my / m
+        self.x_center_mass = mx / m
 
-module5 = Module()
-module5.type = 'fairing'
-module5.m = 100
-module5.fuel = 0
-module5.price = 0
-module5.resistance = 100
-module5.force = 200
-module5.image = 'fairing_2x1'
-module5.a = 100
-module5.b = 50
-module5.x = 50
-module5.y = 0
-module5.surface = pygame.image.load("images/constructor/modules/fairing_2x1.png")
-module5.surface = pygame.transform.scale(module5.surface, (module5.b, module5.a))
-
-rocket_list = [module0, module1, module2, module3, module4, module5]
-
-def find_max_coord(rocket_list):
-    """Функция находит наиболее близкий элемент к земле."""
-    rocket_modules_y_bottom = []
-    rocket_modules_y_top = []
-    rocket_modules_x_left = []
-    rocket_modules_x_right = []
-    y_bottom = 0
-    y_top = 0
-    x_left = 0
-    x_right = 0
-    for rocket_module in rocket_list:
-        rocket_modules_y_bottom.append(rocket_module.y + rocket_module.a) #- 50)
-        rocket_modules_y_top.append(rocket_module.y) #- 50)
-        rocket_modules_x_left.append(rocket_module.x) #- 200)
-        rocket_modules_x_right.append(rocket_module.x + rocket_module.b) #- 200)
-    if rocket_modules_y_top != [] and rocket_modules_y_bottom != []:
-        y_bottom = max(rocket_modules_y_bottom)
-        y_top = min(rocket_modules_y_top)
-
-    if rocket_modules_x_left != [] and rocket_modules_x_right != []:
-        x_left = min(rocket_modules_x_left)
-        x_right = max(rocket_modules_x_right)
-
-    if x_left == x_right:
-        x_left = 0
-
-    if y_top == y_bottom:
-        y_top = 0
-
-    return y_bottom, y_top, x_left, x_right
-
-
-def render_rocket_surface(rocket_surface_widht, rocket_surface_height, x_left, y_top, rocket):
-    rocket.surface = pygame.Surface((rocket_surface_widht, rocket_surface_height), pygame.SRCALPHA)
-    for rocket_module in rocket.list:
-        rocket_module.x = rocket_module.x - x_left
-        rocket_module.y = rocket_module.y - y_top
-        rocket.surface.blit(rocket_module.surface, (rocket_module.x, rocket_module.y))
-    return rocket.surface
-
-
-def find_center_mass(rocket):
-    m = 0
-    mx = 0
-    my = 0
-    for module in rocket.list:
-        m += module.m
-        my += module.m * (module.y + module.a / 2)
-        mx += module.m * (module.x + module.b / 2)
-    y_center_mass = my / m
-    x_center_mass = mx / m
-
-    return x_center_mass, y_center_mass
-
-def find_engines(rocket):
-    engines_cord = []
-    engines_left_cord = []
-    engines_right_cord = []
-    for rocket_module in rocket.list:
-        if rocket_module.type == 'engine':
-            engines_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
-        if rocket_module.type == 'engine_l':
-            engines_left_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
-        if rocket_module.type == 'engine_r':
-            engines_right_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
-    return engines_cord, engines_left_cord, engines_right_cord
-
-
-y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
-rocket_surface_height, rocket_surface_width = y_bottom - y_top + 50, x_right - x_left
-
-rocket = Rocket()
-rocket.list = rocket_list
-rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
-rocket.h = 6400000
-engines_cord, engines_left_cord, engines_right_cord = find_engines(rocket)
-
+    def find_engines(self):
+        for rocket_module in self.list:
+            if rocket_module.type == 'engine':
+                self.engines_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
+            if rocket_module.type == 'engine_l':
+                self.engines_left_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
+            if rocket_module.type == 'engine_r':
+                self.engines_right_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
