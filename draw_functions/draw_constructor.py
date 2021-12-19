@@ -2,20 +2,6 @@ from draw_functions.constants import *
 from draw_functions.draw_menu import Button, ButtonOff
 from draw_functions.starship_rocket import *
 
-pygame.init()
-
-
-sc = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Space Dolgoprudniy Program")
-pygame.display.set_icon(pygame.image.load("emblem.ico"))
-
-clock = pygame.time.Clock()
-FPS = 60
-
-FONT = pygame.font.SysFont('century gothic', 30, bold=True)
-FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
-pygame.font.init()
-
 
 def render_bg():
     """Функция генерирует составляющие фона: сетку, фон и поверхность ракеты
