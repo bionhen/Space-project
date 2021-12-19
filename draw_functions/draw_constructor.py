@@ -1,6 +1,6 @@
-from constants import *
-from draw_menu import Button, ButtonOff
-from starship_rocket import *
+from draw_functions.constants import *
+from draw_functions.draw_menu import Button, ButtonOff
+from draw_functions.starship_rocket import *
 
 pygame.init()
 
@@ -326,7 +326,7 @@ def show_modules(click_arg):
 flag1, flag2, flag_dif, flag_rock = False, False, False, False
 k = -1
 j = 0
-blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('module_example')
+blocks, engines, tanks, autopilot, fairings = read_modules_data_from_file('images/module_example')
 click = [-1, -1, -1, -1, -1]
 mouse_x, mouse_y = 0, 0
 moved_module = Module()

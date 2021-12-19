@@ -1,5 +1,5 @@
 import numpy as np
-from space_obj import Object
+from draw_functions.space_obj import Object
 
 G = 6.67408E-11
 """Гравитационная постоянная"""

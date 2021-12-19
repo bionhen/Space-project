@@ -1,7 +1,7 @@
 import pygame
-from starship_rocket import *
-from starship_flight import *
-from draw_flight import render_fire
+from draw_functions.starship_rocket import *
+from draw_functions.starship_flight import *
+from draw_functions.draw_flight import render_fire
 
 
 

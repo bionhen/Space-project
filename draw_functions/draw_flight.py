@@ -1,6 +1,6 @@
 import pygame
-from starship_flight import *
-from starship_rocket import *
+from draw_functions.starship_flight import *
+from draw_functions.starship_rocket import *
 
 pygame.init()
 
@@ -490,7 +490,7 @@ def draw_flight_foo(rocket, flag_forward, flag_left, flag_right, time_step,
 
     # Рисование на главном экране
     sc.blit(bg_flight_surf, (0, 0))
-
+    return rocket
 
 """
 def draw_flight_foo(rocket_arg, events, flag_forward, flag_left, flag_right, time_step,

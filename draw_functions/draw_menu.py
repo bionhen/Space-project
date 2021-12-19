@@ -1,4 +1,4 @@
-from constants import *
+from draw_functions.constants import *
 pygame.init()
 
 

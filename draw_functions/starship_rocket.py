@@ -1,4 +1,4 @@
-from starship_modules import *
+from draw_functions.starship_modules import *
 
 
 class Rocket:

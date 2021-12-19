@@ -1,5 +1,5 @@
-from constants import *
-from draw_menu import Button, ButtonOff
+from draw_functions.constants import *
+from draw_functions.draw_menu import Button, ButtonOff
 
 
 def render_bg(screen_width=WIDTH, screen_height=HEIGHT):
