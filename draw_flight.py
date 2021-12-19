@@ -460,9 +460,12 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_st
     ##        return rocket
 
     # Обработка ввода
-    print('1', rocket.surface)
+    print(rocket.left_engines_cord)
+    rocket.find_max_coord()
+    rocket.find_center_mass()
+    rocket.find_rocket_width_and_height()
     rocket.render_rocket_surface()
-    print('2', rocket.surface)
+    print()
     # Движение ракеты
     rocket_move(rocket, flag_left, flag_right, flag_forward, True)
 

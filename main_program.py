@@ -64,12 +64,13 @@ while not finished:
             happen = "mouse_button_down"
 
 
-
+    print(flag_right)
     if draw_screen == "menu":
         draw_menu_foo()
     elif draw_screen == "list_of_missions":
         draw_missions_foo()
     elif draw_screen == "constructor":
+        print(flag_right)
         click, rocket, moved_module, flag1, flag2, flag_dif, flag_rock, k, j, cash = draw_constructor_foo(
             happen, click, rocket, moved_module, flag1, flag2, flag_dif, flag_rock, k, j, cash)
     elif draw_screen == "flying_unprepared":
@@ -82,13 +83,12 @@ while not finished:
         #rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
         draw_screen = "flying_prepared"
     elif draw_screen == "flying_prepared":
-        print(flag_activation)
         if flag_activation:
             rocket.find_max_coord()
-            rocket.find_rocket_width_and_height()
-            rocket.find_engines()
             rocket.find_center_mass()
-
+            rocket.find_rocket_width_and_height()
+            rocket.render_rocket_surface()
+            rocket.find_engines()
         draw_flight_foo(rocket, happens, flag_forward, flag_left, rocket_fuel_max, time_step,
                             fire_big_step, fire_small_step)
         if flag_activation:
