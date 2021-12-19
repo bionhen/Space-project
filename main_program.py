@@ -99,7 +99,6 @@ while not finished:
             flag_activation = False
 
     elif draw_screen == "space_flying":
-        print(flag_forward, flag_left, flag_right)
         draw_space_flight_foo(rocket, flag_forward, flag_left, flag_right, space_objects)
 
     show_modules(mouse_click)
