@@ -154,7 +154,8 @@ def check_point(cord_x, cord_y, rocket_module):
 def check_dist(cord_x, cord_y, rocket_module, moved_module_arg):
     upped_2 = False
     if rocket_module.x + rocket_module.b + 50 < cord_x or cord_x < rocket_module.x - 50 or \
-            rocket_module.y + moved_module_arg.a + 45 < cord_y or cord_y < rocket_module.y - moved_module_arg.a - 45:
+            rocket_module.y + rocket_module.a + 45 < cord_y or cord_y < rocket_module.y - moved_module_arg.a - 45:
+        print(moved_module_arg.a)
         upped_2 = True
     return upped_2
 
@@ -174,14 +175,16 @@ def check_modules_pos(rocket_list_arg, moved_module_arg):
     for rocket_module in rocket_list_arg:
         for i in range(len(moved_module_point)):
             upped_1 = check_point(moved_module_point[i][0], moved_module_point[i][1], rocket_module)
+            print("1", upped_1)
             if upped_1:
                 upped = True
                 break
     for rocket_module in rocket_list_arg:
-        upped_2 = check_dist(moved_module_x_r_u, moved_module_y_r_u, rocket_module, moved_module)
+        upped_2 = check_dist(moved_module_x_r_u, moved_module_y_r_u, rocket_module, moved_module_arg)
+        print('2', upped_2)
         if upped_2:
             upped_2_list.append(upped_2)
-
+    print('3', upped_2_list)
     if len(upped_2_list) == len(rocket_list_arg):
         upped = True
     return upped
