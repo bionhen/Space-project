@@ -350,7 +350,7 @@ def draw_space_flight(bg_flight_surf_arg, flag_space_flight_arg):
     if flag_space_flight_arg:
         pass_level1 = FONT_small.render('You have entered the space.', True, LIGHT_BLUE)
         pass_level2 = FONT_small.render('Congratulations!', True, LIGHT_BLUE)
-        pass_level3 = FONT_small.render('"Enter" to reach the Moon.', True, LIGHT_BLUE)
+        pass_level3 = FONT_small.render('"Esc" to reach the Moon.', True, LIGHT_BLUE)
         bg_flight_surf_arg.blit(pass_level1, (240, 40))
         bg_flight_surf_arg.blit(pass_level2, (300, 80))
         bg_flight_surf_arg.blit(pass_level3, (250, 120))
@@ -372,7 +372,7 @@ def draw_falling(bg_flight_surf_arg, flag_fall_arg):
     :param bg_flight_surf_arg - поверхность, на которой отображается текст"""
     if flag_fall_arg:
         text_fall = FONT_small.render('You have fallen.', True, BLUE)
-        text_fall_instruct1 = FONT_small.render('"Enter" to start again', True, BLUE)
+        text_fall_instruct1 = FONT_small.render('"Esc" to start again', True, BLUE)
         text_fall_instruct2 = FONT_small.render('"Tab" to built new rocket', True, BLUE)
         bg_flight_surf_arg.blit(text_fall, (310, 20))
         bg_flight_surf_arg.blit(text_fall_instruct1, (290, 50))
