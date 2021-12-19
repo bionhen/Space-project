@@ -382,6 +382,7 @@ def draw_constructor_foo(events, clicks, rocket_arg, moved_modules, flags1, flag
         move_modules(moved_modules, bg_constructors_surf, flags1)
     if flags2 and js >= 0 and flags_dif:
         set_modules(moved_modules, flags2, rocket_arg)
+        cash_arg -= moved_modules.price
         js = ks
         flags_dif = False
     if flags2 and js >= 0 and flags_rock:
