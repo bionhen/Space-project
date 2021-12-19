@@ -131,6 +131,71 @@ def draw_fuel(bg_flight_surf_arg, rocket_arg, rocket_fuel_max_arg):
     bg_flight_surf_arg.blit(fuel_image, (fuel_bar_pos_x, fuel_bar_pos_y + 100 + (100 - fuel_per_height)))
     bg_flight_surf_arg.blit(fuel_text, (fuel_bar_pos_x - 25, fuel_bar_pos_y + 200))
 
+    Earth = Object()
+    Earth.type = 'planet'
+    Earth.m = 6 * 10 ** 24
+    Earth.x = 300 * 10 ** 6
+    Earth.y = 300 * 10 ** 6
+    Earth.Vx = 0
+    Earth.Vy = 0
+    Earth.Fx = 0
+    Earth.Fy = 0
+    Earth.R = 15 * 10 ** 6
+    Earth.image = pygame.image.load("images/space_flight/earth_above.png")
+    Earth.image = pygame.transform.scale(Earth.image, (30, 30))
+    Earth.angle = 0
+    Earth.omega = 0
+
+    Moon = Object()
+    Moon.type = 'planet'
+    Moon.m = 7.35 * 10 ** 22
+    Moon.x = 562 * 10 ** 6
+    Moon.y = 300 * 10 ** 6
+    Moon.Vx = 0
+    Moon.Vy = -1020
+    Moon.Fx = 0
+    Moon.Fy = 0
+    Moon.R = 10 * 10 ** 6
+    Moon.image = pygame.image.load("images/space_flight/moon_1.png")
+    Moon.image = pygame.transform.scale(Moon.image, (20, 20))
+    Moon.angle = 0
+    Moon.omega = 0
+
+    Rocket_Obj = Object()
+    Rocket_Obj.type = 'rocket'
+    Rocket_Obj.m = 0
+    Rocket_Obj.x = 320 * 10 ** 6
+    Rocket_Obj.y = 300 * 10 ** 6
+    Rocket_Obj.Vx = 0
+    Rocket_Obj.Vy = (G * Earth.m / (20 * 10 ** 6)) ** 0.5
+    Rocket_Obj.Fx = 0
+    Rocket_Obj.Fy = 0
+    Rocket_Obj.R = 0
+    Rocket_Obj.image = pygame.Surface((5, 10), pygame.SRCALPHA)
+    pygame.draw.polygon(Rocket_Obj.image, 'tomato', ((0, 10), (2.5, 0), (5, 10)))
+    Rocket_Obj.angle = 0
+    Rocket_Obj.omega = 0
+    Rocket_Obj.fuel = calculate_m_fuel(Rocket_Obj)
+    space_objects = [Earth, Moon, Rocket_Obj]
+
+
+def draw_space_flight_foo(rocket, flag_forward, flag_left, flag_right, space_objects):
+    m = 0
+    Rocket_Obj.fuel = rocket.fuel
+    bg_space_flight_surf = render_bg()
+    for module in rocket.list:
+        m += module.m
+    Rocket_Obj.m = m
+    draw_objects(space_objects, bg_space_flight_surf)
+    recalculate_space_objects_positions(space_objects, 200, flag_forward, flag_left, flag_right)
+    calc_list = calculation_orbit(Rocket_Obj, space_objects, 100)
+    for i in range(len(calc_list)):
+        if i + 1 < len(calc_list):
+            pygame.draw.line(bg_space_flight_surf, (255, 255, 255), calc_list[i], calc_list[i + 1])
+    sc.blit(bg_space_flight_surf, (0, 0))
+    rocket.fuel =Rocket_Obj.fuel
+
+
 if __name__ == '__main__':
     flag_left = flag_right = False
     flag_forward = False
@@ -234,5 +299,4 @@ if __name__ == '__main__':
         pygame.display.update()
 
         clock.tick(FPS)
-
         time_step_space += 1
