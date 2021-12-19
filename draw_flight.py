@@ -261,7 +261,7 @@ def draw_speed(bg_flight_surf_arg, rocket_arg):
     speed_bar_pos_x = 50
     speed_bar_pos_y = 90
     speed = (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5
-    v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / rocket_arg.h
+    v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / (rocket_arg.h - 6400000)
     speed_per = speed * (100 / v_1)
     speed_per_height = (speed_bar_height / 100 * speed_per)
     speed_image = pygame.Surface((speed_bar_width, speed_per_height))
@@ -361,11 +361,12 @@ def check_space_flight(rocket_arg, flag_space_flight_arg):
     """Функция проверяет возможность перехода на следующий уровень.
     :param flag_space_flight_arg - флаг выполнения условия перехода на новый уровень
     :param rocket_arg - объект ракета класса Rocket"""
-    v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / rocket_arg.h
-    if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5 >= v_1 \
-            and rocket_arg.h - 6400000 >= 100000:
+    # v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / (rocket_arg.h-6400000)
+    # if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5 >= v_1 \
+    #       and rocket_arg.h - 6400000 >= 1000:     # для проверки переходов, я изменил 100000 на 1000 (см фото)
+    #   flag_space_flight_arg = True
+    if rocket_arg.h >= 1000:
         flag_space_flight_arg = True
-
     return flag_space_flight_arg
 
 
@@ -405,7 +406,7 @@ def draw_falling(bg_flight_surf_arg, flag_fall_arg):
         bg_flight_surf_arg.blit(text_fall_instruct2, (270, 80))
 
 
-def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_step,
+def draw_flight_foo(rocket, flag_forward, flag_left, flag_right, time_step,
                     fire_big_step, fire_small_step):
     ##    if flag_activation:
     ##        flag_fall = False
@@ -460,12 +461,10 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_st
     ##        return rocket
 
     # Обработка ввода
-    print(rocket.left_engines_cord)
     rocket.find_max_coord()
     rocket.find_center_mass()
     rocket.find_rocket_width_and_height()
     rocket.render_rocket_surface()
-    print()
     # Движение ракеты
     rocket_move(rocket, flag_left, flag_right, flag_forward, True)
 
@@ -491,9 +490,6 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_st
 
     # Рисование на главном экране
     sc.blit(bg_flight_surf, (0, 0))
-    pygame.display.update()
-    clock.tick(FPS)
-    time_step += 1
 
 
 """
