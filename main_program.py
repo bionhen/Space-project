@@ -32,6 +32,24 @@ while not finished:
     clock.tick(FPS)
     happen = "nothing"
     for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_UP:
+            happens = "key_down"
+            flag_forward = True
+        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_LEFT:
+            happens = "key_down"
+            flag_left = True
+        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_RIGHT:
+            happens = "key_down"
+            flag_right = True
+        if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_UP:
+            happens = "key_up"
+            flag_forward = False
+        if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_LEFT:
+            happens = "key_up"
+            flag_left = False
+        if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_RIGHT:
+            happens = "key_up"
+            flag_right = False
         if event.type == pygame.QUIT:
             exit()
         if event.type == pygame.MOUSEMOTION:
@@ -45,19 +63,7 @@ while not finished:
             draw_screen = show_screen(draw_screen, mouse_position_x, mouse_position_y)
             happen = "mouse_button_down"
 
-        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_UP:
-            happens = ["key_down", "forward"]
-        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_LEFT:
-            happens = ["key_down", "left"]
-        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_RIGHT:
-            happens = ["key_down", "right"]
 
-        if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_UP:
-            happens = ["key_up", "forward"]
-        if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_LEFT:
-            happens = ["key_up", "left"]
-        if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_RIGHT:
-            happens = ["key_up", "right"]
 
     if draw_screen == "menu":
         draw_menu_foo()
@@ -76,17 +82,17 @@ while not finished:
         #rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
         draw_screen = "flying_prepared"
     elif draw_screen == "flying_prepared":
+        print(flag_activation)
         if flag_activation:
-             rocket.find_max_coord()
-             rocket.find_rocket_width_and_height()
-             rocket.find_engines()
-             rocket.find_center_mass()
-             rocket.render_rocket_surface()
+            rocket.find_max_coord()
+            rocket.find_rocket_width_and_height()
+            rocket.find_engines()
+            rocket.find_center_mass()
 
         draw_flight_foo(rocket, happens, flag_forward, flag_left, rocket_fuel_max, time_step,
                             fire_big_step, fire_small_step)
         if flag_activation:
-             flag_activation = False
+            flag_activation = False
 
     show_modules(mouse_click)
     pygame.display.update()

@@ -460,21 +460,9 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_st
     ##        return rocket
 
     # Обработка ввода
-    if True:
-        if events[0] == "key_down" and events[1] == "forward":
-            flag_forward = True
-        if events[0] == "key_down" and events[1] == "left":
-            flag_left = True
-        if events[0] == "key_down" and events[1] == "right":
-            flag_right = True
-        if events[0] == "key_up" and events[1] == "forward":
-            flag_forward = False
-        if events[0] == "key_up" and events[1] == "left":
-            flag_left = False
-        if events[0] == "key_up" and events[1] == "right":
-            flag_right = False
-
-
+    print('1', rocket.surface)
+    rocket.render_rocket_surface()
+    print('2', rocket.surface)
     # Движение ракеты
     rocket_move(rocket, flag_left, flag_right, flag_forward, True)
 
