@@ -76,7 +76,7 @@ while not finished:
         #rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
         draw_screen = "flying_prepared"
     elif draw_screen == "flying_prepared":
-            draw_flight_foo(rocket, happens, flag_forward, flag_left, flag_right, rocket_fuel_max, time_step,
+            draw_flight_foo(rocket, happens, flag_forward, flag_left, rocket_fuel_max, time_step,
                             fire_big_step, fire_small_step, flag_activation)
 
     show_modules(mouse_click)

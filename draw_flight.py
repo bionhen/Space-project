@@ -142,10 +142,10 @@ def draw_rotated_rocket(bg_flight_surf_arg, rocket_arg, fire_big_arg, fire_small
 
     angle = rocket_arg.angle
     pos = rocket_arg.x_center_mass, rocket_arg.y_center_mass
-    center = (400, 520 - rocket_arg.surface_height + 50 + rocket_arg.y_center_mass)  # откуда берётся высота ракеты
+    center = (400, 520 - rocket_arg.surface_height + 50 + rocket_arg.y_center_mass)
     if rocket_arg.fuel > 0:
         draw_fire(rocket_arg.surface, fire_big_arg, fire_small_arg, flag_forward_arg, flag_left_arg, flag_right_arg,
-                  rocket_arg.engines_cord, rocket_arg.engines_left_cord, rocket_arg.engines_right_cord,
+                  rocket_arg.engines_cord, rocket_arg.left_engines_cord, rocket_arg.right_engines_cord,
                   fire_big_step_arg,
                   fire_small_step_arg, time_step_arg)
     img2 = pygame.Surface((2 * rocket_arg.surface_width, 2 * rocket_arg.surface_height), pygame.SRCALPHA)
@@ -351,7 +351,7 @@ def draw_status(bg_flight_surf_arg, rocket_arg, earth_arg, space_arg):
     :param rocket_fuel_max_arg - максимальное количество топлива в ракете
     :param earth_arg - поверхность с изображением земли
     :param space_arg - поверхность с изображением космоса"""
-    draw_fuel(bg_flight_surf_arg, rocket_arg, rocket_arg.fuel_max)
+    draw_fuel(bg_flight_surf_arg, rocket_arg)
     draw_height(bg_flight_surf_arg, rocket_arg, earth_arg, space_arg)
     draw_speed(bg_flight_surf_arg, rocket_arg)
     draw_angle(bg_flight_surf_arg, rocket_arg)
@@ -405,12 +405,113 @@ def draw_falling(bg_flight_surf_arg, flag_fall_arg):
         bg_flight_surf_arg.blit(text_fall_instruct2, (270, 80))
 
 
+def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right,time_step,
+                    fire_big_step, fire_small_step, flag_activation):
+    ##    if flag_activation:
+    ##        flag_fall = False
+    ##        flag_space_flight = False
+    ##        #rocket = render_rocket(rocket_list_arg)
+    ##        fuel_calc(rocket)
+    ##        rocket_fuel_max = rocket.fuel
+    ##        fire_big_step = 0
+    ##        fire_small_step = 0
+    ##        time_step = 0
+    ##        fire_big, fire_small = render_fire()
+    ##        bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
+    ##        engines_cord, engines_left_cord, engines_right_cord = find_engines(rocket)
+    ##        y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list_arg)
+    ##        rocket.rocket_surface_height, rocket.rocket_surface_width = y_bottom - y_top + 50, x_right - x_left
+    ##        flag_activation = False
+    ##        return rocket
+    ##
+    ##    if not flag_activation:
+    ##        if events[0] == "key_down" and events[1] == "forward":
+    ##            flag_forward = True
+    ##        if events[0] == "key_down" and events[1] == "left":
+    ##            flag_left = True
+    ##        if events[0] == "key_down" and events[1] == "right":
+    ##            flag_right = True
+    ##        if events[0] == "key_up" and events[1] == "forward":
+    ##            flag_forward = False
+    ##        if events[0] == "key_up" and events[1] == "left":
+    ##            flag_left = False
+    ##        if events[0] == "key_up" and events[1] == "right":
+    ##            flag_right = False
+    ##
+    ##        engines_cord, engines_left_cord, engines_right_cord = find_engines(rocket)
+    ##        bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
+    ##        y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list_arg)
+    ##        rocket.surface = render_rocket_surface(rocket.rocket_surface_width, rocket.rocket_surface_height, x_left, y_top, rocket)
+    ##        rocket_move(rocket, flag_left, flag_right, flag_forward, True)
+    ##        fill_gradient(bg_flight_surf, rocket)
+    ##        fire_big, fire_small = render_fire()
+    ##
+    ##        draw_status(bg_flight_surf, rocket, rocket_fuel_max, earth, space)
+    ##
+    ##        draw_bg(bg_flight_surf, cosmodrom, ground, time_step, rocket)
+    ##
+    ##        draw_rotated_rocket(bg_flight_surf, rocket, fire_big, fire_small, flag_forward, flag_left, flag_right,
+    ##                                                engines_cord, engines_left_cord, engines_right_cord, fire_big_step,
+    ##                                                fire_small_step, time_step, rocket.rocket_surface_width, rocket.rocket_surface_height)
+    ##        sc.blit(bg_flight_surf, (0, 0))
+    ##        pygame.display.update()
+    ##        clock.tick(FPS)
+    ##        time_step += 1
+    ##        return rocket
+
+    # Обработка ввода
+    if True:
+        if events[0] == "key_down" and events[1] == "forward":
+            flag_forward = True
+        if events[0] == "key_down" and events[1] == "left":
+            flag_left = True
+        if events[0] == "key_down" and events[1] == "right":
+            flag_right = True
+        if events[0] == "key_up" and events[1] == "forward":
+            flag_forward = False
+        if events[0] == "key_up" and events[1] == "left":
+            flag_left = False
+        if events[0] == "key_up" and events[1] == "right":
+            flag_right = False
+
+    #
+
+    # Движение ракеты
+    rocket_move(rocket, flag_left, flag_right, flag_forward, True)
+
+    # Загрузка картинок заднего фона
+    bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
+
+    # Зависимость цвета фона от высоты ракеты
+    fill_gradient(bg_flight_surf, rocket)
+
+    # Отрисовка интерфейса
+    fuel_calc(rocket)
+    draw_status(bg_flight_surf, rocket, earth, space)
+
+    # Отрисовка объектов заднего фона
+    draw_bg(bg_flight_surf, cosmodrom, ground, time_step, rocket)
+
+    # Огоньки
+    fire_big, fire_small = render_fire()
+
+    # Обработка отрисовки ракеты
+    draw_rotated_rocket(bg_flight_surf, rocket, fire_big, fire_small, flag_forward, flag_left, flag_right,
+                       fire_big_step,
+                        fire_small_step, time_step)
+
+    # Рисование на главном экране
+    sc.blit(bg_flight_surf, (0, 0))
+    pygame.display.update()
+    clock.tick(FPS)
+    time_step += 1
+
+"""
 def draw_flight_foo(rocket_arg, events, flag_forward, flag_left, flag_right, time_step,
                     fire_big_step, fire_small_step, flag_activation):
     if flag_activation:
         flag_fall = False
         flag_space_flight = False
-        rocket_arg.surface = rocket_arg.render_rocket_surface()
         fuel_calc(rocket_arg)
         fire_big_step = 0
         fire_small_step = 0
@@ -418,7 +519,6 @@ def draw_flight_foo(rocket_arg, events, flag_forward, flag_left, flag_right, tim
         fire_big, fire_small = render_fire()
         bg_flight_surf, cosmodrom, ground, earth, space = render_bg()
         flag_activation = False
-    print(flag_activation)
     if not flag_activation:
         if events[0] == "key_down" and events[1] == "forward":
             flag_forward = True
@@ -433,24 +533,19 @@ def draw_flight_foo(rocket_arg, events, flag_forward, flag_left, flag_right, tim
         if events[0] == "key_up" and events[1] == "right":
             flag_right = False
 
-        rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
-        rocket_move(rocket, flag_left, flag_right, flag_forward, True)
-        fill_gradient(bg_flight_surf, rocket)
+        rocket_move(rocket_arg, flag_left, flag_right, flag_forward, True)
+        fill_gradient(bg_flight_surf, rocket_arg)
 
-        draw_status(bg_flight_surf, rocket, rocket_fuel_max, earth, space)
-
-        draw_bg(bg_flight_surf, cosmodrom, ground, time_step, rocket)
-
-        draw_rotated_rocket(bg_flight_surf, rocket, fire_big, fire_small, flag_forward, flag_left, flag_right,
-                                                engines_cord, engines_left_cord, engines_right_cord, fire_big_step,
-                                                fire_small_step, time_step, rocket_surface_width, rocket_surface_height)
+        draw_status(bg_flight_surf, rocket_arg, earth, space)
+        draw_bg(bg_flight_surf, cosmodrom, ground, time_step, rocket_arg)
+        draw_rotated_rocket(bg_flight_surf, rocket_arg, fire_big, fire_small, flag_forward, flag_left, flag_right, fire_big_step, fire_small_step, time_step)
         sc.blit(bg_flight_surf, (0, 0))
         pygame.display.update()
         clock.tick(FPS)
         time_step += 1
 
 
-
+"""
 """if __name__ == '__main__':
 
     flag_left = False
