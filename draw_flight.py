@@ -1,6 +1,6 @@
 import pygame
 from starship_flight import *
-
+from starship_rocket import *
 
 pygame.init()
 
@@ -50,7 +50,7 @@ def draw_bg(bg_flight_surf_arg, cosmodrom_arg, ground_arg, time_step_arg, rocket
     :param ground_arg - поверхность с рисунком земли
     :param time_step_arg - шаг времени
     :param rocket_arg - объект ракета класса Rocket"""
-    bg_flight_surf_arg.blit(cosmodrom_arg, (250 + time_step_arg*rocket_arg.vx, 200 + (rocket_arg.h - 6400000) * 15))
+    bg_flight_surf_arg.blit(cosmodrom_arg, (250 + time_step_arg * rocket_arg.vx, 200 + (rocket_arg.h - 6400000) * 15))
     bg_flight_surf_arg.blit(ground_arg, (0, 525 + (rocket_arg.h - 6400000) * 15))
 
 
@@ -95,7 +95,7 @@ def draw_fire(img_arg, fire_big_arg, fire_small_arg,
                                                            engines_cord_arg[ce][1]
                                                            + engines_cord_arg[ce][2]))
             fire_big_step_arg += 1
-
+    #print(engines_cord_arg)
     if flag_left_arg:
         if time_step_arg % 2 == 0:
             fire_small_step_arg += 1
@@ -103,8 +103,8 @@ def draw_fire(img_arg, fire_big_arg, fire_small_arg,
             fire_small_step_arg = 0
         for le in range(len(engines_left_cord_arg)):
             img_arg.blit(fire_small_arg[fire_small_step_arg], (engines_left_cord_arg[le][0],
-                                                           engines_left_cord_arg[le][1]
-                                                           + engines_left_cord_arg[le][2]))
+                                                               engines_left_cord_arg[le][1]
+                                                               + engines_left_cord_arg[le][2]))
         fire_small_step_arg += 1
 
     if flag_right_arg:
@@ -229,8 +229,8 @@ def draw_height(bg_flight_surf_arg, rocket_arg, earth_arg, space_arg):
 
     if cosmos_height_per < 100:
         bg_flight_surf_arg.blit(cosmos_height_roll, (cosmos_bar_pos_x - 5,
-                                cosmos_bar_pos_y + cosmos_bar_height
-                                - (cosmos_bar_height / 100 * cosmos_height_per)))
+                                                     cosmos_bar_pos_y + cosmos_bar_height
+                                                     - (cosmos_bar_height / 100 * cosmos_height_per)))
     else:
         bg_flight_surf_arg.blit(cosmos_height_roll, (cosmos_bar_pos_x - 5, cosmos_bar_pos_y))
     if rocket_arg.h - 6400000 >= 6000:
@@ -261,7 +261,7 @@ def draw_speed(bg_flight_surf_arg, rocket_arg):
     speed_bar_pos_x = 50
     speed_bar_pos_y = 90
     speed = (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5
-    v_1 = 6.67 * 10**(-11) * 6 * 10**24 / rocket_arg.h
+    v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / rocket_arg.h
     speed_per = speed * (100 / v_1)
     speed_per_height = (speed_bar_height / 100 * speed_per)
     speed_image = pygame.Surface((speed_bar_width, speed_per_height))
@@ -361,8 +361,8 @@ def check_space_flight(rocket_arg, flag_space_flight_arg):
     """Функция проверяет возможность перехода на следующий уровень.
     :param flag_space_flight_arg - флаг выполнения условия перехода на новый уровень
     :param rocket_arg - объект ракета класса Rocket"""
-    v_1 = 6.67 * 10**(-11) * 6 * 10**24 / rocket_arg.h
-    if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx**2+rocket_arg.vy**2)**0.5 >= v_1\
+    v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / rocket_arg.h
+    if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5 >= v_1 \
             and rocket_arg.h - 6400000 >= 100000:
         flag_space_flight_arg = True
 
@@ -386,7 +386,7 @@ def check_falling(rocket_arg, flag_fall_arg):
     """Функция проверяет, упала ли ракета.
     :param flag_fall_arg - флаг выполнения условия перехода на новый уровень
     :param rocket_arg - объект ракета класса Rocket"""
-    if (rocket_arg.vx**2 + rocket_arg.vy**2)**0.5 >= 30 and rocket_arg.h - 6400000 <= 10:
+    if (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5 >= 30 and rocket_arg.h - 6400000 <= 10:
         flag_fall_arg = True
 
     return flag_fall_arg
@@ -405,8 +405,8 @@ def draw_falling(bg_flight_surf_arg, flag_fall_arg):
         bg_flight_surf_arg.blit(text_fall_instruct2, (270, 80))
 
 
-def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right,time_step,
-                    fire_big_step, fire_small_step, flag_activation):
+def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_step,
+                    fire_big_step, fire_small_step):
     ##    if flag_activation:
     ##        flag_fall = False
     ##        flag_space_flight = False
@@ -474,7 +474,6 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right,time_ste
         if events[0] == "key_up" and events[1] == "right":
             flag_right = False
 
-    #
 
     # Движение ракеты
     rocket_move(rocket, flag_left, flag_right, flag_forward, True)
@@ -486,7 +485,6 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right,time_ste
     fill_gradient(bg_flight_surf, rocket)
 
     # Отрисовка интерфейса
-    fuel_calc(rocket)
     draw_status(bg_flight_surf, rocket, earth, space)
 
     # Отрисовка объектов заднего фона
@@ -497,7 +495,7 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right,time_ste
 
     # Обработка отрисовки ракеты
     draw_rotated_rocket(bg_flight_surf, rocket, fire_big, fire_small, flag_forward, flag_left, flag_right,
-                       fire_big_step,
+                        fire_big_step,
                         fire_small_step, time_step)
 
     # Рисование на главном экране
@@ -505,6 +503,7 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right,time_ste
     pygame.display.update()
     clock.tick(FPS)
     time_step += 1
+
 
 """
 def draw_flight_foo(rocket_arg, events, flag_forward, flag_left, flag_right, time_step,
