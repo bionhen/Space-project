@@ -4,12 +4,10 @@ from draw_functions.change_screen import *
 from draw_functions.draw_missions import *
 from draw_functions.draw_constructor import *
 from draw_functions.draw_flight import *
-from draw_functions.starship_rocket import *
-from draw_functions.starship_modules import *
 from draw_functions.draw_space_flight import *
 
 import pygame
-from pygame.draw import *
+
 pygame.init()
 draw_screen = "menu"
 mouse_click = [-1, -1, -1, -1, -1]
@@ -51,18 +49,18 @@ while not finished:
             draw_screen = show_screen(draw_screen, mouse_position_x, mouse_position_y)
             happen = "mouse_button_down"
 
-        if event.type == pygame.KEYDOWN  and event.key == pygame.K_UP:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
             happens = "key_down"
             flag_forward = True
-        if event.type == pygame.KEYDOWN  and event.key == pygame.K_LEFT:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
             happens = "key_down"
             flag_left = True
-        if event.type == pygame.KEYDOWN  and event.key == pygame.K_RIGHT:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
             happens = "key_down"
             flag_right = True
 
         # это переход от обычного полета к космическому
-        if event.type == pygame.KEYDOWN  and event.key == pygame.K_ESCAPE and flag_space_flight:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and flag_space_flight:
             draw_screen = "space_flying"
         if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB and flag_space_flight:
             draw_screen = "menu"
@@ -70,7 +68,7 @@ while not finished:
         if event.type == pygame.KEYUP and event.key == pygame.K_UP:
             happens = "key_up"
             flag_forward = False
-        if event.type == pygame.KEYUP and  event.key == pygame.K_LEFT:
+        if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
             happens = "key_up"
             flag_left = False
         if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
@@ -95,7 +93,7 @@ while not finished:
             rocket.render_rocket_surface()
             rocket.find_engines()
         rocket = draw_flight_foo(rocket, flag_forward, flag_left, flag_right, time_step,
-                        fire_big_step, fire_small_step)
+                                 fire_big_step, fire_small_step)
         flag_space_flight = check_space_flight(rocket, flag_space_flight)  # конкретно это часть перехода
         if flag_activation:
             flag_activation = False
