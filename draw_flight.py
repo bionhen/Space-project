@@ -405,7 +405,7 @@ def draw_falling(bg_flight_surf_arg, flag_fall_arg):
         bg_flight_surf_arg.blit(text_fall_instruct2, (270, 80))
 
 
-def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_step,
+def draw_flight_foo(rocket, flag_forward, flag_left, flag_right, time_step,
                     fire_big_step, fire_small_step):
     ##    if flag_activation:
     ##        flag_fall = False
@@ -460,12 +460,10 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_st
     ##        return rocket
 
     # Обработка ввода
-    print(rocket.left_engines_cord)
     rocket.find_max_coord()
     rocket.find_center_mass()
     rocket.find_rocket_width_and_height()
     rocket.render_rocket_surface()
-    print()
     # Движение ракеты
     rocket_move(rocket, flag_left, flag_right, flag_forward, True)
 
@@ -491,9 +489,6 @@ def draw_flight_foo(rocket, events, flag_forward, flag_left, flag_right, time_st
 
     # Рисование на главном экране
     sc.blit(bg_flight_surf, (0, 0))
-    pygame.display.update()
-    clock.tick(FPS)
-    time_step += 1
 
 
 """

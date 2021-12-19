@@ -25,7 +25,7 @@ time_step = fire_big_step = fire_small_step = 0
 moved_module = Module()
 k = j = -1
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 30
 finished = False
 
 while not finished:
@@ -63,14 +63,11 @@ while not finished:
             draw_screen = show_screen(draw_screen, mouse_position_x, mouse_position_y)
             happen = "mouse_button_down"
 
-
-    print(flag_right)
     if draw_screen == "menu":
         draw_menu_foo()
     elif draw_screen == "list_of_missions":
         draw_missions_foo()
     elif draw_screen == "constructor":
-        print(flag_right)
         click, rocket, moved_module, flag1, flag2, flag_dif, flag_rock, k, j, cash = draw_constructor_foo(
             happen, click, rocket, moved_module, flag1, flag2, flag_dif, flag_rock, k, j, cash)
     elif draw_screen == "flying_unprepared":
@@ -89,7 +86,7 @@ while not finished:
             rocket.find_rocket_width_and_height()
             rocket.render_rocket_surface()
             rocket.find_engines()
-        draw_flight_foo(rocket, happens, flag_forward, flag_left, rocket_fuel_max, time_step,
+        draw_flight_foo(rocket, flag_forward, flag_left, flag_right, time_step,
                             fire_big_step, fire_small_step)
         if flag_activation:
             flag_activation = False
