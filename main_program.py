@@ -88,9 +88,16 @@ while not finished:
         # rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
         draw_screen = "flying_prepared"
     elif draw_screen == "flying_prepared":
-        draw_flight_foo(rocket, happens, flag_forward, flag_left, flag_right, rocket_fuel_max, time_step,
-                        fire_big_step, fire_small_step, flag_activation)
-        flag_space_flight = check_space_flight(rocket, flag_space_flight)
+        if flag_activation:
+            rocket.find_max_coord()
+            rocket.find_center_mass()
+            rocket.find_rocket_width_and_height()
+            rocket.render_rocket_surface()
+            rocket.find_engines()
+        draw_flight_foo(rocket, happens, flag_forward, flag_left, rocket_fuel_max, time_step,
+                        fire_big_step, fire_small_step)
+        if flag_activation:
+            flag_activation = False
     elif draw_screen == "space_flying":
         pass
 
