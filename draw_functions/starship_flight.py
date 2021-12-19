@@ -150,10 +150,8 @@ def rocket_move(rocket_obj, flag_left, flag_right, flag, sign):
     a_y = f_y / mass
     rocket_obj.vx += a_x * dt
     rocket_obj.vy += a_y * dt
-    print(a_y * dt, rocket_obj.vx)
     rocket_obj.x += rocket_obj.vx * dt
     rocket_obj.h += rocket_obj.vy * dt
     epsilon = momentum_calc(rocket_obj, flag_left, flag_right, flag, sign)
     rocket_obj.omega += epsilon * dt
     rocket_obj.angle += rocket_obj.omega * dt
-    print(rocket_obj.h, rocket_obj.vx, rocket_obj.vy, rocket_obj.angle, rocket_obj.omega)

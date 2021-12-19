@@ -60,10 +60,6 @@ class Rocket:
         if self.y_top == self.y_bottom:
             self.y_top = 0
 
-    def change_cords(self):
-        self.x = self.x - 200
-        self.y = self.y - 50
-
     def find_rocket_width_and_height(self):
         self.surface_width = self.x_right - self.x_left
         self.surface_height = self.y_bottom - self.y_top + 50
