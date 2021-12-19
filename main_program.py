@@ -4,6 +4,7 @@ from change_screen import *
 from draw_missions import *
 from draw_constructor import *
 from draw_flight import *
+from draw_space_flight import *
 import pygame
 from pygame.draw import *
 pygame.init()
@@ -97,7 +98,7 @@ while not finished:
             flag_activation = False
 
     elif draw_screen == "space_flying":
-        circle(sc, (0, 0, 0), (300, 300), 200)
+        draw_space_flight_foo(rocket, flag_forward, flag_left, flag_right, space_objects)
 
     show_modules(mouse_click)
     pygame.display.update()

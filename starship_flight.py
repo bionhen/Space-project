@@ -6,15 +6,6 @@ G = 6.67 * 10 ** (-11)
 M = 6.02 * 10 ** 24
 
 
-def fuel_calc(rocket_e):
-    """
-    функция рассчитывающая максимальное значение топлива в ракете
-    :param rocket_e: - экземпляр класса Rocket
-    """
-    for module in rocket_e.list:
-        rocket_e.fuel += module.fuel
-
-
 def force_coord(flag, engine_type, rocket_e, f_e_y, f_e_x):
     """
     функция рассчитывающая значения силы при условии flag

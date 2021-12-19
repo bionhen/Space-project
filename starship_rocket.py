@@ -29,8 +29,8 @@ class Rocket:
         self.y_bottom = 0
         self.x_center_mass = 0
         self.y_center_mass = 0
-        self.surface_width = self.x_right - self.x_left
-        self.surface_height = self.y_bottom - self.y_top + 50
+        self.surface_width = 0
+        self.surface_height = 0
         self.engines_cord = []
         self.left_engines_cord = []
         self.right_engines_cord = []
@@ -60,8 +60,19 @@ class Rocket:
         if self.y_top == self.y_bottom:
             self.y_top = 0
 
+    def change_cords(self):
+        self.x = self.x - 200
+        self.y = self.y - 50
+
+    def find_rocket_width_and_height(self):
+        self.surface_width = self.x_right - self.x_left
+        self.surface_height = self.y_bottom - self.y_top + 50
+
     def render_rocket_surface(self):
+        print(self.surface)
         self.surface = pygame.Surface((self.surface_width, self.surface_height), pygame.SRCALPHA)
+        print(self.surface)
+        print(self.surface_width)
         for rocket_module in self.list:
             rocket_module.x = rocket_module.x - self.x_left
             rocket_module.y = rocket_module.y - self.y_top
@@ -85,6 +96,6 @@ class Rocket:
             if rocket_module.type == 'engine':
                 self.engines_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
             if rocket_module.type == 'engine_l':
-                self.engines_left_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
+                self.left_engines_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
             if rocket_module.type == 'engine_r':
-                self.engines_right_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
+                self.right_engines_cord.append([rocket_module.x, rocket_module.y, rocket_module.a])
