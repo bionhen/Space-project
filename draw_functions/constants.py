@@ -10,5 +10,8 @@ LIGHT_BLUE = (106, 139, 197)
 
 FPS = 60
 
+pygame.init()
 FONT = pygame.font.SysFont('century gothic', 30, bold=True)
 FONT_small = pygame.font.SysFont('century gothic', 24, bold=True)
+
+pygame.font.init()

@@ -9,6 +9,8 @@ from draw_functions.draw_space_flight import *
 import pygame
 
 pygame.init()
+
+
 draw_screen = "menu"
 mouse_click = [-1, -1, -1, -1, -1]
 mouse_position_x = 0

@@ -65,10 +65,7 @@ class Rocket:
         self.surface_height = self.y_bottom - self.y_top + 50
 
     def render_rocket_surface(self):
-        print(self.surface)
         self.surface = pygame.Surface((self.surface_width, self.surface_height), pygame.SRCALPHA)
-        print(self.surface)
-        print(self.surface_width)
         for rocket_module in self.list:
             rocket_module.x = rocket_module.x - self.x_left
             rocket_module.y = rocket_module.y - self.y_top

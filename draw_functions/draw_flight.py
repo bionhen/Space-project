@@ -281,7 +281,6 @@ def draw_angle(bg_flight_surf_arg, rocket_arg):
     """Функция рисует текущий угол ракеты.
     :param bg_flight_surf_arg - поверхность, на которой рисуется состояние
     :param rocket_arg - ракета, элемент класса Rocket"""
-    # FIXME поправить периодичность угла
     angle_center_x = 25
     angle_center_y = 50
     angle_center_bg_x = 740
@@ -337,11 +336,9 @@ def check_space_flight(rocket_arg, flag_space_flight_arg):
     """Функция проверяет возможность перехода на следующий уровень.
     :param flag_space_flight_arg - флаг выполнения условия перехода на новый уровень
     :param rocket_arg - объект ракета класса Rocket"""
-    # v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / (rocket_arg.h-6400000)
-    # if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and (rocket_arg.vx ** 2 + rocket_arg.vy ** 2) ** 0.5 >= v_1 \
-    #       and rocket_arg.h - 6400000 >= 1000:     # для проверки переходов, я изменил 100000 на 1000 (см фото)
-    #   flag_space_flight_arg = True
-    if rocket_arg.h >= 1000:
+    v_1 = 6.67 * 10 ** (-11) * 6 * 10 ** 24 / (rocket_arg.h-6400000)
+    if abs(round(rocket_arg.angle) + 90) % 360 <= 20 and abs(rocket_arg.vx) >= v_1 \
+       and rocket_arg.h - 6400000 >= 1000:
         flag_space_flight_arg = True
     return flag_space_flight_arg
 
