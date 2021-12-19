@@ -19,8 +19,8 @@ flag1 = False
 flag2 = False
 flag_dif = False
 flag_rock = False
-flag_right, flag_left, flag_forward = False, False, False
-happens = ["nothing", "nothing"]
+flag_right, flag_left, flag_forward, flag_space_flight = False, False, False, False
+happens = "nothing"
 time_step = fire_big_step = fire_small_step = 0
 moved_module = Module()
 k = j = -1
@@ -46,38 +46,60 @@ while not finished:
             happen = "mouse_button_down"
 
         if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_UP:
-            happens = ["key_down", "forward"]
+            happens = "key_down"
+            flag_forward = True
         if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_LEFT:
-            happens = ["key_down", "left"]
+            happens = "key_down"
+            flag_left = True
         if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_RIGHT:
-            happens = ["key_down", "right"]
+            happens = "key_down"
+            flag_right = True
+
+        # это временная мера, в дальнейшем эти if должны оказаться в draw_flight_foo
+        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_KP_ENTER and flag_space_flight:
+            draw_screen = "space_flying"
+        if event.type == pygame.KEYDOWN and draw_screen == "flying_prepared" and event.key == pygame.K_KP_TAB and flag_space_flight:
+            draw_screen = "menu"
 
         if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_UP:
-            happens = ["key_up", "forward"]
+            happens = "key_up"
+            flag_forward = False
         if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_LEFT:
-            happens = ["key_up", "left"]
+            happens = "key_up"
+            flag_left = False
         if event.type == pygame.KEYUP and draw_screen == "flying_prepared" and event.key == pygame.K_RIGHT:
-            happens = ["key_up", "right"]
+            happens = "key_up"
+            flag_right = False
 
     if draw_screen == "menu":
         draw_menu_foo()
     elif draw_screen == "list_of_missions":
         draw_missions_foo()
-    elif draw_screen == "constructor":
+    elif draw_screen == "constructor_1" or draw_screen == "constructor_2":
         click, rocket, moved_module, flag1, flag2, flag_dif, flag_rock, k, j, cash = draw_constructor_foo(
             happen, click, rocket, moved_module, flag1, flag2, flag_dif, flag_rock, k, j, cash)
     elif draw_screen == "flying_unprepared":
-        #rocket = Rocket()
-        #rocket.list = rocket_list
-        #rocket.h = 6400000
-        #fuel_calc(rocket)
-        #rocket_fuel_max = rocket.fuel
-        #y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
-        #rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
+        # rocket = Rocket()
+        # rocket.list = rocket_list
+        # rocket.h = 6400000
+        # fuel_calc(rocket)
+        # rocket_fuel_max = rocket.fuel
+        # y_bottom, y_top, x_left, x_right = find_max_coord(rocket_list)
+        # rocket.surface = render_rocket_surface(rocket_surface_width, rocket_surface_height, x_left, y_top, rocket)
         draw_screen = "flying_prepared"
     elif draw_screen == "flying_prepared":
-            draw_flight_foo(rocket, happens, flag_forward, flag_left, flag_right, rocket_fuel_max, time_step,
-                            fire_big_step, fire_small_step, flag_activation)
+        if flag_activation:
+            rocket.find_max_coord()
+            rocket.find_center_mass()
+            rocket.find_rocket_width_and_height()
+            rocket.render_rocket_surface()
+            rocket.find_engines()
+        draw_flight_foo(rocket, happens, flag_forward, flag_left, rocket_fuel_max, time_step,
+                        fire_big_step, fire_small_step)
+        if flag_activation:
+            flag_activation = False
+    elif draw_screen == "space_flying":
+        pass
 
     show_modules(mouse_click)
     pygame.display.update()
